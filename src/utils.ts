@@ -1,12 +1,12 @@
-export const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+// export const delay = (ms: number) =>
+//   new Promise((resolve) => setTimeout(resolve, ms));
 
 //--------------------------------------------------
 
-export const echo = async (msg: string, ms: number) => {
-    await delay(ms);
-    return msg;
-};
+// export const echo = async (msg: string, ms: number) => {
+//   await delay(ms);
+//   return msg;
+// };
 
 //--------------------------------------------------
 /*
@@ -16,10 +16,9 @@ export const echo = async (msg: string, ms: number) => {
         await delay(ms);
         log.magenta(`finish <-- ${msg}`)
         return msg;
-    } 
+    }
 
 */
 //--------------------------------------------------
 
-export const random = (max: number, min = 0) =>
-    min + Math.round(Math.random() * (max - min));
+export default (max: number, min = 0) => min + Math.round(Math.random() * (max - min));
