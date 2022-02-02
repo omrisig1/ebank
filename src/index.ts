@@ -3,7 +3,7 @@ import { multiplyR } from './calc.js';
 import saySomething from './myModule.js';
 import config from '../config.json';
 
-const conf = JSON.parse(JSON.stringify(config));
+const conf = config;
 console.log(conf.test);
 console.log(conf.scripts.one);
 

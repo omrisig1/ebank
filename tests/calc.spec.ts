@@ -2,12 +2,10 @@
 // import { sum, multiply, multiplyR } from "../src/calc.js";
 // import { delay } from "../src/utils.js";
 
-
-
 // describe('The calc module',  ()=> {
 
 //     context(`#sum`,()=> {
-        
+
 //         it(`should exist`,()=> {
 //             expect(sum).to.be.a('function')
 //             expect(sum).to.be.instanceOf(Function)
@@ -28,7 +26,7 @@
 //     /* context(`#multiply`,()=> {
 
 //         it(`should exist`) // <-- pending...
-        
+
 //         it(`should multiply two numbers`,()=>{
 //             throw new Error('kabooom!!!') // <-- test fails...
 //             let actual = multiply(2,3);
@@ -58,7 +56,7 @@
 //         })
 
 //     })
-    
+
 //     context(`#async tests`, ()=> {
 //         // const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -78,6 +76,4 @@
 //         })
 //     })
 
-
 // });
-
