@@ -7,10 +7,10 @@
   "scripts": {
     "build": "npm run clean && tsc && swc src -d dist",
     "clean": "rm -rf typings && rm -rf dist",
-    "build-dev": "npm run build && node dist/index.js",
+    "build-dev": "npm run build && node --experimental-json-modules dist/index.js",
     "dev": "nodemon",
     "start": "NODE_ENV=production node dist/index.js",
-    "lint": "eslint src/**/*.ts --fix",
+    "lint": "eslint src/**/*.ts tests/**/*.ts  --fix",
     "format": "prettier src/**/*.ts --write",
     "prepare": "husky install",
     "test": "mocha",

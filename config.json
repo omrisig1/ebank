@@ -1,0 +1,8 @@
+
+   {
+        "test":"number one",
+        "second":"1234",
+        "scripts":{
+            "one":"first script"
+        }
+    }
