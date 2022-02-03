@@ -1,6 +1,7 @@
 {
     "account_types":["INDIVIDUAL"],
     "individual_account_minimum_transfer":"5000",
+    "account_minimum_transfer":{"individual":"5000"},
     "express-server": {
         "HOST": "localhost",
         "PORT": "3030"

@@ -8,11 +8,7 @@ export function stringNotEmpty(str: any) {
 }
 
 export function mandatoryFieldExists(object: any, fieldName: string) {
-  if (
-    typeof object === 'object'
-    && object.fieldName
-    && stringNotEmpty(object[fieldName])
-  ) {
+  if (typeof object === 'object' && object.fieldName && stringNotEmpty(object[fieldName])) {
     return true;
   }
   throw new Error('mandatory field missing');
@@ -40,10 +36,8 @@ export function stringLengthEquals(val: any, length: number) {
 }
 
 export function transferSizeSmallerThan(accountType: string, amount: number) {
-  if (
-    isValNumeric(amount)
-    && Number(config.individual_account_minimum_transfer) <= Number(amount)
-  ) {
+  const types = JSON.parse(JSON.stringify(config.account_minimum_transfer));
+  if (isValNumeric(amount) && Number(types[accountType]) <= Number(amount)) {
     return true;
   }
   throw new Error('trasnfer amount exceeds account type permition error');
