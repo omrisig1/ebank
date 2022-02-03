@@ -1,8 +1,13 @@
-
-   {
-        "test":"number one",
-        "second":"1234",
-        "scripts":{
-            "one":"first script"
-        }
+{
+    "express-server": {
+        "HOST": "localhost",
+        "PORT": "3030"
+    },
+    "mysql-connection": {
+        "DB_HOST": "localhost",
+        "DB_PORT": "3306",
+        "DB_NAME":"ebank",
+        "DB_USER_NAME":"root",
+        "DB_USER_PASSWORD":"qwerty"
     }
+}
