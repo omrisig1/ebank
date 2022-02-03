@@ -42,3 +42,17 @@ export function transferSizeSmallerThan(accountType: string, amount: number) {
   }
   throw new Error('trasnfer amount exceeds account type permition error');
 }
+
+export function checkAccountTypeEquals(stringA: string, stringB: string) {
+  if (stringA === stringB) {
+    return true;
+  }
+  throw new Error('account of different type');
+}
+
+export function balanceGreaterThan(num: number, than: number) {
+  if (isValNumeric(num) && isValNumeric(than) && Number(num) >= Number(than)) {
+    return true;
+  }
+  throw new Error('insufficient balance');
+}
