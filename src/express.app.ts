@@ -4,7 +4,7 @@ import log from '@ajar/marker';
 import cors from 'cors';
 import config from '../../config.json';
 
-import { connect as connect_sqlDb } from './db/mysql.connection.js';
+import { connect as connect_sqlDb } from '../db/mysql.connection.js';
 
 const { PORT, HOST = 'localhost' } = config['express-server'];
 
