@@ -9,9 +9,9 @@ export function stringNotEmpty(str: any) {
 
 export function mandatoryFieldExists(object: any, fieldName: string) {
   if (
-    typeof object === 'object' &&
-    object.fieldName &&
-    stringNotEmpty(object[fieldName])
+    typeof object === 'object'
+    && object.fieldName
+    && stringNotEmpty(object[fieldName])
   ) {
     return true;
   }
@@ -41,8 +41,8 @@ export function stringLengthEquals(val: any, length: number) {
 
 export function transferSizeSmallerThan(accountType: string, amount: number) {
   if (
-    isValNumeric(amount) &&
-    Number(config.individual_account_minimum_transfer) <= Number(amount)
+    isValNumeric(amount)
+    && Number(config.individual_account_minimum_transfer) <= Number(amount)
   ) {
     return true;
   }
