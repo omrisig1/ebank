@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "1783bed6-d006-4123-898d-3f142ff74543",
+		"name": "eBank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "individual",
+			"item": [
+				{
+					"name": "getByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/individual/1234567",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"individual",
+								"1234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "trasnfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/individual/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"individual",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addToFamily",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "remove from family",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "buisness",
+			"item": [
+				{
+					"name": "getByID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/buisness/12345678",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"buisness",
+								"12345678"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "trasnfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/buisness/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"buisness",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forex trasnfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"123456789\",\n    \"amount\":\"1000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/buisness/transfer",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"buisness",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "family",
+			"item": [
+				{
+					"name": "get By ID - full info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/family/12345678/full",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"12345678",
+								"full"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "trasnfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\":\"123456788\",\n    \"members\": [\n        {\n            \"account_id\":\"1234567\",\n            \"amount\":\"1000\"\n        },\n        {\n            \"account_id\":\"1234568\",\n            \"amount\":\"1000\"\n        }\n    ],\n    \"destination\":\"123456789\",\n    \"amount\":\"2000\"\n}\n\na source family account primaryID\nA list of tuples (individual accountID, amount)\na destination account primaryID\namount \n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/family/transfer",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/family/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "close account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/family/12345678",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"12345678"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get By ID - partial info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/family/12345678/short",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"12345678",
+								"short"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "change status",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
