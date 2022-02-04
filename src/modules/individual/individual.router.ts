@@ -1,5 +1,5 @@
 import express from 'express';
-import middleware from '../../middleware/validationsMiddle.js';
+import * as validations from '../../middleware/validationsMiddle.js';
 
 const router = express.Router();
 router.use(express.json());
@@ -8,7 +8,7 @@ function testRoute() {
   return 1;
 }
 
-router.get('/', middleware, testRoute);
+router.get('/', validations.minBalanceFromIndividTrans, testRoute);
 
 // /*
 //   if there is an error thrown in the DB, asyncMiddleware
