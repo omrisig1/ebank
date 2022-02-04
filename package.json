@@ -17,6 +17,10 @@
     "coverage": "rm -rf coverage && nyc report",
     "perf-tsc": "tsc --extendedDiagnostics"
   },
+  "apidoc": {
+    "title": "Custom apiDoc browser title",
+    "url" : "https://api.github.com/v1"
+  },
   "keywords": [
     "typescript",
     "nodemon",
