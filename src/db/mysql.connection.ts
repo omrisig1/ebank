@@ -2,7 +2,9 @@ import mysql from 'mysql2/promise';
 import log from '@ajar/marker';
 import config from '../../config.json';
 
-const { DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PASSWORD } = config['mysql-connection'];
+const {
+  DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PASSWORD,
+} = config['mysql-connection'];
 
 // eslint-disable-next-line import/no-mutable-exports
 export let connection: mysql.Connection;
