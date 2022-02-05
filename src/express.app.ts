@@ -6,6 +6,7 @@ import config from '../config.json';
 
 import { connect as connect_sqlDb } from './db/mysql.connection.js';
 import individual_account_router from "./modules/individual/individual.router.js";
+import business_account_router from "./modules/business/business.router.js";
 
 const { PORT, HOST } = config['express-server'];
 
@@ -19,6 +20,7 @@ class ExpressApp {
 
   private setRoutings() {
     this.app.use("/api/individual", individual_account_router);
+    this.app.use("/api/business", business_account_router);
   }
 
   //   private setErrorHandlers() {
