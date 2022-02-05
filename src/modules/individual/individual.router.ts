@@ -1,14 +1,11 @@
 import express from 'express';
 import * as validations from '../../middleware/validationsMiddle.js';
+import * as C from '../individual/individual.controller.js';
 
 const router = express.Router();
 router.use(express.json());
 
-function testRoute() {
-  return 1;
-}
-
-router.get('/', validations.minBalanceFromIndividTrans, testRoute);
+router.get('/', validations.minBalanceFromIndividTrans, C.testRoute);
 
 // /*
 //   if there is an error thrown in the DB, asyncMiddleware
