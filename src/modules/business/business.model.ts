@@ -1,10 +1,6 @@
-export interface IBusiness {
-  account_id?: number;
-  currency: string;
-  balance: number;
-  status: boolean;
-  address_id: number;
-  company_id: number;
-  company_name: string;
-  context: string;
+import IAccount from "../account.model";
+export interface IBusinessAccount extends IAccount {
+    company_id: number;
+    company_name: string;
+    context: string;
 }
