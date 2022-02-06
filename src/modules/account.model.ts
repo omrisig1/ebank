@@ -4,5 +4,4 @@ export default interface IAccount {
     balance: number;
     status: boolean;
     address_id: number;
-    type: string;
 }

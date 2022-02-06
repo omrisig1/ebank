@@ -12,45 +12,39 @@ export async function createNewFamilyAccount(payload: object): Promise<any> {
     return family_account_datails;
 }
 
-// Get family account by ID - FULL
-export async function getFamilyAccountByIdFull(family_id: number): Promise<any> {
-    // TODO: call dal to create new family account
+// Get family account by ID - FULL/SHORT
+export async function getFamilyAccountById(family_id: number, details_level: string = "full"): Promise<any> {
+    // TODO: call dal to get family account
     //       add validations and business logic
+    //       and return family model by the details_level
     
-    const family_account_full = await dal.getFamilyAccountByIdFull(family_id);
+    const family_account_full = await dal.getFamilyAccountById(family_id, details_level);
     return family_account_full;
 }
 
-// Get family account by ID - SHORT
-export async function getFamilyAccountByIdShort(family_id: number): Promise<any> {
-    // TODO: call dal to create new family account
+// Add individuals to family account - return FULL/SHORT
+export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+    // TODO: call dal to add individuals to family account
     //       add validations and business logic
-    
-    const family_account_short = await dal.getFamilyAccountByIdShort(family_id);
-    return family_account_short;
-}
+    //       and return family model by the details_level
 
-// Add individuals to family account
-export async function addIndividualsToFamily(family_id: number, payload: object): Promise<any> {
-    // TODO: call dal to create new family account
-    //       add validations and business logic
-    
-    const family_account = await dal.addIndividualsToFamily(family_id, payload);
+    const family_account = await dal.addIndividualsToFamily(family_id, details_level, payload);
     return family_account;
 }
 
-// Delete individuals from family account
-export async function deleteIndividualsFromFamily(family_id: number, payload: object): Promise<any> {
-    // TODO: call dal to create new family account
+// Delete individuals from family account - return FULL/SHORT
+export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+    // TODO: call dal to delete individuals from family account
     //       add validations and business logic
+    //       and return family model by the details_level
     
-    const family_account = await dal.deleteIndividualsFromFamily(family_id, payload);
+    const family_account = await dal.deleteIndividualsFromFamily(family_id, details_level, payload);
     return family_account;
 }
 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(payload: object): Promise<any> {
-    // TODO: call dal to create new family account
+    // TODO: call dal to transfer money from family to business
     //       add validations and business logic
 
     const results = await dal.transferFromFamilyToBusiness(payload);

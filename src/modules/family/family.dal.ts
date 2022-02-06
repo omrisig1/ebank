@@ -10,13 +10,17 @@ export async function createFamilyAccount(payload: object): Promise<any> {
     return results;
 }
 
-// Get family account by ID - FULL
-export async function getFamilyAccountByIdFull(family_id: number): Promise<any> {
-    // TODO: fix the function to create family account in DB
-
-    const sql = `SELECT *
-                FROM family
-                WHERE family.id = ${family_id};`;
+// Get family account by ID - FULL/SHORT
+export async function getFamilyAccountById(family_id: number, details_level: string = "full"): Promise<any> {
+    // TODO: fix the function to get family account from DB by the details_level
+    let sql;
+    if(details_level === "full"){
+        sql = "";
+    }
+    sql = `SELECT *
+           FROM family
+           WHERE family.id = ${family_id};`;
+    
 
     const [family] = await db.execute(sql) as RowDataPacket[];
     if(family.length === 0){
@@ -25,42 +29,41 @@ export async function getFamilyAccountByIdFull(family_id: number): Promise<any> 
     return family;
 }
 
-// Get family account by ID - SHORT
-export async function getFamilyAccountByIdShort(family_id: number): Promise<any> {
-    // TODO: fix the function to create family account in DB
-
-    const sql = `SELECT *
-                FROM family
-                WHERE family.id = ${family_id};`;
-
-    const [family] = await db.execute(sql) as RowDataPacket[];
-    if(family.length === 0){
-        return undefined;
+// Add individuals to family account - return FULL/SHORT
+export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+    // TODO: fix the function to add individuals to family account,
+    //       and return family model by the details_level
+    let sql;
+    if(details_level === "full"){
+        sql = "";
     }
-    return family;
-}
+    sql = `SELECT *
+           FROM family
+           WHERE family.id = ${family_id};`;
 
-// Add individuals to family account
-export async function addIndividualsToFamily(family_id: number, payload: object): Promise<any> {
-    // TODO: fix the function to create family account in DB
-
-    const sql = "";
     const [results] = await db.query(sql,[family_id,payload]);
     return results;
 }
 
-// Delete individuals from family account
-export async function deleteIndividualsFromFamily(family_id: number, payload: object): Promise<any> {
-    // TODO: fix the function to create family account in DB
-
-    const sql = "";
+// Delete individuals from family account - return FULL/SHORT
+export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+    // TODO: fix the function to Delete individuals from family account,
+    //       and return family model by the details_level
+    let sql;
+    if(details_level === "full"){
+        sql = "";
+    }
+    sql = `SELECT *
+           FROM family
+           WHERE family.id = ${family_id};`;
+           
     const [results] = await db.query(sql,[family_id,payload]);
     return results;
 }
 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(payload: object): Promise<any> {
-    // TODO: fix the function to create family account in DB
+    // TODO: fix the function to trnsfer money from family to business
 
     const sql = "";
     const [results] = await db.query(sql,payload);
@@ -69,7 +72,7 @@ export async function transferFromFamilyToBusiness(payload: object): Promise<any
 
 // Close family account by ID
 export async function closeFamilyAccountById(family_id: number): Promise<any> {
-    // TODO: fix the function to create family account in DB
+    // TODO: fix the function to close family account by ID
 
     const sql = "";
     const [results] = await db.query(sql,family_id);
