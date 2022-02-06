@@ -17,34 +17,22 @@ export async function createFamilyAccount(req: Request, res: Response): Promise<
     res.status(outputResponse.status).json(outputResponse);
 }
 
-// Get family account by ID - FULL
-export async function getFamilyAccountByIdFull(req: Request, res: Response): Promise<void> {
+// Get family account by ID - FULL/SHORT
+export async function getFamilyAccountById(req: Request, res: Response): Promise<void> {
     // TODO: add failure senario
-    const family_account_full = await S.getFamilyAccountByIdFull(Number(req.params.id));
+    const family_account = await S.getFamilyAccountById(Number(req.params.id),req.params.details_level);
     const outputResponse: IResponseMessage = {
         status: 200,
         message: "Family account found",
-        data: family_account_full,
+        data: family_account,
     };
     res.status(outputResponse.status).json(outputResponse);
 }
 
-// Get family account by ID - SHORT
-export async function getFamilyAccountByIdShort(req: Request, res: Response): Promise<void> {
-    // TODO: add failure senario
-    const family_account_short = await S.getFamilyAccountByIdShort(Number(req.params.id));
-    const outputResponse: IResponseMessage = {
-        status: 200,
-        message: "Family account found",
-        data: family_account_short,
-    };
-    res.status(outputResponse.status).json(outputResponse);
-}
-
-// Add individuals to family account
+// Add individuals to family account - return FULL/SHORT
 export async function addIndividualsToFamily(req: Request, res: Response): Promise<void> {
     // TODO: add failure senario
-    const family_account = await S.addIndividualsToFamily(Number(req.params.family_id),req.body);
+    const family_account = await S.addIndividualsToFamily(Number(req.params.family_id), req.params.details_level, req.body);
     const outputResponse: IResponseMessage = {
         status: 200,
         message: "Individuals added to family account.",
@@ -53,10 +41,10 @@ export async function addIndividualsToFamily(req: Request, res: Response): Promi
     res.status(outputResponse.status).json(outputResponse);
 }
 
-// Delete individuals from family account
+// Delete individuals from family account - return FULL/SHORT
 export async function deleteIndividualsFromFamily(req: Request, res: Response): Promise<void> {
     // TODO: add failure senario
-    const family_account = await S.deleteIndividualsFromFamily(Number(req.params.family_id),req.body);
+    const family_account = await S.deleteIndividualsFromFamily(Number(req.params.family_id), req.params.details_level, req.body);
     const outputResponse: IResponseMessage = {
         status: 200,
         message: "Individuals deleted from family account.",
