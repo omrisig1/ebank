@@ -1,5 +1,19 @@
 import config from '../../config.json';
 
+export function accountActive(status: string) {
+  if (status === 'ACTIVE') {
+    return true;
+  }
+  throw new Error('account is not active');
+}
+
+export function accountExists(id: string) {
+  if (id) {
+    return true;
+  }
+  throw new Error('account does not exists');
+}
+
 export function stringNotEmpty(str: any) {
   if (str && typeof str === 'string' && str !== '') {
     return true;
@@ -48,6 +62,13 @@ export function checkAccountTypeEquals(stringA: string, stringB: string) {
     return true;
   }
   throw new Error('account of different type');
+}
+
+export function checkAccountCurrencyEquals(stringA: string, stringB: string) {
+  if (stringA === stringB) {
+    return true;
+  }
+  throw new Error('currency of different type');
 }
 
 export function balanceGreaterThan(num: number, than: number) {
