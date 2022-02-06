@@ -6,10 +6,8 @@ const {
   DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PASSWORD,
 } = config['mysql-connection'];
 
-// eslint-disable-next-line import/no-mutable-exports
 export let connection: mysql.Connection;
 
-// eslint-disable-next-line consistent-return
 export const connect = async (): Promise<mysql.Connection | void> => {
   if (connection) {
     return connection;

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1783bed6-d006-4123-898d-3f142ff74543",
+		"_postman_id": "b2999c84-38d8-42d3-945d-72344b300d9c",
 		"name": "eBank",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,40 +9,19 @@
 			"name": "individual",
 			"item": [
 				{
-					"name": "getByID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:3030/api/individual/1234567",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"individual",
-								"1234567"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "trasnfer",
+					"name": "Create individual account",
 					"request": {
 						"method": "POST",
 						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "create",
-					"request": {
-						"method": "POST",
-						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"individuel_id\": \"123\",\n    \"first_name\": \"Yossi\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:3030/api/individual/",
 							"protocol": "https",
@@ -60,20 +39,54 @@
 					"response": []
 				},
 				{
-					"name": "addToFamily",
+					"name": "Get individual account by ID",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": "https://localhost:3030/api/individual/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"individual",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
 				{
-					"name": "remove from family",
+					"name": "Activate/Deactivate account by ID",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
-						"url": null
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"list_of_accounts\": [\"123,122,124\"],\n    \"action\": \"deactivate\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/individual/change-status/123",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"individual",
+								"change-status",
+								"123"
+							]
+						}
 					},
 					"response": []
 				}
@@ -83,40 +96,19 @@
 			"name": "buisness",
 			"item": [
 				{
-					"name": "getByID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:3030/api/buisness/12345678",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"buisness",
-								"12345678"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "trasnfer",
+					"name": "Create business account",
 					"request": {
 						"method": "POST",
 						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "create",
-					"request": {
-						"method": "POST",
-						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": \"123\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://localhost:3030/api/buisness/",
 							"protocol": "https",
@@ -134,21 +126,12 @@
 					"response": []
 				},
 				{
-					"name": "Forex trasnfer",
+					"name": "Get business account by ID",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"123456789\",\n    \"amount\":\"1000\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "https://localhost:3030/api/buisness/transfer",
+							"raw": "https://localhost:3030/api/buisness/123",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -157,7 +140,98 @@
 							"path": [
 								"api",
 								"buisness",
-								"transfer"
+								"123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer B2B/I (same currency)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"1234\",\n    \"amount\":\"2000\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/business/transfer/same-currency",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"business",
+								"transfer",
+								"same-currency"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer B2B (different currency)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"1234\",\n    \"amount\":\"2000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/business/transfer/different-currency",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"business",
+								"transfer",
+								"different-currency"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate/Deactivate account by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"list_of_accounts\": [\"123,122,124\"],\n    \"action\": \"deactivate\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/business/change-status/123",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"business",
+								"change-status",
+								"123"
 							]
 						}
 					},
@@ -169,7 +243,179 @@
 			"name": "family",
 			"item": [
 				{
-					"name": "get By ID - full info",
+					"name": "Create family account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"owners\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ],\n    \"currency\":\"USD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/family/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add individuals to family-SHORT",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/family/1234/full",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"1234",
+								"full"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add individuals to family-FULL",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/family/1234/short",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"1234",
+								"short"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove individuals fron family-SHORT",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/family/1234/short",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"1234",
+								"short"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove individuals fron family-FULL",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3030/api/family/1234/full",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"1234",
+								"full"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get family account by ID-SHORT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:3030/api/family/12345678/short",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"12345678",
+								"short"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get family account by ID-FULL",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -191,7 +437,37 @@
 					"response": []
 				},
 				{
-					"name": "trasnfer",
+					"name": "Transfer F2B",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"123456789\",\n    \"amount\":\"2000\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:3030/api/family/transfer",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer F2B draft",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -221,13 +497,12 @@
 					"response": []
 				},
 				{
-					"name": "create",
+					"name": "Close family account by ID",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:3030/api/family/",
-							"protocol": "https",
+							"raw": "localhost:3030/api/family/close/1234",
 							"host": [
 								"localhost"
 							],
@@ -235,65 +510,14 @@
 							"path": [
 								"api",
 								"family",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "close account",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:3030/api/family/12345678",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"family",
-								"12345678"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get By ID - partial info",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://localhost:3030/api/family/12345678/short",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"family",
-								"12345678",
-								"short"
+								"close",
+								"1234"
 							]
 						}
 					},
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "change status",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": null
-			},
-			"response": []
 		}
 	]
 }
