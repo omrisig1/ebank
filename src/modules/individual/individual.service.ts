@@ -20,3 +20,12 @@ export async function getIndividualAccountById(idToRead: number): Promise<any> {
     const individual_account = await dal.getIndividualAccountById(idToRead);
     return individual_account;
 }
+
+// Activate/Deactivate account by ID
+export async function changeAccountStatus(payload: object): Promise<any> {
+    // TODO: call dal to create new individual account
+    //       add validations and business logic
+
+    const accounts_statuses = await dal.changeAccountStatus(payload);
+    return accounts_statuses;
+}

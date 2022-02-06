@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Request, Response } from "express";
 import { IResponseMessage } from "../../types/types.js";
 import { IIndividualAccount } from "./individual.model.js";
@@ -23,6 +24,18 @@ export async function getIndividualAccountById(req: Request, res: Response): Pro
         status: 200,
         message: "Individual account found",
         data: individual_account,
+    };
+    res.status(outputResponse.status).json(outputResponse);
+}
+
+// Activate/Deactivate account by ID
+export async function changeAccountStatus(req: Request, res: Response): Promise<void> {
+    // TODO: add failure senario
+    const accounts_statuses = await S.changeAccountStatus(req.body);
+    const outputResponse: IResponseMessage = {
+        status: 200,
+        message: "Account's statuses changed.",
+        data: accounts_statuses,
     };
     res.status(outputResponse.status).json(outputResponse);
 }
