@@ -17,11 +17,11 @@ export async function createBusinessAccount(payload: IBusinessAccount): Promise<
     payload.context,
     payload.black_list,
   ]);
-  const business = await getBusinessAccountByCompanyId(payload.company_id);
+  const business = await getBusinessAccountById(payload.company_id);
   return business;
 }
 
-export async function getBusinessAccountByCompanyId(company_id: number): Promise<IBusinessAccount> {
+export async function getBusinessAccountById(company_id: number): Promise<IBusinessAccount> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN BusinessAccounts as B
                     ON A.account_id = B.account_id 

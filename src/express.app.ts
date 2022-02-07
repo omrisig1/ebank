@@ -8,15 +8,22 @@ import { connect as connect_sqlDb } from './db/mysql.connection.js';
 import individual_account_router from "./modules/individual/individual.router.js";
 import business_account_router from "./modules/business/business.router.js";
 import family_account_router from "./modules/family/family.router.js";
+import { generateRequestID } from './middleware/requestId.js';
+import { errorLogger, not_found, responseWithError, urlNotFoundHandler } from './middleware/errors.handler.js';
+import { appendToErrorLogger } from './middleware/loggers/error.log.js';
+import { appendToRequestsLogger } from './middleware/loggers/http.log.js';
 
 const { PORT, HOST } = config['express-server'];
+const { HTTP_LOG_FILE_PATH,ERRORS_LOG_FILE_PATH } = config;
 
 class ExpressApp {
   app = express();
 
   private setMiddlewares() {
+    this.app.use(generateRequestID);
     this.app.use(cors());
     this.app.use(morgan('dev'));
+    this.app.use(appendToRequestsLogger(HTTP_LOG_FILE_PATH));
   }
 
   private setRoutings() {
@@ -25,24 +32,22 @@ class ExpressApp {
     this.app.use("/api/family", family_account_router);
   }
 
-  //   private setErrorHandlers() {
-  // this.app.use(urlNotFoundHandler);
-  // this.app.use(errorLogger);
-  // this.app.use(appendToErrorLogger(ERRORS_LOG_FILE_PATH as string));
-  // this.app.use(responseWithError);
-  // this.app.use(error_handler);
-  // this.app.use(error_handler2);
-  //   }
+  private setErrorHandlers() {
+    this.app.use(urlNotFoundHandler);
+    this.app.use(errorLogger);
+    this.app.use(appendToErrorLogger(ERRORS_LOG_FILE_PATH));
+    this.app.use(responseWithError);
+  }
 
-  //   private setDefault() {
-  // this.app.use("*", not_found);
-  //   }
+  private setDefault() {
+    this.app.use("*", not_found);
+  }
 
   async start() {
     this.setMiddlewares();
     this.setRoutings();
-    // this.setErrorHandlers();
-    // this.setDefault();
+    this.setErrorHandlers();
+    this.setDefault();
 
     // connect to mySql
     await connect_sqlDb();

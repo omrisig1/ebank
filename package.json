@@ -19,7 +19,7 @@
   },
   "apidoc": {
     "title": "Custom apiDoc browser title",
-    "url" : "https://api.github.com/v1"
+    "url": "https://api.github.com/v1"
   },
   "keywords": [
     "typescript",
@@ -66,7 +66,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "morgan": "^1.10.0",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "uuidv4": "^6.2.12"
   },
   "directories": {
     "test": "tests"
