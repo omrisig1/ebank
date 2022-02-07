@@ -36,4 +36,17 @@ export async function updateBalance(account_id: number, balance: number): Promis
   return account;
 }
 
+export async function getReponseByIdempotencyKey(user: string, key : string[] |string | undefined = '') : Promise<RowDataPacket> {
+  const sql = `SELECT response
+        FROM Idempotency I 
+        WHERE user = ? AND idempotency = ?;`;
+  const [response] = (await db.query(sql, [user,key]))as RowDataPacket[][];
+  return response[0];
+}
 
+export async function addIdempotencyResponse(user: string, key:string, res : string) : Promise<RowDataPacket> {
+  const sql = `INSERT INTO Idempotency ('user','idempotency_key','reponse')
+        VALUES (?,?,?)`;
+  const [response] = (await db.query(sql, [user,key,res]))as RowDataPacket[][];
+  return response[0];
+}
