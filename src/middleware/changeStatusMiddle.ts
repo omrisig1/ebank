@@ -5,7 +5,8 @@ import * as Util from '../modules/utils.dal.js';
 
 export function changeStatusMiddle(req: Request, res: Response, next: NextFunction) : void {
     Validator.mandatoryFieldExists(req.body,['list_of_accounts','status']);
-    const accounts = Util.getAccounts(req.body.list_of_accounts)
+    const accounts = Util.getfamiyAccountsByaccountsIDS(req.body.list_of_accounts);
+    // i want it to be emptyyy - to check the type
     Validator.NumberEquals(req.body.list_of_accounts.length, accounts.length);
     for (const acc of accounts){
         Validator.checkAccountTypeNotEquals(acc.type, 'family');

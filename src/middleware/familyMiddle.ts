@@ -13,12 +13,10 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
       const accounts = await individual_dal.getIndividualsByAccountsIds(req.body.owners.map((arr:any)=> arr[0]));
       const sum = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
       Validator.NumberGreaterThan(sum,5000);
+      Validator.NumberEquals(accounts.length, req.body.owners.length);
       for (const acc of accounts) {
           Validator.accountExists(acc.individual_id);  
           Validator.accountActive(acc.individual_id);  
-        //   Validator.isOfTypeIndividual(acc.individual_id, accounts);
-        //   need to check that all originals are in the accounts(filtered list) <----
-        //   Validator.checkAccountTypeEquals(acc.type,'individual');  
           Validator.checkAccountCurrencyEquals(acc.currency, req.body.currency)
           Validator.isValNumeric(acc.individual_id);
           Validator.stringLengthAtLeast(acc.individual_id.toString(),7)
