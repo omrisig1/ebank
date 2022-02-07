@@ -1,27 +1,6 @@
-import { IIndividualAccount } from './individual/individual.model.js';
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { RowDataPacket } from 'mysql2/promise';
-
-export async function getAccountsByIndividualsIds(
-  individual_ids: number[]
-): Promise<IIndividualAccount[]> {
-  const sql = `SELECT * 
-                FROM Accounts as A JOIN IndividualAccounts as I
-                    ON A.account_id = I.account_id 
-                WHERE individual_id IN ?;`;
-  const [individuals] = await db.query(sql, individual_ids);
-  return individuals as IIndividualAccount[];
-}
-
-export async function getAccountsByAccountsIds(account_ids: number[]): Promise<IAccount[]> {
-  const sql = `SELECT * 
-                FROM Accounts as A JOIN IndividualAccounts as I
-                    ON A.account_id = I.account_id 
-                WHERE account_id IN ?;`;
-  const [individuals] = await db.query(sql, account_ids);
-  return individuals as IIndividualAccount[];
-}
 
 export async function getAccountById(account_id: number): Promise<IAccount> {
   const sql = `SELECT * 
