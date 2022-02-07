@@ -5,7 +5,8 @@ import { connection as db} from "../../db/mysql.connection.js";
 export async function createFamilyAccount(payload: object): Promise<any> {
     // TODO: fix the function to create family account in DB
 
-    const sql = "INSERT INTO familys SET ?";
+    const sql = `SELECT *
+    FROM FamilyAccounts;`;
     const [results] = await db.query(sql,payload);
     return results;
 }
@@ -15,11 +16,13 @@ export async function getFamilyAccountById(family_id: number, details_level: str
     // TODO: fix the function to get family account from DB by the details_level
     let sql;
     if(details_level === "full"){
-        sql = "";
+        sql = `SELECT *
+        FROM FamilyAccounts
+               WHERE FamilyAccounts.account_id = ${family_id};`;
     }
     sql = `SELECT *
-           FROM family
-           WHERE family.id = ${family_id};`;
+    FROM FamilyAccounts
+           WHERE FamilyAccounts.account_id = ${family_id};`;
     
 
     const [family] = await db.execute(sql) as RowDataPacket[];
@@ -35,11 +38,13 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
     //       and return family model by the details_level
     let sql;
     if(details_level === "full"){
-        sql = "";
+        sql = `SELECT *
+        FROM FamilyAccounts
+               WHERE FamilyAccounts.account_id = ${family_id};`;
     }
     sql = `SELECT *
-           FROM family
-           WHERE family.id = ${family_id};`;
+    FROM FamilyAccounts
+           WHERE FamilyAccounts.account_id = ${family_id};`;
 
     const [results] = await db.query(sql,[family_id,payload]);
     return results;
@@ -51,11 +56,13 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
     //       and return family model by the details_level
     let sql;
     if(details_level === "full"){
-        sql = "";
+        sql = `SELECT *
+        FROM FamilyAccounts
+               WHERE FamilyAccounts.account_id = ${family_id};`;
     }
     sql = `SELECT *
-           FROM family
-           WHERE family.id = ${family_id};`;
+    FROM FamilyAccounts
+           WHERE FamilyAccounts.account_id = ${family_id};`;
            
     const [results] = await db.query(sql,[family_id,payload]);
     return results;
@@ -65,7 +72,8 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
 export async function transferFromFamilyToBusiness(payload: object): Promise<any> {
     // TODO: fix the function to trnsfer money from family to business
 
-    const sql = "";
+    const sql = `SELECT *
+    FROM FamilyAccounts;`
     const [results] = await db.query(sql,payload);
     return results;
 }
@@ -74,8 +82,10 @@ export async function transferFromFamilyToBusiness(payload: object): Promise<any
 export async function closeFamilyAccountById(family_id: number): Promise<any> {
     // TODO: fix the function to close family account by ID
 
-    const sql = "";
-    const [results] = await db.query(sql,family_id);
+    const  sql = `SELECT *
+    FROM FamilyAccounts
+           WHERE FamilyAccounts.account_id = ${family_id};`;
+    const [results] = await db.query(sql);
     return results;
 }
 

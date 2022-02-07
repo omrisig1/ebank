@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { IBusinessAccount } from "./business.model";
 import * as dal from "./business.dal.js";
+import { ITranser } from "../../types/types";
 
 // Create an business account
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
@@ -23,7 +24,7 @@ export async function getBusinessAccountById(idToRead: number): Promise<any> {
 }
 
 // Transfer B2B/B2I (same currency)
-export async function transferSameCurrency(payload: object): Promise<any> {
+export async function transferSameCurrency(payload: ITranser): Promise<any> {
     // TODO: call dal to create new business account
     //       add validations and logic
     //       check if destination account is business or individual
@@ -32,8 +33,8 @@ export async function transferSameCurrency(payload: object): Promise<any> {
     return results;
 }
 
-// Transfer B2B/B2I (different currency)
-export async function transferDifferentCurrency(payload: object): Promise<any> {
+// Transfer B2B (different currency)
+export async function transferDifferentCurrency(payload: ITranser): Promise<any> {
     // TODO: call dal to create new business account
     //       add validations and logic
     //       check if destination account is business or individual

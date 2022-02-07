@@ -20,10 +20,10 @@ router.get("/:id",raw(BMiddleware.getBuisnessMiddle), raw(C.getBusinessAccountBy
 // Transfer B2B/B2I (same currency)
 router.post("/transfer/same-currency",raw(BMiddleware.transferBuisnessSameCurMiddle), raw(C.transferFromBusinessSameCurrency));
 
-// Transfer B2B/B2I (different currency)
+// Transfer B2B (different currency)
 router.post("/transfer/different-currency",raw(BMiddleware.transferBuisnessDiffCurMiddle), raw(C.transferFromBusinessDifferentCurrency));
 
-// Activate/Deactivate account by ID - uses the individual controller
-router.put("/change-status/:id", raw(changeAccountStatus));
+// Activate/Deactivate accounts - uses the individual controller
+router.put("/change-status", raw(changeAccountStatus));
   
 export default router;
