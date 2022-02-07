@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuel_id\": \"123\",\n    \"first_name\": \"Yossi\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\"\n}",
+							"raw": "{\n    \"individual_id\": \"123\",\n    \"first_name\": \"Yossi\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -23,8 +23,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/individual/",
-							"protocol": "https",
+							"raw": "localhost:3030/api/individual/",
 							"host": [
 								"localhost"
 							],
@@ -44,8 +43,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:3030/api/individual/1",
-							"protocol": "https",
+							"raw": "localhost:3030/api/individual/1",
 							"host": [
 								"localhost"
 							],
@@ -66,7 +64,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\"123,122,124\"],\n    \"action\": \"deactivate\"\n}",
+							"raw": "{\n    \"list_of_accounts\": [\"123\",\"122\",\"124\"],\n    \"action\": \"deactivate\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -74,7 +72,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/individual/change-status/123",
+							"raw": "https://localhost:3030/api/individual/change-status/",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -84,7 +82,7 @@
 								"api",
 								"individual",
 								"change-status",
-								"123"
+								""
 							]
 						}
 					},
@@ -110,15 +108,14 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/buisness/",
-							"protocol": "https",
+							"raw": "localhost:3030/api/business/",
 							"host": [
 								"localhost"
 							],
 							"port": "3030",
 							"path": [
 								"api",
-								"buisness",
+								"business",
 								""
 							]
 						}
@@ -131,16 +128,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:3030/api/buisness/123",
-							"protocol": "https",
+							"raw": "localhost:3030/api/business/3",
 							"host": [
 								"localhost"
 							],
 							"port": "3030",
 							"path": [
 								"api",
-								"buisness",
-								"123"
+								"business",
+								"3"
 							]
 						}
 					},
@@ -221,7 +217,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/business/change-status/123",
+							"raw": "https://localhost:3030/api/business/change-status/",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -231,7 +227,7 @@
 								"api",
 								"business",
 								"change-status",
-								"123"
+								""
 							]
 						}
 					},
@@ -287,7 +283,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/1234/full",
+							"raw": "localhost:3030/api/family/add/1234/full",
 							"host": [
 								"localhost"
 							],
@@ -295,6 +291,7 @@
 							"path": [
 								"api",
 								"family",
+								"add",
 								"1234",
 								"full"
 							]
@@ -317,7 +314,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/1234/short",
+							"raw": "localhost:3030/api/family/add/1234/short",
 							"host": [
 								"localhost"
 							],
@@ -325,6 +322,7 @@
 							"path": [
 								"api",
 								"family",
+								"add",
 								"1234",
 								"short"
 							]
@@ -347,7 +345,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/1234/short",
+							"raw": "localhost:3030/api/family/remove/1234/short",
 							"host": [
 								"localhost"
 							],
@@ -355,6 +353,7 @@
 							"path": [
 								"api",
 								"family",
+								"remove",
 								"1234",
 								"short"
 							]
@@ -377,7 +376,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/1234/full",
+							"raw": "localhost:3030/api/family/remove/1234/full",
 							"host": [
 								"localhost"
 							],
@@ -385,6 +384,7 @@
 							"path": [
 								"api",
 								"family",
+								"remove",
 								"1234",
 								"full"
 							]
@@ -398,8 +398,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:3030/api/family/12345678/short",
-							"protocol": "https",
+							"raw": "localhost:3030/api/family/4/short",
 							"host": [
 								"localhost"
 							],
@@ -407,7 +406,7 @@
 							"path": [
 								"api",
 								"family",
-								"12345678",
+								"4",
 								"short"
 							]
 						}
@@ -420,8 +419,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:3030/api/family/12345678/full",
-							"protocol": "https",
+							"raw": "localhost:3030/api/family/4/full",
 							"host": [
 								"localhost"
 							],
@@ -429,7 +427,7 @@
 							"path": [
 								"api",
 								"family",
-								"12345678",
+								"4",
 								"full"
 							]
 						}
@@ -467,13 +465,13 @@
 					"response": []
 				},
 				{
-					"name": "Transfer F2B draft",
+					"name": "Close family account by ID",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source\":\"123456788\",\n    \"members\": [\n        {\n            \"account_id\":\"1234567\",\n            \"amount\":\"1000\"\n        },\n        {\n            \"account_id\":\"1234568\",\n            \"amount\":\"1000\"\n        }\n    ],\n    \"destination\":\"123456789\",\n    \"amount\":\"2000\"\n}\n\na source family account primaryID\nA list of tuples (individual accountID, amount)\na destination account primaryID\namount \n",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -481,28 +479,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/family/transfer",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"family",
-								"transfer"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Close family account by ID",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "localhost:3030/api/family/close/1234",
+							"raw": "localhost:3030/api/family/close/4",
 							"host": [
 								"localhost"
 							],
@@ -511,7 +488,7 @@
 								"api",
 								"family",
 								"close",
-								"1234"
+								"4"
 							]
 						}
 					},

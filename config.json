@@ -1,4 +1,6 @@
 {
+    "HTTP_LOG_FILE_PATH":"dist/requests.log",
+    "ERRORS_LOG_FILE_PATH":"dist/error.log",
     "account_types":["INDIVIDUAL"],
     "individual_account_minimum_transfer":"5000",
     "account_minimum_transfer":{"individual":"5000"},
@@ -10,7 +12,7 @@
     "mysql-connection": {
         "DB_HOST": "localhost",
         "DB_PORT": "3306",
-        "DB_NAME":"ebank",
+        "DB_NAME":"ebank_db",
         "DB_USER_NAME":"root",
         "DB_USER_PASSWORD":"qwerty"
     }

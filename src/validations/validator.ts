@@ -1,14 +1,41 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import config from '../../config.json';
 
-export function accountActive(status: string) : boolean|Error{
-  if (status === 'ACTIVE') {
+export function inFamily(num : string | number, than: string | number): boolean{
+  if(num>than) {
+    return true;
+  }
+  return true;
+}
+
+export function NumberEquals(num : string | number, than: string | number) : boolean{
+  if(num>than) {
+    return true;
+  }
+  return true;
+}
+
+export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
+  if(num>than) {
+    return true;
+  }
+  return true;
+}
+
+export function isPositive(num:string) :boolean{
+  return (num=='1');
+}
+
+export function IndividualIDUnique(str:string) :string{
+  return str;
+}
+export function accountActive(status: number) : boolean|Error{
+  if (status === 1) {
     return true;
   }
   throw new Error('account is not active');
 }
 
-export function accountExists(id: string) : boolean|Error{
+export function accountExists(id: number ) : boolean|Error{
   if (id) {
     return true;
   }
@@ -21,7 +48,6 @@ export function stringNotEmpty(str: string):boolean|''{
   }
   throw new Error('value is not a string');
 }
-
 
 export function mandatoryFieldExists(object: object, fieldNames: string[]) : boolean|never{
   if(typeof object ==='object'){
@@ -37,8 +63,8 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
   return true;
 }
 
-export function isValNumeric(val: string) : boolean|never{
-  if (val && !Number(val)) {
+export function isValNumeric(val: string | number |undefined) : boolean|never{
+  if (val && Number(val)) {
     return true;
   }
   throw new Error('value is not numeric');
@@ -73,6 +99,13 @@ export function checkAccountTypeEquals(stringA: string, stringB: string) : boole
   throw new Error('account of different type');
 }
 
+export function checkAccountTypeNotEquals(stringA: string, stringB: string) : boolean|Error{
+  if (stringA !== stringB) {
+    return true;
+  }
+  throw new Error('account of not proper type');
+}
+
 export function checkAccountCurrencyEquals(stringA: string, stringB: string) : boolean|Error{
   if (stringA === stringB) {
     return true;
@@ -80,18 +113,32 @@ export function checkAccountCurrencyEquals(stringA: string, stringB: string) : b
   throw new Error('currency of different type');
 }
 
-export function balanceGreaterThan(num: string, than: string) : boolean|Error{
+export function balanceGreaterThan(num: string | number, than: string | number) : boolean|Error{
   if (isValNumeric(num) && isValNumeric(than) && Number(num) >= Number(than)) {
     return true;
   }
   throw new Error('insufficient balance');
 }
 
-export function currencyIsValid(curreny: string) : boolean | Error{
-  const currenies = config.currencies;
-  if (curreny in currenies) {
+export function currencyIsValid(currency: string) : boolean | Error{
+  const currencies = ['USD','EUR'];
+  if (currencies.includes(currency)) {
     return true;
   }
   throw new Error('invalid currency');
 
+}
+
+export function accountStatusNotEquals(statusA: string, statusB: string) : boolean | Error{
+  if (statusA !== statusB) {
+    return true;
+  }
+  throw new Error('status type are NOT the same - cannot change');
+}
+
+export function accountStatusEquals(statusA: undefined |boolean, statusB: boolean | string | number) : boolean | Error{
+  if (statusA == statusB) {
+    return true;
+  }
+  throw new Error('status type are the same - cannot change');
 }

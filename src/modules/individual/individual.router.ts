@@ -2,6 +2,7 @@
 import raw from "../../middleware/route.async.wrapper.js";
 import * as C from "./individual.controller.js";
 import express from 'express';
+import * as IMiddleware from '../../middleware/individualMiddle.js';
 
 const router = express.Router();
 
@@ -9,12 +10,12 @@ const router = express.Router();
 router.use(express.json())
 
 // Create an individual account
-router.post("/", raw(C.createIndividualAccount));
+router.post("/", raw(IMiddleware.createIndividualMiddle) ,raw(C.createIndividualAccount));
   
 // Get individual account by ID
-router.get("/:id",raw(C.getIndividualAccountById));
+router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccountByAccountId));
 
-// Activate/Deactivate account by ID
-router.put("/change-status/:id", raw(C.changeAccountStatus));
+// Activate/Deactivate accounts
+router.put("/change-status", raw(C.changeAccountStatus));
   
 export default router;
