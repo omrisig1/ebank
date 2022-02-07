@@ -16,10 +16,10 @@ router.post("/",  raw(C.createFamilyAccount));
 router.get("/:id/:details_level",raw(C.getFamilyAccountById));
 
 // Add individuals to family account - return FULL/SHORT
-router.post("/:family_id/:details_level", raw(C.addIndividualsToFamily));
+router.post("/add/:family_id/:details_level", raw(C.addIndividualsToFamily));
 
 // Delete individuals from family account - return FULL/SHORT
-router.put("/:family_id/:details_level", raw(C.deleteIndividualsFromFamily));
+router.put("/remove/:family_id/:details_level", raw(C.deleteIndividualsFromFamily));
 
 // Transfer F2B
 router.post("/transfer", raw(C.transferFromFamilyToBusiness));

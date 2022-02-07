@@ -14,7 +14,7 @@ router.post("/", raw(C.createIndividualAccount));
 // Get individual account by ID
 router.get("/:id",raw(C.getIndividualAccountById));
 
-// Activate/Deactivate account by ID
-router.put("/change-status/:id", raw(C.changeAccountStatus));
+// Activate/Deactivate accounts
+router.put("/change-status", raw(C.changeAccountStatus));
   
 export default router;

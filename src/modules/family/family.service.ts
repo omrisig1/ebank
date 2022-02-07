@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
+import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITranser } from "../../types/types.js";
 import * as dal from "./family.dal.js";
 
 // Create family account
-export async function createNewFamilyAccount(payload: object): Promise<any> {
+export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Promise<any> {
     // TODO: call dal to create new family account
     //       add validations and business logic
 
@@ -23,7 +24,7 @@ export async function getFamilyAccountById(family_id: number, details_level: str
 }
 
 // Add individuals to family account - return FULL/SHORT
-export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: IAddIndividualsToFamily): Promise<any> {
     // TODO: call dal to add individuals to family account
     //       add validations and business logic
     //       and return family model by the details_level
@@ -33,7 +34,7 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
 }
 
 // Delete individuals from family account - return FULL/SHORT
-export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: object): Promise<any> {
+export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: IRemoveIndividualsToFamily): Promise<any> {
     // TODO: call dal to delete individuals from family account
     //       add validations and business logic
     //       and return family model by the details_level
@@ -43,7 +44,7 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
 }
 
 // Transfer F2B
-export async function transferFromFamilyToBusiness(payload: object): Promise<any> {
+export async function transferFromFamilyToBusiness(payload: ITranser): Promise<any> {
     // TODO: call dal to transfer money from family to business
     //       add validations and business logic
 
@@ -55,7 +56,7 @@ export async function transferFromFamilyToBusiness(payload: object): Promise<any
 export async function closeFamilyAccountById(family_id: number): Promise<any> {
     // TODO: call dal to create new family account
     //       add validations and business logic
-    
+
     const results = await dal.closeFamilyAccountById(family_id);
     return results;
 }

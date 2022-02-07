@@ -6,7 +6,8 @@ import { IBusinessAccount } from "./business.model.js";
 export async function createBusinessAccount(payload: IBusinessAccount): Promise<any> {
     // TODO: fix the function to create business account in DB
 
-    const sql = "INSERT INTO businesss SET ?";
+    const sql = `SELECT *
+                FROM BusinessAccounts;`;
     const [results] = await db.query(sql,payload);
     return results;
 }
@@ -16,8 +17,8 @@ export async function getBusinessAccountById(idToRead: number): Promise<any> {
     // TODO: fix the function to create business account in DB
 
     const sql = `SELECT *
-                FROM businesss 
-                WHERE businesss.id = ${idToRead};`;
+                FROM BusinessAccounts 
+                WHERE BusinessAccounts.account_id = ${idToRead};`;
 
     const [business] = await db.execute(sql) as RowDataPacket[];
     if(business.length === 0){
@@ -30,16 +31,18 @@ export async function getBusinessAccountById(idToRead: number): Promise<any> {
 export async function transferSameCurrency(payload: object): Promise<any> {
     // TODO: fix the function to create business account in DB
 
-    const sql = "";
+    const sql = `SELECT *
+    FROM BusinessAccounts;`;
     const [results] = await db.query(sql,payload);
     return results;
 }
 
-// Transfer B2B/B2I (different currency)
+// Transfer B2B (different currency)
 export async function transferDifferentCurrency(payload: object): Promise<any> {
     // TODO: fix the function to create business account in DB
 
-    const sql = "";
+    const sql = `SELECT *
+    FROM BusinessAccounts;`;
     const [results] = await db.query(sql,payload);
     return results;
 }
