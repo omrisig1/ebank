@@ -5,26 +5,28 @@ import { connection as db } from '../../db/mysql.connection.js';
 export async function createIndividualAccount(
   payload: IIndividualAccount
 ): Promise<IIndividualAccount> {
-  const sql1 = 'INSERT INTO Accounts (`currency`,`balance`,`status_id`,`a_date`,`e_date`) VALUES (?, ?,?,current_timestamp(), current_timestamp());';
-  const [result_account] = (await db.query(sql1, [
-    payload.currency,
-    payload.balance,
-    payload.status_id,
-  ])) as ResultSetHeader[];
-  const sql2 = 'INSERT INTO IndividualAccounts VALUES (?,?,?,?,?,?);';
-  await db.query(sql2, [
-    result_account.insertId,
-    payload.individual_id,
-    payload.first_name,
-    payload.last_name,
-    payload.email,
-    payload.address_id
-  ]);
+  const sql1 = 'INSERT INTO Accounts SET ?;';
+  const [result_account] = (await db.query(sql1, {
+    currency: payload.currency,
+    balance: payload.balance,
+    status_id: payload.status_id,
+  })) as ResultSetHeader[];
+  const sql2 = 'INSERT INTO IndividualAccounts SET ?;';
+  await db.query(sql2, {
+    account_id: result_account.insertId,
+    individual_id: payload.individual_id,
+    first_name: payload.first_name,
+    last_name: payload.last_name,
+    email: payload.email,
+    address_id: payload.address_id,
+  });
   const individual = await getIndividualAccountByAccountId(result_account.insertId);
   return individual;
 }
 
-export async function getIndividualAccountByAccountId(account_id: number): Promise<IIndividualAccount> {
+export async function getIndividualAccountByAccountId(
+  account_id: number
+): Promise<IIndividualAccount> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 

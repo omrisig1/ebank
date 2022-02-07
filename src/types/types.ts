@@ -9,7 +9,7 @@ export interface IErrorResponse {
     stack?: string;
 }
 
-export interface ITranser {
+export interface ITransfer {
     source: string;
     destination: string;
     amount: string;

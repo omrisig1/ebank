@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITranser } from "../../types/types.js";
+import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITransfer } from "../../types/types.js";
 import * as dal from "./family.dal.js";
 
 // Create family account
@@ -44,7 +44,7 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
 }
 
 // Transfer F2B
-export async function transferFromFamilyToBusiness(payload: ITranser): Promise<any> {
+export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
     // TODO: call dal to transfer money from family to business
     //       add validations and business logic
 

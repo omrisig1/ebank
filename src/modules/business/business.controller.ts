@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
-import { IResponseMessage, ITranser } from "../../types/types.js";
+import { IResponseMessage, ITransfer } from "../../types/types.js";
 import { IBusinessAccount } from "./business.model.js";
 import * as S from "./business.service.js";
 
@@ -38,8 +38,8 @@ export async function getBusinessAccountById(req: Request, res: Response): Promi
 
 // Transfer B2B/B2I (same currency)
 export async function transferFromBusinessSameCurrency(req: Request, res: Response): Promise<void> {
-    const source_and_destination_accounts = await S.transferSameCurrency(req.body as ITranser);
-    const { source, destination } = req.body as ITranser;
+    const source_and_destination_accounts = await S.transferSameCurrency(req.body as ITransfer);
+    const { source, destination } = req.body as ITransfer;
     if(!source_and_destination_accounts){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {
@@ -54,8 +54,8 @@ export async function transferFromBusinessSameCurrency(req: Request, res: Respon
 
 // Transfer B2B (different currency)
 export async function transferFromBusinessDifferentCurrency(req: Request, res: Response): Promise<void> {
-    const source_and_destination_accounts_and_FX_Rate = await S.transferDifferentCurrency(req.body as ITranser);
-    const { source, destination } = req.body as ITranser;
+    const source_and_destination_accounts_and_FX_Rate = await S.transferDifferentCurrency(req.body as ITransfer);
+    const { source, destination } = req.body as ITransfer;
     if(!source_and_destination_accounts_and_FX_Rate){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
-import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITranser } from "../../types/types.js";
+import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
 import * as S from "./family.service.js";
 
 // Create family account
@@ -68,8 +68,8 @@ export async function deleteIndividualsFromFamily(req: Request, res: Response): 
 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(req: Request, res: Response): Promise<void> {
-    const source_and_destination_accounts = await S.transferFromFamilyToBusiness(req.body as ITranser);
-    const { source, destination } = req.body as ITranser;
+    const source_and_destination_accounts = await S.transferFromFamilyToBusiness(req.body as ITransfer);
+    const { source, destination } = req.body as ITransfer;
     if(!source_and_destination_accounts){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {
