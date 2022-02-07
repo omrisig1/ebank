@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { IIndividualAccount } from "./individual.model";
 import * as dal from "./individual.dal.js";
+import * as util from "../utils.dal.js";
+
 import { IChangeStatus } from "../../types/types";
 
 // Create an individual account
@@ -14,11 +16,11 @@ export async function createNewIndividualAccount(payload: IIndividualAccount): P
 }
 
 // Get individual account by ID
-export async function getIndividualAccountById(idToRead: number): Promise<any> {
+export async function getIndividualAccountByAccountId(idToRead: number): Promise<any> {
     // TODO: call dal to create new individual account
     //       add validations
     
-    const individual_account = await dal.getIndividualAccountById(idToRead);
+    const individual_account = await dal.getIndividualAccountByAccountId(idToRead);
     return individual_account;
 }
 
@@ -27,6 +29,6 @@ export async function changeAccountStatus(payload: IChangeStatus): Promise<any> 
     // TODO: call dal to create new individual account
     //       add validations and business logic
     
-    const accounts_statuses = await dal.changeAccountStatus(payload);
+    const accounts_statuses = await util.changeAccountStatus(payload.list_of_accounts, payload.action);
     return accounts_statuses;
 }

@@ -21,8 +21,8 @@ export async function createIndividualAccount(req: Request, res: Response): Prom
 }
 
 // Get individual account by ID
-export async function getIndividualAccountById(req: Request, res: Response): Promise<void> {
-    const individual_account = await S.getIndividualAccountById(Number(req.params.id));
+export async function getIndividualAccountByAccountId(req: Request, res: Response): Promise<void> {
+    const individual_account = await S.getIndividualAccountByAccountId(Number(req.params.id));
     if(!individual_account){
         throw new HttpException(400,`Failed to access individual account with id: ${req.params.id}.`);
     } else {

@@ -13,7 +13,7 @@ router.use(express.json())
 router.post("/", raw(IMiddleware.createIndividualMiddle) ,raw(C.createIndividualAccount));
   
 // Get individual account by ID
-router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccountById));
+router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccountByAccountId));
 
 // Activate/Deactivate accounts
 router.put("/change-status", raw(C.changeAccountStatus));

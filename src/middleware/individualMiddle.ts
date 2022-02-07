@@ -24,7 +24,7 @@ export function createIndividualMiddle(req: Request, res: Response, next: NextFu
 }
 
 export function getIndividualMiddle(req: Request, res: Response, next: NextFunction) : void{
-     Validator.mandatoryFieldExists(req.param,['id']);
+     Validator.mandatoryFieldExists(req.params,['id']);
      Validator.isValNumeric(req.params.id);
     next();
     /*

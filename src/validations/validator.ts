@@ -64,7 +64,7 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
 }
 
 export function isValNumeric(val: string | number |undefined) : boolean|never{
-  if (val && !Number(val)) {
+  if (val && Number(val)) {
     return true;
   }
   throw new Error('value is not numeric');
@@ -120,9 +120,9 @@ export function balanceGreaterThan(num: string | number, than: string | number) 
   throw new Error('insufficient balance');
 }
 
-export function currencyIsValid(curreny: string) : boolean | Error{
-  const currenies = config.currencies;
-  if (curreny in currenies) {
+export function currencyIsValid(currency: string) : boolean | Error{
+  const currencies = ['USD','EUR'];
+  if (currencies.includes(currency)) {
     return true;
   }
   throw new Error('invalid currency');
@@ -133,11 +133,11 @@ export function accountStatusNotEquals(statusA: string, statusB: string) : boole
   if (statusA !== statusB) {
     return true;
   }
-  throw new Error('status type are the same - cannot change');
+  throw new Error('status type are NOT the same - cannot change');
 }
 
 export function accountStatusEquals(statusA: undefined |boolean, statusB: boolean | string | number) : boolean | Error{
-  if (statusA === statusB) {
+  if (statusA == statusB) {
     return true;
   }
   throw new Error('status type are the same - cannot change');
