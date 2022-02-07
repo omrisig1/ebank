@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js'; 
-import * as Util from '../modules/utils.dal.js';
+// import * as Util from '../modules/utils.dal.js';
 
 export function changeStatusMiddle(req: Request, res: Response, next: NextFunction) : void {
     Validator.mandatoryFieldExists(req.body,['list_of_accounts','status']);
-    const accounts = Util.getfamiyAccountsByaccountsIDS(req.body.list_of_accounts);
-    // i want it to be emptyyy - to check the type
-    Validator.NumberEquals(req.body.list_of_accounts.length, accounts.length);
-    for (const acc of accounts){
-        Validator.checkAccountTypeNotEquals(acc.type, 'family');
-        Validator.accountStatusNotEquals(acc.status, req.body.status);
-    }
+    // const accounts = Util.getfamiyAccountsByaccountsIDS(req.body.list_of_accounts);
+    
+    // // i want it to be emptyyy - to check the type
+    // Validator.NumberEquals(req.body.list_of_accounts.length, accounts.length);
+    // for (const acc of accounts){
+    //     Validator.checkAccountTypeNotEquals(acc.type, 'family');
+    //     Validator.accountStatusNotEquals(acc.status, req.body.status);
+    // }
     next();
     /*
    4.1.1 mandatory fields:

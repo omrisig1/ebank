@@ -4,7 +4,7 @@
 import { IBusinessAccount } from "./business.model";
 import * as dal from "./business.dal.js";
 import { ITranser } from "../../types/types";
-
+import * as util from "../utils.dal.js";
 // Create an business account
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
     // TODO: call dal to create new business account
@@ -19,7 +19,7 @@ export async function getBusinessAccountById(idToRead: number): Promise<any> {
     // TODO: call dal to create new business account
     //       add validations
     
-    const business_account = await dal.getBusinessAccountById(idToRead);
+    const business_account = await dal.getBusinessAccountByAccountId(idToRead);
     return business_account;
 }
 
@@ -29,7 +29,11 @@ export async function transferSameCurrency(payload: ITranser): Promise<any> {
     //       add validations and logic
     //       check if destination account is business or individual
 
-    const results = await dal.transferSameCurrency(payload);
+    const results = await util.updateBalance(Number(payload.source), Number(payload.amount));
+    // const results = await util.updateBalance(payload.destination,amount);
+
+    // const results = await util.logTrasnfer(payload);
+
     return results;
 }
 
@@ -39,7 +43,10 @@ export async function transferDifferentCurrency(payload: ITranser): Promise<any>
     //       add validations and logic
     //       check if destination account is business or individual
     //       add business logic for FX rate - use the module from getRate() from promises assignment.
+    
+    const results = await util.updateBalance(Number(payload.source), Number(payload.amount));
+    // const results = await util.updateBalance(payload.destination,amount);
 
-    const results = await dal.transferDifferentCurrency(payload);
+    // const results = await util.logTrasnfer(payload);
     return results;
 }

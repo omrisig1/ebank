@@ -5,23 +5,30 @@
 import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js';
 import * as individual_dal from '../modules/individual/individual.dal.js';
+import * as buisness_dal from '../modules/business/business.dal.js';
 import * as Util from '../modules/utils.dal.js';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
       Validator.mandatoryFieldExists(req.body,['oweners','currency']);
       Validator.currencyIsValid(req.body.currency)
-      const accounts = await individual_dal.getIndividualsByAccountsIds(req.body.owners.map((arr:any)=> arr[0]));
+      const account_ids = req.body.owners.map((arr:any)=> arr[0]);
+      const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
       const sum = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
       Validator.NumberGreaterThan(sum,5000);
       Validator.NumberEquals(accounts.length, req.body.owners.length);
       for (const acc of accounts) {
+          for (const owner of req.body.owners) {
+              if(acc.account_id == owner[0]){
+                let withdraw = owner[1];
+                Validator.balanceGreaterThan(acc.balance-withdraw, 1000);
+              }
+          }
           Validator.accountExists(acc.individual_id);  
           Validator.accountActive(acc.individual_id);  
           Validator.checkAccountCurrencyEquals(acc.currency, req.body.currency)
           Validator.isValNumeric(acc.individual_id);
           Validator.stringLengthAtLeast(acc.individual_id.toString(),7)
       }
-      //check balance after minus the amount 
       next();
     } 
 
@@ -73,22 +80,18 @@ export function getFamilyMiddle(req: Request, res: Response, next: NextFunction)
 }
 
 export async function addIndividualToFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-    try {
-        Validator.mandatoryFieldExists(req.body,['primary_id','ids']);
+        Validator.mandatoryFieldExists(req.body,['individuals_to_add']);
         Validator.mandatoryFieldExists(req.params,['family_id']);
-        Validator.isValNumeric(req.params.primary_id);
-        // const amounts = req.body.ids.map(item:any=>req.body.ids[1]) ;
-        // amounts.map(amount=>Validator.isPositive(amount));
+        Validator.isValNumeric(req.params.family_id);
+        const amounts = req.body.ids.map((item:any)=>item[1]) ;
+        amounts.map((amount:any)=>Validator.isPositive(amount));
         const account = await Util.getAccountById(Number(req.params.family_id));
         const accounts = await individual_dal.getIndividualsByAccountsIds(req.body.ids.map((arr:any)=> arr[0]));
-      for (const acc of accounts) {
-        //   Validator.checkAccountTypeEquals(acc.type,'individual');
-          Validator.checkAccountCurrencyEquals(acc.currency, account.currency);
-      }
-      next();
-    } catch (err) {
-      next(err);
-    }
+        Validator.NumberEquals(accounts.length, req.body.individuals_to_add);
+        for (const acc of accounts) {
+            Validator.checkAccountCurrencyEquals(acc.currency, account.currency);
+        }
+        next();
 }
 /*
 3.3.1 mandatory fields:
@@ -107,10 +110,10 @@ export function removeIndividualFromFamilyMiddle(req: Request, res: Response, ne
         const amounts = req.body.ids.map((item:string)=>item[1]);
         amounts.map((amount:string)=>Validator.isPositive(amount));
         // const remove_ids = req.body.ids.map((item:string)=>item[0]);
-    //     const family_accounts = getIndividualAccountsByFamily_id(req.param.family_id);
-    //     for (const id of remove_ids) {
-    //       Validator.inFamily(family_accounts, id);
-    //   }
+        // const family_accounts = getIndividualAccountsByFamily_id(req.params.family_id);
+        // for (const id of remove_ids) {
+        //   Validator.inFamily(family_accounts, id);
+        // }
       next();
 }
 /*
@@ -123,13 +126,9 @@ export function removeIndividualFromFamilyMiddle(req: Request, res: Response, ne
 */
 
 export function closeFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
-    try {
        Validator.mandatoryFieldExists(req.params,['family_id']);
        Validator.isValNumeric(req.params.family_id)
       next();
-    } catch (err) {
-      next(err);
-    }
 }
 /*
 3.6.1 mandatory fields:
@@ -149,7 +148,8 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
        Validator.accountStatusEquals(source_family_account.status_id, 'ACTIVE');
        Validator.accountStatusEquals(destination_account.status_id, 'ACTIVE');
     //    Validator.checkAccountTypeEquals(source_family_account.type,'family');
-    //    Validator.checkAccountTypeEquals(destination_account.type,'biosness');
+       const buisness_account = await buisness_dal.getBusinessesByAccountsIds([req.body.destination]);
+       Validator.NumberEquals(buisness_account.length, 1);
        Validator.checkAccountCurrencyEquals(source_family_account.currency, destination_account.currency);
        Validator.balanceGreaterThan(source_family_account.balance-req.body.amount, 5000)
     //    const owners_ids = await Util.getIndividualAccountsByFamily_id(req.body.source);

@@ -30,6 +30,16 @@ export async function getBusinessAccountByCompanyId(company_id: number): Promise
   return businesses[0] as IBusinessAccount;
 }
 
+export async function getBusinessAccountByAccountId(account_id: number): Promise<IBusinessAccount> {
+  const sql = `SELECT * 
+                FROM Accounts as A JOIN BusinessAccounts as B
+                    ON A.account_id = B.account_id 
+                WHERE A.account_id = ?;`;
+  const [businesses] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  return businesses[0] as IBusinessAccount;
+}
+
+
 export async function getBusinessesByCompanyIds(
   company_ids: number[]
 ): Promise<IBusinessAccount[]> {
