@@ -9,7 +9,7 @@ import { ITranser } from "../../types/types";
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
     // TODO: call dal to create new business account
     //       add validations
-
+    
     const business_account = await dal.createBusinessAccount(payload);
     return business_account;
 }

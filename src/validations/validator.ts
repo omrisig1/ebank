@@ -7,6 +7,12 @@ export function inFamily(num : string | number, than: string | number): boolean{
   return true;
 }
 
+export function NumberEquals(num : string | number, than: string | number) : boolean{
+  if(num>than) {
+    return true;
+  }
+  return true;
+}
 
 export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
   if(num>than) {
@@ -19,17 +25,17 @@ export function isPositive(num:string) :boolean{
   return (num=='1');
 }
 
-export function IndividualIDUnique() :boolean{
-  return true;
+export function IndividualIDUnique(str:string) :string{
+  return str;
 }
-export function accountActive(status: string) : boolean|Error{
-  if (status === 'ACTIVE') {
+export function accountActive(status: number) : boolean|Error{
+  if (status === 1) {
     return true;
   }
   throw new Error('account is not active');
 }
 
-export function accountExists(id: string) : boolean|Error{
+export function accountExists(id: number ) : boolean|Error{
   if (id) {
     return true;
   }
@@ -57,7 +63,7 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
   return true;
 }
 
-export function isValNumeric(val: string | number) : boolean|never{
+export function isValNumeric(val: string | number |undefined) : boolean|never{
   if (val && !Number(val)) {
     return true;
   }
@@ -130,7 +136,7 @@ export function accountStatusNotEquals(statusA: string, statusB: string) : boole
   throw new Error('status type are the same - cannot change');
 }
 
-export function accountStatusEquals(statusA: string, statusB: string) : boolean | Error{
+export function accountStatusEquals(statusA: undefined |boolean, statusB: boolean | string | number) : boolean | Error{
   if (statusA === statusB) {
     return true;
   }
