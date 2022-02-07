@@ -3,6 +3,7 @@
 import raw from "../../middleware/route.async.wrapper.js";
 import * as C from "./business.controller.js";
 import express from 'express';
+import { changeAccountStatus } from "../individual/individual.controller.js";
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.post("/transfer/same-currency",raw(C.transferFromBusinessSameCurrency));
 // Transfer B2B/B2I (different currency)
 router.post("/transfer/different-currency",raw(C.transferFromBusinessDifferentCurrency));
 
-
+// Activate/Deactivate account by ID - uses the individual controller
+router.put("/change-status/:id", raw(changeAccountStatus));
   
 export default router;

@@ -9,10 +9,12 @@ const router = express.Router();
 router.use(express.json())
 
 // Create an individual account
-router.post("/",  raw(C.createIndividualAccount));
+router.post("/", raw(C.createIndividualAccount));
   
 // Get individual account by ID
 router.get("/:id",raw(C.getIndividualAccountById));
+
+// Activate/Deactivate account by ID
+router.put("/change-status/:id", raw(C.changeAccountStatus));
   
 export default router;
-  
