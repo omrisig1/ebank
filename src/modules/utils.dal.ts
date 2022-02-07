@@ -18,12 +18,12 @@ export async function getAccountsByIds(account_ids: number[]): Promise<IAccount[
   return accounts as IAccount[];
 }
 
-export async function changeAccountStatus(account_id: number, status: string): Promise<IAccount> {
+export async function changeAccountStatus(account_ids: string[], status: string): Promise<IAccount> {
   const sql = `UPDATE Accounts
                 SET status = ?, e_date = current_timestamp()
                 WHERE account_id = ?;`;
-  await db.query(sql, [status, account_id]);
-  const account = await getAccountById(account_id);
+  await db.query(sql, [status, account_ids]);
+  const account = await getAccountById(Number(account_ids[0]));
   return account;
 }
 

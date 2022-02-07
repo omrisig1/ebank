@@ -35,7 +35,7 @@ export function getBuisnessMiddle(req: Request, res: Response, next: NextFunctio
     */
 }
 
-export async function transferBuisnessSameCurMiddle(req: Request, res: Response, next: NextFunction) : void{
+export async function transferBuisnessSameCurMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     try {
         Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
         Validator.isValNumeric(req.body.source);
