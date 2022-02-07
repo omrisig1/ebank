@@ -14,12 +14,12 @@ export async function createIndividualAccount(
   const sql2 = 'INSERT INTO IndividualAccounts VALUES ?;';
   await db.query(sql2, [
     result_account.insertId,
-    payload.individuel_id,
+    payload.individual_id,
     payload.first_name,
     payload.last_name,
     payload.email,
   ]);
-  const individual = await getIndividualAccountById(payload.individuel_id);
+  const individual = await getIndividualAccountById(payload.individual_id);
   return individual;
 }
 

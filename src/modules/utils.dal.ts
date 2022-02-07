@@ -6,8 +6,16 @@ export async function getAccountById(account_id: number): Promise<IAccount> {
   const sql = `SELECT * 
                 FROM Accounts as A 
                 WHERE account_id = ?;`;
-  const [individuals] = (await db.query(sql, account_id)) as RowDataPacket[][];
-  return individuals[0] as IAccount;
+  const [accounts] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  return accounts[0] as IAccount;
+}
+
+export async function getAccountsByIds(account_ids: number[]): Promise<IAccount[]> {
+  const sql = `SELECT * 
+                FROM Accounts as A 
+                WHERE account_id IN ?;`;
+  const [accounts] = await db.query(sql, account_ids);
+  return accounts as IAccount[];
 }
 
 export async function changeAccountStatus(account_id: number, status: string): Promise<IAccount> {
