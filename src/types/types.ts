@@ -16,7 +16,7 @@ export interface ITransfer {
 }
 
 export interface IChangeStatus {
-    list_of_accounts: number[];
+    list_of_accounts: string[];
     action : string;
 }
 
