@@ -54,7 +54,7 @@ export async function transferFromBusinessSameCurrency(req: Request, res: Respon
 
 // Transfer B2B (different currency)
 export async function transferFromBusinessDifferentCurrency(req: Request, res: Response): Promise<void> {
-    const source_and_destination_accounts_and_FX_Rate = await S.transferDifferentCurrency(req.body as ITranser);
+    const source_and_destination_accounts_and_FX_Rate = await S.transferDifferentCurrency(req.body as ITransfer);
     const { source_account: source, destination_account: destination } = req.body as ITransfer;
     if(!source_and_destination_accounts_and_FX_Rate){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);

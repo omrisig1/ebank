@@ -36,13 +36,13 @@ export function getBuisnessMiddle(req: Request, res: Response, next: NextFunctio
 }
 
 export async function transferBuisnessSameCurMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-        Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
-        Validator.isValNumeric(req.body.source);
-        Validator.isValNumeric(req.body.destination);
+        Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
+        Validator.isValNumeric(req.body.source_account);
+        Validator.isValNumeric(req.body.destination_account);
         Validator.isValNumeric(req.body.amount);
         Validator.isPositive(req.body.amount);
-        const source_account = await Util.getAccountById(req.body.source);
-        const destination_account = await Util.getAccountById(req.body.destination);
+        const source_account = await Util.getAccountById(req.body.source_account);
+        const destination_account = await Util.getAccountById(req.body.destination_account);
         Validator.isExists(source_account);
         Validator.isExists(destination_account)
         Validator.accountStatusEquals(source_account.status_id, '1');
