@@ -1,26 +1,22 @@
 import { IIndividualAccount } from './individual.model.js';
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket } from 'mysql2/promise';
 import { connection as db } from '../../db/mysql.connection.js';
+import { createAccount } from '../utils.dal.js';
 
 export async function createIndividualAccount(
   payload: IIndividualAccount
 ): Promise<IIndividualAccount> {
-  const sql1 = 'INSERT INTO Accounts (`currency`,`balance`,`status_id`,`a_date`,`e_date`) VALUES (?, ?,?,current_timestamp(), current_timestamp());';
-  const [result_account] = (await db.query(sql1, [
-    payload.currency,
-    payload.balance,
-    payload.status_id,
-  ])) as ResultSetHeader[];
-  const sql2 = 'INSERT INTO IndividualAccounts VALUES (?,?,?,?,?,?);';
-  await db.query(sql2, [
-    result_account.insertId,
-    payload.individual_id,
-    payload.first_name,
-    payload.last_name,
-    payload.email,
-    payload.address_id
-  ]);
-  const individual = await getIndividualAccountByAccountId(result_account.insertId);
+  const account_id = await createAccount(payload);
+  const sql2 = 'INSERT INTO IndividualAccounts SET ?;';
+  await db.query(sql2, {
+    account_id,
+    individual_id: payload.individual_id,
+    first_name: payload.first_name,
+    last_name: payload.last_name,
+    email: payload.email,
+    address_id: payload.address_id,
+  });
+  const individual = await getIndividualAccountByAccountId(account_id);
   return individual;
 }
 

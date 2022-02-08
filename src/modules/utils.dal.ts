@@ -1,6 +1,17 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
-import { RowDataPacket } from 'mysql2/promise';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+
+export async function createAccount(payload: IAccount): Promise<number> {
+  const sql1 = 'INSERT INTO Accounts SET ?;';
+  const [result_account] = (await db.query(sql1, {
+    currency: payload.currency,
+    balance: payload.balance,
+    status_id: payload.status_id,
+  })) as ResultSetHeader[];
+  const account_id = result_account.insertId;
+  return account_id;
+}
 
 export async function getAccountById(account_id: number): Promise<IAccount> {
   const sql = `SELECT * 
@@ -18,7 +29,10 @@ export async function getAccountsByIds(account_ids: number[]): Promise<IAccount[
   return accounts as IAccount[];
 }
 
-export async function changeAccountStatus(account_ids: number[], status: string): Promise<IAccount[]>{
+export async function changeAccountStatus(
+  account_ids: number[],
+  status: string
+): Promise<IAccount[]> {
   const sql = `UPDATE Accounts
                 SET status_id = ?, e_date = current_timestamp()
                 WHERE account_id IN (?);`;

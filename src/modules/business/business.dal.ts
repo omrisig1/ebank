@@ -1,27 +1,23 @@
 import { IBusinessAccount } from './business.model.js';
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket } from 'mysql2/promise';
 import { connection as db } from '../../db/mysql.connection.js';
+import { createAccount } from '../utils.dal.js';
 
 export async function createBusinessAccount(payload: IBusinessAccount): Promise<IBusinessAccount> {
-  const sql1 = 'INSERT INTO Accounts (`currency`,`balance`,`status_id`,`a_date`,`e_date`) VALUES (?, ?,?,current_timestamp(), current_timestamp());';
-  const [result_account] = (await db.query(sql1, [
-    payload.currency,
-    payload.balance,
-    payload.status_id,
-  ])) as ResultSetHeader[];
-  const sql2 = 'INSERT INTO BusinessAccounts (`account_id`,`company_id`,`company_name`,`context`,`black_list`) VALUES (?,?,?,?,?);';
-  await db.query(sql2, [
-    result_account.insertId,
-    payload.company_id,
-    payload.company_name,
-    payload.context,
-    payload.black_list,
-  ]);
-  const business = await getBusinessAccountById(payload.company_id);
+  const account_id = await createAccount(payload);
+  const sql2 = 'INSERT INTO BusinessAccounts SET ?;';
+  await db.query(sql2, {
+    account_id,
+    company_id: payload.company_id,
+    company_name: payload.company_name,
+    context: payload.context,
+    black_list: payload.black_list,
+  });
+  const business = await getBusinessAccountByAccountId(account_id);
   return business;
 }
 
-export async function getBusinessAccountById(company_id: number): Promise<IBusinessAccount> {
+export async function getBusinessAccountByCompanyId(company_id: number): Promise<IBusinessAccount> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN BusinessAccounts as B
                     ON A.account_id = B.account_id 
