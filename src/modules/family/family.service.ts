@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITransfer } from "../../types/types.js";
+import { IAddIndividualsToFamily, IRemoveIndividualsToFamily, ITransfer } from "../../types/types.js";
 import * as dal from "./family.dal.js";
 
 // Create family account
-export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Promise<any> {
-    // TODO: call dal to create new family account
-    //       add validations and business logic
+// export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Promise<any> {
+//     // TODO: call dal to create new family account
+//     //       add validations and business logic
 
-    const family_account_datails = await dal.createFamilyAccount(payload);
-    return family_account_datails;
-}
+//     const family_account_datails = await dal.createFamilyAccount(payload);
+//     return family_account_datails;
+// }
 
 // Get family account by ID - FULL/SHORT
 export async function getFamilyAccountById(family_id: number, details_level: string = "full"): Promise<any> {

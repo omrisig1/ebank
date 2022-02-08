@@ -3,23 +3,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
-import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
+import { IAddIndividualsToFamily, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
 import * as S from "./family.service.js";
 
 // Create family account
-export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
-    const new_family_account_details = await S.createNewFamilyAccount(req.body as ICreateFamilyAccount);
-    if(!new_family_account_details){
-        throw new HttpException(400,"Failed to create a new family account.");
-    } else {
-        const outputResponse: IResponseMessage = {
-            status: 200,
-            message: "Family account created",
-            data: new_family_account_details,
-        };
-        res.status(outputResponse.status).json(outputResponse);
-    }
-}
+// export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
+//     const new_family_account_details = await S.createNewFamilyAccount(req.body as ICreateFamilyAccount);
+//     if(!new_family_account_details){
+//         throw new HttpException(400,"Failed to create a new family account.");
+//     } else {
+//         const outputResponse: IResponseMessage = {
+//             status: 200,
+//             message: "Family account created",
+//             data: new_family_account_details,
+//         };
+//         res.status(outputResponse.status).json(outputResponse);
+//     }
+// }
 
 // Get family account by ID - FULL/SHORT
 export async function getFamilyAccountById(req: Request, res: Response): Promise<void> {
