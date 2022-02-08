@@ -18,12 +18,12 @@ export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFam
 
 // Add individuals to family account - return FULL/SHORT
 export async function addFamilyOwners(
-  family_owners: [family_account_id: number, individual_account_id: number][],
+  family_owners: [family_account_id: string, individual_account_id: string][],
   details_level: string = 'short'
 ): Promise<IFamilyAccount> {
   const sql = 'INSERT INTO OwnersFamily (family_account_id, individual_account_id) VALUES ?';
   await db.query(sql, family_owners);
-  const account_id = family_owners[0][0];
+  const account_id = Number(family_owners[0][0]);
   const family_account = await getFamilyAccountByAccountId(account_id, details_level);
   return family_account;
 }
@@ -46,18 +46,18 @@ export async function getFamilyAccountByAccountId(
   return family;
 }
 
-export async function getOwnersListByFamilyAccountId(account_id: number): Promise<number[]> {
+export async function getOwnersListByFamilyAccountId(account_id: number): Promise<string[]> {
   const sql = `SELECT individual_account_id
                 FROM OwnersFamily
                 WHERE family_account_id = ?;`;
   const [owners] = (await db.query(sql, account_id)) as RowDataPacket[][];
-  return owners as unknown as number[];
+  return owners as unknown as string[];
 }
 
 // Delete individuals from family account - return FULL/SHORT
 export async function deleteIndividualsFromFamily(
   account_id: number,
-  owners: number[],
+  owners: string[],
   details_level: string = 'short'
 ): Promise<IFamilyAccount> {
   const sql = `DELETE FROM OwnersFamily 
@@ -72,8 +72,8 @@ export async function deleteIndividualsFromFamily(
 // ------------------ call delete from service !!! ------------------
 export async function closeFamilyAccountById(account_id: number): Promise<IFamilyAccount> {
   const family = await getFamilyAccountByAccountId(account_id);
-  await deleteIndividualsFromFamily(account_id, family.owners as number[]);
-  await changeAccountStatus([account_id], '2');
+  await deleteIndividualsFromFamily(account_id, family.owners as string[]);
+  await changeAccountStatus([account_id.toString()], '2');
   return await getFamilyAccountByAccountId(account_id);
 }
 

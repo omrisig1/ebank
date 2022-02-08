@@ -20,7 +20,9 @@ export async function createIndividualAccount(
   return individual;
 }
 
-export async function getIndividualAccountByAccountId(account_id: number): Promise<IIndividualAccount> {
+export async function getIndividualAccountByAccountId(
+  account_id: number
+): Promise<IIndividualAccount> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
@@ -30,23 +32,23 @@ export async function getIndividualAccountByAccountId(account_id: number): Promi
 }
 
 export async function getIndividualsByIndividualsIds(
-  individual_ids: number[]
+  individual_ids: string[]
 ): Promise<IIndividualAccount[]> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
-                WHERE individual_id IN ?;`;
+                WHERE individual_id IN (?);`;
   const [individuals] = await db.query(sql, individual_ids);
   return individuals as IIndividualAccount[];
 }
 
 export async function getIndividualsByAccountsIds(
-  account_ids: number[]
+  account_ids: string[]
 ): Promise<IIndividualAccount[]> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
-                WHERE account_id IN ?;`;
+                WHERE account_id IN (?);`;
   const [individuals] = await db.query(sql, account_ids);
   return individuals as IIndividualAccount[];
 }

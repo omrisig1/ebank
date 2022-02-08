@@ -21,7 +21,7 @@ export async function getAccountById(account_id: number): Promise<IAccount> {
   return accounts[0] as IAccount;
 }
 
-export async function getAccountsByIds(account_ids: number[]): Promise<IAccount[]> {
+export async function getAccountsByIds(account_ids: string[]): Promise<IAccount[]> {
   const sql = `SELECT * 
                 FROM Accounts as A 
                 WHERE account_id IN (?);`;
@@ -29,10 +29,7 @@ export async function getAccountsByIds(account_ids: number[]): Promise<IAccount[
   return accounts as IAccount[];
 }
 
-export async function changeAccountStatus(
-  account_ids: number[],
-  status: string
-): Promise<IAccount[]> {
+export async function changeAccountStatus(account_ids: string[], status: string): Promise<IAccount[]> {
   const sql = `UPDATE Accounts
                 SET status_id = ?, e_date = current_timestamp()
                 WHERE account_id IN (?);`;
