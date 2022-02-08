@@ -71,8 +71,8 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
 
 export function getFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
     try {
-       Validator.mandatoryFieldExists(req.params,['primary_id']);
-       Validator.isValNumeric(req.params.primary_id)
+       Validator.mandatoryFieldExists(req.params,['id']);
+       Validator.isValNumeric(req.params.id)
       next();
     } catch (err) {
       next(err);
