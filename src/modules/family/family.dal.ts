@@ -1,101 +1,90 @@
 import { RowDataPacket } from 'mysql2';
 import { connection as db } from '../../db/mysql.connection.js';
-//import { IFamilyAccount } from "./family.model.js";
+import { getIndividualsByAccountsIds } from '../individual/individual.dal.js';
+import { changeAccountStatus, createAccount } from '../utils.dal.js';
+import { IFamilyAccount } from './family.model.js';
 
 // Create family account
-// export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFamilyAccount> {
-//   // TODO: fix the function to create family account in DB
+export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFamilyAccount> {
+  const account_id = await createAccount(payload);
+  const sql2 = 'INSERT INTO FamilyAccounts SET ?;';
+  await db.query(sql2, {
+    account_id,
+    context: payload.context,
+  });
+  const family_account = await getFamilyAccountByAccountId(account_id, 'short');
+  return family_account;
+}
 
-//   const sql = `SELECT *
-//     FROM FamilyAccounts;`;
-//   const [results] = await db.query(sql, payload);
-//   return results;
-// }
+// Add individuals to family account - return FULL/SHORT
+export async function addFamilyOwners(
+  family_owners: [family_account_id: string, individual_account_id: string][],
+  details_level: string = 'short'
+): Promise<IFamilyAccount> {
+  const sql = 'INSERT INTO OwnersFamily (family_account_id, individual_account_id) VALUES ?';
+  await db.query(sql, family_owners);
+  const account_id = Number(family_owners[0][0]);
+  const family_account = await getFamilyAccountByAccountId(account_id, details_level);
+  return family_account;
+}
 
-// Get family account by ID - FULL/SHORT
-export async function getFamilyAccountById(
-  family_id: number,
-  details_level: string = 'full'
-): Promise<any> {
-  // TODO: fix the function to get family account from DB by the details_level
-  let sql;
+// Get family account by ID - FULL/SHORT§
+export async function getFamilyAccountByAccountId(
+  account_id: number,
+  details_level: string = 'short'
+): Promise<IFamilyAccount> {
+  const sql = `SELECT *
+        FROM Accounts as A JOIN FamilyAccounts as F
+            ON A.account_id = F.account_id
+        WHERE account_id = ?;`;
+  const [result] = (await db.execute(sql, account_id)) as RowDataPacket[];
+  const family = result[0] as IFamilyAccount;
+  family.owners = await getOwnersListByFamilyAccountId(family.account_id as number);
   if (details_level === 'full') {
-    sql = `SELECT *
-        FROM FamilyAccounts
-               WHERE FamilyAccounts.account_id = ${family_id};`;
-  }
-  sql = `SELECT *
-    FROM FamilyAccounts
-           WHERE FamilyAccounts.account_id = ${family_id};`;
-
-  const [family] = (await db.execute(sql)) as RowDataPacket[];
-  if (family.length === 0) {
-    return undefined;
+    family.owners = await getIndividualsByAccountsIds(family.owners);
   }
   return family;
 }
 
-// Add individuals to family account - return FULL/SHORT
-export async function addIndividualsToFamily(
-  family_id: number,
-  details_level: string = 'full',
-  payload: object
-): Promise<any> {
-  // TODO: fix the function to add individuals to family account,
-  //       and return family model by the details_level
-  let sql;
-  if (details_level === 'full') {
-    sql = `SELECT *
-        FROM FamilyAccounts
-               WHERE FamilyAccounts.account_id = ${family_id};`;
-  }
-  sql = `SELECT *
-    FROM FamilyAccounts
-           WHERE FamilyAccounts.account_id = ${family_id};`;
-
-  const [results] = await db.query(sql, [family_id, payload]);
-  return results;
+export async function getOwnersListByFamilyAccountId(account_id: number): Promise<string[]> {
+  const sql = `SELECT individual_account_id
+                FROM OwnersFamily
+                WHERE family_account_id = ?;`;
+  const [owners] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  return owners as unknown as string[];
 }
 
 // Delete individuals from family account - return FULL/SHORT
 export async function deleteIndividualsFromFamily(
-  family_id: number,
-  details_level: string = 'full',
-  payload: object
-): Promise<any> {
-  // TODO: fix the function to Delete individuals from family account,
-  //       and return family model by the details_level
-  let sql;
-  if (details_level === 'full') {
-    sql = `SELECT *
-        FROM FamilyAccounts
-               WHERE FamilyAccounts.account_id = ${family_id};`;
-  }
-  sql = `SELECT *
-    FROM FamilyAccounts
-           WHERE FamilyAccounts.account_id = ${family_id};`;
-
-  const [results] = await db.query(sql, [family_id, payload]);
-  return results;
-}
-
-// Transfer F2B
-export async function transferFromFamilyToBusiness(payload: object): Promise<any> {
-  // TODO: fix the function to trnsfer money from family to business
-
-  const sql = `SELECT *
-    FROM FamilyAccounts;`;
-  const [results] = await db.query(sql, payload);
-  return results;
+  account_id: number,
+  owners: string[],
+  details_level: string = 'short'
+): Promise<IFamilyAccount> {
+  const sql = `DELETE FROM OwnersFamily 
+                WHERE family_account_id = ?
+                    AND individual_account_id IN (?)`;
+  await db.query(sql, [account_id, owners]);
+  const family_account = await getFamilyAccountByAccountId(account_id, details_level);
+  return family_account;
 }
 
 // Close family account by ID
-export async function closeFamilyAccountById(family_id: number): Promise<any> {
-  // TODO: fix the function to close family account by ID
+// ------------------ call delete from service !!! ------------------
+export async function closeFamilyAccountById(account_id: number): Promise<IFamilyAccount> {
+  const family = await getFamilyAccountByAccountId(account_id);
+  await deleteIndividualsFromFamily(account_id, family.owners as string[]);
+  await changeAccountStatus([account_id.toString()], '2');
+  return await getFamilyAccountByAccountId(account_id);
+}
 
+export async function getFamilyAccountsByAccountIDS(
+  account_ids: number[]
+): Promise<IFamilyAccount[]> {
   const sql = `SELECT *
-    FROM FamilyAccounts
-           WHERE FamilyAccounts.account_id = ${family_id};`;
-  const [results] = await db.query(sql);
-  return results;
+        FROM Accounts as A JOIN FamilyAccounts as F
+            ON A.account_id = F.account_id
+        WHERE account_id IN (?);`;
+  const [result] = (await db.execute(sql, account_ids)) as RowDataPacket[];
+  const family = result as IFamilyAccount[];
+  return family;
 }
