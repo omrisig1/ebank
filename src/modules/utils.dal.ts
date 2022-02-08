@@ -57,3 +57,16 @@ export async function saveTransaction(payload: ITransfer): Promise<number> {
   const transaction_id = result.insertId;
   return transaction_id;
 }
+
+interface secret {
+  secret_key : string 
+}
+
+export async function getSecretByAccess(str : string) : Promise<secret[]> {
+  const sql = `SELECT secret_key  as secret_key
+                FROM Clients as C
+                WHERE C.access_key = ?;`;
+  const [secret] = await db.query(sql, str);
+  return secret as secret[];
+}
+
