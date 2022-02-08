@@ -145,10 +145,10 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
        Validator.isPositive(req.body.amount);
        const source_family_account = await Util.getAccountById(req.body.source);
        const destination_account = await Util.getAccountById(req.body.destination);
-       Validator.accountStatusEquals(source_family_account.status_id, 'ACTIVE');
-       Validator.accountStatusEquals(destination_account.status_id, 'ACTIVE');
+       Validator.accountStatusEquals(source_family_account.status_id, '1');
+       Validator.accountStatusEquals(destination_account.status_id, '1');
     //    Validator.checkAccountTypeEquals(source_family_account.type,'family');
-       const buisness_account = await buisness_dal.getBusinessesByAccountsIds([req.body.destination]);
+       const buisness_account = await buisness_dal.getBusinessesByAccountsIds(req.body.destination);
        Validator.NumberEquals(buisness_account.length, 1);
        Validator.checkAccountCurrencyEquals(source_family_account.currency, destination_account.currency);
        Validator.balanceGreaterThan(source_family_account.balance-req.body.amount, 5000)

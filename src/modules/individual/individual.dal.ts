@@ -36,23 +36,23 @@ export async function getIndividualAccountByAccountId(
 }
 
 export async function getIndividualsByIndividualsIds(
-  individual_ids: number[]
+  individual_ids: string[]
 ): Promise<IIndividualAccount[]> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
-                WHERE individual_id IN ?;`;
-  const [individuals] = await db.query(sql, individual_ids);
+                WHERE individual_id IN (?);`;
+  const [individuals] = await db.query(sql, [individual_ids]);
   return individuals as IIndividualAccount[];
 }
 
 export async function getIndividualsByAccountsIds(
-  account_ids: number[]
+  account_ids: string[]
 ): Promise<IIndividualAccount[]> {
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
                 WHERE account_id IN ?;`;
-  const [individuals] = await db.query(sql, account_ids);
+  const [individuals] = await db.query(sql, [account_ids]);
   return individuals as IIndividualAccount[];
 }

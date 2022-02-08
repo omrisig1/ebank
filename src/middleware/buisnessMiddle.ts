@@ -36,13 +36,13 @@ export function getBuisnessMiddle(req: Request, res: Response, next: NextFunctio
 }
 
 export async function transferBuisnessSameCurMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-        Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
-        Validator.isValNumeric(req.body.source);
-        Validator.isValNumeric(req.body.destination);
+        Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
+        Validator.isValNumeric(req.body.source_account);
+        Validator.isValNumeric(req.body.destination_account);
         Validator.isValNumeric(req.body.amount);
         Validator.isPositive(req.body.amount);
-        const source_account = await Util.getAccountById(req.body.source);
-        const destination_account = await Util.getAccountById(req.body.destination);
+        const source_account = await Util.getAccountById(req.body.source_account);
+        const destination_account = await Util.getAccountById(req.body.destination_account);
         Validator.isExists(source_account);
         Validator.isExists(destination_account)
         Validator.accountStatusEquals(source_account.status_id, '1');
@@ -55,18 +55,18 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
 }
 
 export async function transferBuisnessDiffCurMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-       Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
-        Validator.isValNumeric(req.body.source);
-        Validator.isValNumeric(req.body.destination);
+       Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
+        Validator.isValNumeric(req.body.source_account);
+        Validator.isValNumeric(req.body.destination_account);
         Validator.isValNumeric(req.body.amount);
         Validator.isPositive(req.body.amount);
-        const source_account = await Util.getAccountById(req.body.source);
-        const destination_account = await Util.getAccountById(req.body.destination);
-        const buisness_source = await B_DAL.getBusinessesByAccountsIds([req.body.source, req.body.destination]);
-        Validator.NumberEquals(buisness_source.length, 2); // account exists and it's buisness
-        Validator.accountStatusEquals(source_account.status_id, '1');
-        Validator.accountStatusEquals(destination_account.status_id, '1');
-        Validator.balanceGreaterThan(source_account.balance-req.body.amount, 10000)
-      next();
-
+        const buisness_source = await B_DAL.getBusinessesByAccountsIds([(req.body.source_account)]);
+        const buisness_destination = await B_DAL.getBusinessesByAccountsIds([(req.body.destination_account)]);
+        Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
+        Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
+        Validator.accountStatusEquals(buisness_source[0].status_id, '1');
+        Validator.accountStatusEquals(buisness_destination[0].status_id, '1');
+        Validator.balanceGreaterThan(buisness_source[0].balance-req.body.amount, 10000)
+        next();
+        
 }

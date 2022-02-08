@@ -1,6 +1,7 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { RowDataPacket } from 'mysql2/promise';
+import { simple_transfer } from '../types/types.js';
 
 export async function getAccountById(account_id: number): Promise<IAccount> {
   const sql = `SELECT * 
@@ -35,5 +36,26 @@ export async function updateBalance(account_id: number, balance: number): Promis
   const account = await getAccountById(account_id);
   return account;
 }
+
+
+export async function multiTransfer(transfers : simple_transfer[]) : Promise<IAccount[]>{
+  let accounts :  IAccount[] = [];
+  await db.beginTransaction();
+    try{
+      for (const transfer of transfers) {
+        accounts.push(await updateBalance(transfer.account_id,transfer.new_balance));
+      }
+      await db.commit();
+      return accounts;
+    }
+    catch(err) {
+      await db.rollback();
+      throw err;
+    }
+    
+
+}
+
+
 
 
