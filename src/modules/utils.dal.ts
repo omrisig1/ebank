@@ -1,6 +1,7 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { ITranser } from '../types/types.js';
 
 export async function createAccount(payload: IAccount): Promise<number> {
   const sql1 = 'INSERT INTO Accounts SET ?;';
@@ -29,7 +30,10 @@ export async function getAccountsByIds(account_ids: string[]): Promise<IAccount[
   return accounts as IAccount[];
 }
 
-export async function changeAccountStatus(account_ids: string[], status: string): Promise<IAccount[]> {
+export async function changeAccountStatus(
+  account_ids: string[],
+  status: string
+): Promise<IAccount[]> {
   const sql = `UPDATE Accounts
                 SET status_id = ?, e_date = current_timestamp()
                 WHERE account_id IN (?);`;
@@ -45,4 +49,11 @@ export async function updateBalance(account_id: number, balance: number): Promis
   await db.query(sql, [balance, account_id]);
   const account = await getAccountById(account_id);
   return account;
+}
+
+export async function saveTransaction(payload: ITranser): Promise<number> {
+  const sql = 'INSERT INTO Transactions SET ?;';
+  const [result] = (await db.query(sql, payload)) as ResultSetHeader[];
+  const transaction_id = result.insertId;
+  return transaction_id;
 }
