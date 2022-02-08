@@ -40,5 +40,6 @@ export async function changeAccountStatus(payload: IChangeStatus): Promise<any> 
     }
     catch(err){
         await db.rollback();
+        throw err;
     }
 }
