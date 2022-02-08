@@ -23,8 +23,8 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
                 Validator.balanceGreaterThan(acc.balance-withdraw, 1000);
               }
           }
-          Validator.accountExists(acc.individual_id);  
-          Validator.accountActive(acc.individual_id);  
+          Validator.isExists(acc.individual_id);  
+          Validator.accountActive(acc.status_id);  
           Validator.checkAccountCurrencyEquals(acc.currency, req.body.currency)
           Validator.isValNumeric(acc.individual_id);
           Validator.stringLengthAtLeast(acc.individual_id.toString(),7)

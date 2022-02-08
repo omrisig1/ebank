@@ -41,10 +41,10 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
         Validator.isValNumeric(req.body.destination);
         Validator.isValNumeric(req.body.amount);
         Validator.isPositive(req.body.amount);
-        Validator.accountExists(req.body.source);
-        Validator.accountExists(req.body.destination)
         const source_account = await Util.getAccountById(req.body.source);
         const destination_account = await Util.getAccountById(req.body.destination);
+        Validator.isExists(source_account);
+        Validator.isExists(destination_account)
         Validator.accountStatusEquals(source_account.status_id, '1');
         Validator.accountStatusEquals(destination_account.status_id, '1');
         Validator.checkAccountCurrencyEquals(source_account.currency, destination_account.currency)
@@ -55,18 +55,15 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
 }
 
 export async function transferBuisnessDiffCurMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-       console.log(req.body); 
        Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
         Validator.isValNumeric(req.body.source);
         Validator.isValNumeric(req.body.destination);
         Validator.isValNumeric(req.body.amount);
         Validator.isPositive(req.body.amount);
-        Validator.accountExists(req.body.source);
-        Validator.accountExists(req.body.destination)
         const source_account = await Util.getAccountById(req.body.source);
         const destination_account = await Util.getAccountById(req.body.destination);
         const buisness_source = await B_DAL.getBusinessesByAccountsIds([req.body.source, req.body.destination]);
-        Validator.NumberEquals(buisness_source.length, 2);
+        Validator.NumberEquals(buisness_source.length, 2); // account exists and it's buisness
         Validator.accountStatusEquals(source_account.status_id, '1');
         Validator.accountStatusEquals(destination_account.status_id, '1');
         Validator.balanceGreaterThan(source_account.balance-req.body.amount, 10000)

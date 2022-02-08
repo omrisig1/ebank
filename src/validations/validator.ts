@@ -1,45 +1,49 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import config from '../../config.json';
 
-export function inFamily(num : string | number, than: string | number): boolean{
-  if(num>than) {
+export function inFamily(accounts : string[] , id: string | number): boolean{
+  if(accounts.includes(id.toString())) {
     return true;
   }
-  return true;
-}
+  throw new Error('account not part of family');}
 
-export function NumberEquals(num : string | number, than: string | number) : boolean{
-  if(num>than) {
-    return true;
-  }
-  return true;
-}
-
-export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
-  if(num>than) {
-    return true;
-  }
-  return true;
-}
-
-export function isPositive(num:string) :boolean{
-  return (num=='1');
-}
-
-export function IndividualIDUnique(str:string) :string{
-  return str;
-}
-export function accountActive(status: number) : boolean|Error{
-  if (status === 1) {
+export function accountActive(status: number | boolean | undefined) : boolean|Error{
+  if (Number(status) === 1) {
     return true;
   }
   throw new Error('account is not active');
 }
 
-export function accountExists(id: number ) : boolean|Error{
-  if (id) {
+export function isExists(val: any ) : boolean|Error{
+  if (val) {
     return true;
   }
   throw new Error('account does not exists');
+}
+
+export function NumberEquals(num : string | number, than: string | number) : boolean{
+  if(Number(num) === Number(than)) {
+    return true;
+  }
+  throw new Error("should be equal");
+}
+
+export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
+  if(Number(num) > Number(than)) {
+    return true;
+  }
+  throw new Error("should be greather");
+}
+
+export function isPositive(num:string) :boolean{
+  if(Number(num) > 0) {
+    return true;
+  }
+  throw new Error("amount should be positive");
+}
+
+export function IndividualIDUnique(str:string) :string{
+  return str;
 }
 
 export function stringNotEmpty(str: string):boolean|''{
