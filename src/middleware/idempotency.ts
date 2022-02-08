@@ -5,7 +5,12 @@ export const idempotencyCheck = async (req: Request, res: Response, next: NextFu
     if ('idempotency_key' in req.headers) {
         const response = await Util.getReponseByIdempotencyKey('USER_1',req.headers.idempotency_key);
         if(response){
-            res.status(200).json(response);
+            if(await Util.sameRequest('USER_1',req, req.headers.idempotency_key)){
+                //same request
+                res.status(200).json(response);
+            }
+            //not same request
+            res.status(412).json('PRECONDITION FAILED');
         }
     }
     next();
