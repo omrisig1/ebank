@@ -148,7 +148,7 @@ export function accountStatusNotEquals(statusA: string, statusB: string) : boole
   throw new Error('status type are NOT the same - cannot change');
 }
 
-export function accountStatusEquals(statusA: undefined |number, statusB: number | string | number) : boolean | Error{
+export function accountStatusEquals(statusA: undefined | boolean | number, statusB: boolean | string | number) : boolean | Error{
   if (statusA == statusB) {
     return true;
   }

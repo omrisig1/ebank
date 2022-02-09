@@ -10,9 +10,9 @@ export interface IErrorResponse {
 }
 
 export interface ITransfer {
-  source_account: string;
-  destination_account: string;
-  amount: string;
+    source_account: string;
+    destination_account: string;
+    amount: string;
 }
 
 export interface IChangeStatus {

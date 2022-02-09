@@ -1,62 +1,183 @@
-// /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-// /* eslint-disable @typescript-eslint/no-unsafe-call */
-// /* eslint-disable @typescript-eslint/no-unsafe-return */
-// import { IAddIndividualsToFamily, IRemoveIndividualsToFamily, ITransfer , ICreateFamilyAccount} from "../../types/types.js";
-// import * as dal from "./family.dal.js";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITransfer } from "../../types/types.js";
+import * as individual_dal from "../individual/individual.dal.js";
+import * as dal from "./family.dal.js";
+import * as util_dal from "../utils.dal.js";
+import { IFamilyAccount } from "./family.model.js";
+import { IIndividualAccount } from "../individual/individual.model.js";
+import * as Validator from '../../validations/validator.js';
+import { simple_transfer } from '../../types/types.js';
 
-// // Create family account
-// export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Promise<any> {
-//     // TODO: call dal to create new family account
-//     //       add validations and business logic
 
-//     const family_account_datails = await dal.createFamilyAccount(payload);
-//     return family_account_datails;
-// }
+// Create family account
+export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Promise<IFamilyAccount | undefined> {
+    // change owners ids and amounts to numbers
+    const owners = payload.owners.map(owner=> [Number(owner[0]),Number(owner[1])] as [number,number]);
+    // sum all individuals ammounts 
+    let family_new_balance = owners.reduce((total,current)=> {return total + current[1]},0);
+    const new_family: IFamilyAccount = {
+        currency: payload.currency,
+        balance: 0, // initial balnce just for create
+        status_id: 1,
+        context: payload.context
+    }
 
-// // Get family account by ID - FULL/SHORT
-// export async function getFamilyAccountById(family_id: number, details_level: string = "full"): Promise<any> {
-//     // TODO: call dal to get family account
-//     //       add validations and business logic
-//     //       and return family model by the details_level
+    // get individual accounts
+    const individual_account_ids = payload.owners.map((ind_acc)=> (ind_acc[0]));
+    const individual_accounts = await individual_dal.getIndividualsByAccountsIds(individual_account_ids);
+
+    // generate list of tuples with ids and new balance to update - for adding individuals to family
+    const individuals_new_balance = generateIndividualsNewBalancesList(individual_accounts, payload.owners);
     
-//     const family_account_full = await dal.getFamilyAccountByAccountId(family_id, details_level);
-//     return family_account_full;
-// }
+    // create new family
+    // and update each individual's balance (subtract the amount from his balance)
+    // and update the family balance by the sum of individual's amounts from payload
+    // and add owners to this family
+    const full_family_account = await dal.createFamilyAccount(new_family, family_new_balance, individuals_new_balance);
 
-// // Add individuals to family account - return FULL/SHORT
-// // export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: IAddIndividualsToFamily): Promise<any> {
-// //     // TODO: call dal to add individuals to family account
-// //     //       add validations and business logic
-// //     //       and return family model by the details_level
+    // give dal the owners to add to the family account
+    // let family_account_owners: [family_account_id: string,individual_account_id: string][] = [];
+    // for (const owner of payload.owners) {
+    //     family_account_owners.push([String(family_account_without_owners.account_id),owner[0]]);
+    // }
+    //const full_family_account: IFamilyAccount = await dal.addFamilyOwners(family_account_owners,"full");
 
-// //     const family_account = await dal.addFamilyOwners(family_id, details_level);
-// //     return family_account;
-// // }
+    return full_family_account;
+}
 
-// // Delete individuals from family account - return FULL/SHORT
-// // export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: IRemoveIndividualsToFamily): Promise<any> {
-// //     // TODO: call dal to delete individuals from family account
-// //     //       add validations and business logic
-// //     //       and return family model by the details_level
+// Get family account by ID - FULL/SHORT
+export async function getFamilyAccountById(family_id: number, details_level: string = "full"): Promise<IFamilyAccount | undefined> {
+    const family_account_by_details = await dal.getFamilyAccountByAccountId(family_id, details_level);
+    return family_account_by_details;
+}
+
+// Add individuals to family account - return FULL/SHORT
+export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: IAddIndividualsToFamily): Promise<IFamilyAccount> {
+    // get individual accounts as list by the tuples list
+    const individual_accounts = await getIndividualAccountsByTuplesList(payload.individuals_to_add);
     
-// //     const family_account = await dal.deleteIndividualsFromFamily(family_id, details_level, payload);
-// //     return family_account;
-// // }
+    // get only active individual accounts from payload
+    const only_active_individuals = individual_accounts.filter(ind_acc=> ind_acc.status_id === 1);
+    let active_individuals_amounts: [string,string][] = [];
+    only_active_individuals.forEach((active)=> {
+        active_individuals_amounts = payload.individuals_to_add.filter((individual)=> individual[0] === String(active.account_id));
+    });
+    // sum all active individuals ammounts 
+    let family_new_balance = active_individuals_amounts.reduce((total,current)=> total + Number(current[1]),0);
+    
+    // generate list of tuples with ids and new balance to update - for adding individuals to family
+    const individuals_new_balance = generateIndividualsNewBalancesList(only_active_individuals, payload.individuals_to_add);
+    
+    // update each active individual's balance (subtract the amount from his balance)
+    // update the family balance by the sum of active individual's amounts from payload
+    const family_account_by_details = await dal.addFamilyOwners(family_id, family_new_balance, individuals_new_balance, details_level);
 
-// // Transfer F2B
-// // export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
-// //     // TODO: call dal to transfer money from family to business
-// //     //       add validations and business logic
+    // add active individuals to family account
+    // let family_account_owners: [family_account_id: string,individual_account_id: string][] = [];
+    // for (const active_individual of only_active_individuals) {
+    //         family_account_owners.push([String(family_id),String(active_individual.account_id)]);
+    // }
+    // const family_account_by_details = await dal.addFamilyOwners(family_account_owners,details_level);
+    return family_account_by_details;
+}
 
-// //     const results = await dal.transferFromFamilyToBusiness(payload);
-// //     return results;
-// // }
+// Delete individuals from family account - return FULL/SHORT
+export async function deleteIndividualsFromFamily(family_id: number, details_level: string = "full", payload: IRemoveIndividualsToFamily): Promise<IFamilyAccount | undefined> {
+    // get full family account
+    const full_family_account: IFamilyAccount = await dal.getFamilyAccountByAccountId(family_id, "full");
+    
+    // sum all individuals ammounts
+    const amounts_sum = payload.individuals_to_remove.reduce((total,current)=> total + Number(current[1]),0);
+    const family_new_balance = full_family_account.balance - amounts_sum;
+    // check if all family account owners will be removed
+    if(payload.individuals_to_remove.length === full_family_account.owners?.length){
+        // the total amounts of the removed owners can result in up to a zero amount, but not go below 0.
+        if(family_new_balance < 0){
+            return undefined;
+        }
+    } else {
+        // make sure a minimum allowed balance (5000) is being kept after the removal.
+        if(family_new_balance < 5000){
+            return undefined;
+        }
+    }
 
-// // Close family account by ID
-// export async function closeFamilyAccountById(family_id: number): Promise<any> {
-//     // TODO: call dal to create new family account
-//     //       add validations and business logic
+    // get individual accounts as list by the tuples list
+    const individual_accounts = await getIndividualAccountsByTuplesList(payload.individuals_to_remove);
 
-//     const results = await dal.closeFamilyAccountById(family_id);
-//     return results;
-// }
+    // generate list of tuples with ids and new balance to update - for removing individuals from family
+    const individuals_new_balance = generateIndividualsNewBalancesListForRemove(individual_accounts, payload.individuals_to_remove);
+    
+    // update each individual's balance (add the amount to his balance)
+    // update the family balance by the sum of individual's amounts from payload
+    const owners_ids = payload.individuals_to_remove.map(individual=> individual[0]);
+    const family_account_by_details = await dal.deleteIndividualsFromFamily(family_id, family_new_balance, individuals_new_balance, owners_ids, details_level);
+
+    // remove individuals from family account
+    // const family_account_by_details = await dal.deleteIndividualsFromFamily(family_id, owners_ids, details_level);
+    return family_account_by_details;
+}
+
+// Transfer F2B
+export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
+    const accounts: IFamilyAccount[] = await dal.getFamilyAccountsByAccountIDS([(payload.source_account),(payload.destination_account)]);
+    Validator.NumberEquals(accounts.length, 2);
+    const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
+    const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));
+    Validator.NumberLessThan(payload.amount, 5000);
+    const simple_transfer1 : simple_transfer = {
+        account_id: Number(payload.source_account),
+        new_balance:Number(source_acc?.balance) - Number(payload.amount)
+    }
+    const simple_transfer2 : simple_transfer = {
+        account_id: Number(payload.destination_account), 
+        new_balance: Number(destination_acc?.balance) + Number(payload.amount)
+    } 
+    const results = await util_dal.multiTransfer([simple_transfer1,simple_transfer2]);
+    return results;
+}
+
+// Close family account by ID
+export async function closeFamilyAccountById(family_id: number): Promise<any> {
+    // TODO: call dal to create new family account
+    //       add validations and business logic
+
+    const results = await dal.closeFamilyAccountById(family_id);
+    return results;
+}
+
+
+// ** Helper functions for family service **
+
+// get individual accounts as list by the tuples list
+export async function getIndividualAccountsByTuplesList(ids_amounts_list: [string,string][]): Promise<IIndividualAccount[]> {
+    const individual_account_ids = ids_amounts_list.map((ind_acc)=> (ind_acc[0]));
+    const individual_accounts = await individual_dal.getIndividualsByAccountsIds(individual_account_ids);
+    return individual_accounts;
+}
+
+// generate list of tuples with ids and new balance to update - for adding individuals to family
+export function  generateIndividualsNewBalancesList(individual_accounts: IIndividualAccount[], ids_amounts_list: [string,string][]): ([string, string] | undefined)[] {
+    const individuals_new_balance = individual_accounts.map((individual_account)=> {
+        for (const owner of ids_amounts_list) {
+             if(String(individual_account.account_id) === owner[0]){
+                return [String(individual_account.account_id),String(individual_account.balance - Number(owner[1]))] as [string,string]
+            }
+        } 
+    });
+    return individuals_new_balance;
+}
+
+// generate list of tuples with ids and new balance to update - for removing individuals from family
+export function  generateIndividualsNewBalancesListForRemove(individual_accounts: IIndividualAccount[], ids_amounts_list: [string,string][]): ([string, string] | undefined)[] {
+    const individuals_new_balance = individual_accounts.map((individual_account)=> {
+        for (const owner of ids_amounts_list) {
+             if(String(individual_account.account_id) === owner[0]){
+                return [String(individual_account.account_id),String(individual_account.balance + Number(owner[1]))] as [string,string]
+            }
+        } 
+    });
+    return individuals_new_balance;
+}
