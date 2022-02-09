@@ -42,12 +42,14 @@ export async function getIndividualsByIndividualsIds(
   return individuals as IIndividualAccount[];
 }
 export async function getIndividualsByAccountsIds(
-  account_ids: string[]
+  account_ids: string[] | number[]
 ): Promise<IIndividualAccount[]> {
-  const sql = `SELECT * 
-                FROM Accounts as A JOIN IndividualAccounts as I
-                    ON A.account_id = I.account_id 
-                WHERE account_id IN ?;`;
+  if(account_ids.length == 0) {
+    return [];
+  }
+  const sql = `SELECT * FROM Accounts as A
+             JOIN IndividualAccounts as I ON A.account_id = I.account_id
+              WHERE A.account_id IN (?);`;
   const [individuals] = await db.query(sql, [account_ids]);
   return individuals as IIndividualAccount[];
 }

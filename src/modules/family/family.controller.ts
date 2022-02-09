@@ -56,7 +56,7 @@ export async function addIndividualsToFamily(req: Request, res: Response): Promi
 export async function deleteIndividualsFromFamily(req: Request, res: Response): Promise<void> {
     const family_account = await S.deleteIndividualsFromFamily(Number(req.params.family_id), req.params.details_level, req.body as IRemoveIndividualsToFamily);
     if(!family_account){
-        throw new HttpException(400,`Failed to remove individuals from family account with id: ${req.params.id}.`);
+        throw new HttpException(400,`Failed to remove individuals from family account with id: ${req.params.family_id}.`);
     } else {
         const outputResponse: IResponseMessage = {
             status: 200,
@@ -70,9 +70,9 @@ export async function deleteIndividualsFromFamily(req: Request, res: Response): 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(req: Request, res: Response): Promise<void> {
     const source_and_destination_accounts = await S.transferFromFamilyToBusiness(req.body as ITransfer);
-    const { source_account: source, destination_account: destination } = req.body as ITransfer;
+    const { source_account, destination_account } = req.body as ITransfer;
     if(!source_and_destination_accounts){
-        throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
+        throw new HttpException(400,`Failed to transfer money from ${source_account} to ${destination_account}.`);
     } else {
         const outputResponse: IResponseMessage = {
             status: 200,

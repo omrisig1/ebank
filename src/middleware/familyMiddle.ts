@@ -9,7 +9,7 @@ import * as buisness_dal from '../modules/business/business.dal.js';
 import * as Util from '../modules/utils.dal.js';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-      Validator.mandatoryFieldExists(req.body,['oweners','currency']);
+      Validator.mandatoryFieldExists(req.body,['owners','currency']);
       Validator.currencyIsValid(req.body.currency)
       const account_ids = req.body.owners.map((arr:any)=> arr[0]);
       const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
@@ -88,7 +88,7 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
         const account_ids = req.body.individuals_to_add.map((arr:any)=> arr[0]);
         const family_account = await Util.getAccountById(Number(req.params.family_id));
         const individual_accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
-        Validator.NumberEquals(individual_accounts.length, req.body.individuals_to_add);
+        Validator.NumberEquals(individual_accounts.length, req.body.individuals_to_add.length);
         for (const acc of individual_accounts) {
           for (const owner of req.body.individuals_to_add) {
             if(acc.account_id == owner[0]){
@@ -113,7 +113,7 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
 export function removeIndividualFromFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
         Validator.mandatoryFieldExists(req.body,['individuals_to_remove']);
         Validator.mandatoryFieldExists(req.params,['family_id']);
-        Validator.isValNumeric(req.params.primary_id)
+        Validator.isValNumeric(req.params.family_id)
         const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
         amounts.map((amount:string)=>Validator.isPositive(amount));
         // const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
@@ -133,8 +133,8 @@ export function removeIndividualFromFamilyMiddle(req: Request, res: Response, ne
 */
 
 export function closeFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
-       Validator.mandatoryFieldExists(req.params,['family_id']);
-       Validator.isValNumeric(req.params.family_id)
+       Validator.mandatoryFieldExists(req.params,['id']);
+       Validator.isValNumeric(req.params.id)
       next();
 }
 /*
@@ -145,20 +145,20 @@ export function closeFamilyMiddle(req: Request, res: Response, next: NextFunctio
 */
 
 export async function transferFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-  Validator.mandatoryFieldExists(req.body,['source','destination','amount']);
-  Validator.isValNumeric(req.body.source);
-  Validator.isValNumeric(req.body.destination);
+  Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
+  Validator.isValNumeric(req.body.source_account);
+  Validator.isValNumeric(req.body.destination_account);
   Validator.isValNumeric(req.body.amount);
   Validator.isPositive(req.body.amount);
-  const source_family_account = await Util.getAccountById(req.body.source);
-  const destination_account = await Util.getAccountById(req.body.destination);
+  const source_family_account = await Util.getAccountById(req.body.source_account);
+  const destination_account = await Util.getAccountById(req.body.destination_account);
   Validator.isExists(source_family_account.account_id);
   Validator.isExists(destination_account.account_id);
   Validator.accountStatusEquals(source_family_account.status_id, '1');
   Validator.accountStatusEquals(destination_account.status_id, '1');
   // Validator.checkAccountTypeEquals(source_family_account.type,'family');
   // Validator.checkAccountTypeEquals(destination_account,'business');
-  const buisness_accounts = await buisness_dal.getBusinessesByAccountsIds([req.body.destination]);
+  const buisness_accounts = await buisness_dal.getBusinessesByAccountsIds([req.body.destination_account]);
   //  const family_accounts = await family_dal.getFamilysByAccountsIds([req.body.destination]);
   Validator.NumberEquals(buisness_accounts.length, 1);
   //  Validator.NumberEquals(family_accounts.length, 1);
