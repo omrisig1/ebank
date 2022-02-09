@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import config from '../../config.json';
+import { account_status } from '../types/types';
 
 export function inFamily(accounts : string[] , id: string | number): boolean{
   if(accounts.includes(id.toString())) {
@@ -8,7 +9,7 @@ export function inFamily(accounts : string[] , id: string | number): boolean{
   throw new Error('account not part of family');}
 
 export function accountActive(status: number | boolean | undefined) : boolean|Error{
-  if (Number(status) === 1) {
+  if (Number(status) === account_status.ACTIVE) {
     return true;
   }
   throw new Error('account is not active');

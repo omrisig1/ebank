@@ -7,6 +7,7 @@ import * as Validator from '../validations/validator.js';
 import * as individual_dal from '../modules/individual/individual.dal.js';
 import * as buisness_dal from '../modules/business/business.dal.js';
 import * as Util from '../modules/utils.dal.js';
+import { account_status } from '../types/types.js';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
       Validator.mandatoryFieldExists(req.body,['oweners','currency']);
@@ -60,7 +61,7 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
 //         // Validator.checkAccountCurrencyEquals(req.body.family.currency, account.currency);
 //             // Validator.checkAccountTypeEquals('individual', 'individual');
 //        // Validator.checkMinBalance(req.body.individual_id,1000, req.body.owners.amount);
-//        //Validator.checkAccountStatus(account.status, 'ACTIVE');
+//       // Validator.checkAccountStatus(account.status, account_status.ACTIVE);
 //       // }
   
 //       next();
@@ -145,8 +146,8 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
        Validator.isPositive(req.body.amount);
        const source_family_account = await Util.getAccountById(req.body.source);
        const destination_account = await Util.getAccountById(req.body.destination);
-       Validator.accountStatusEquals(source_family_account.status_id, '1');
-       Validator.accountStatusEquals(destination_account.status_id, '1');
+       Validator.accountStatusEquals(source_family_account.status_id, account_status.ACTIVE);
+       Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
     //    Validator.checkAccountTypeEquals(source_family_account.type,'family');
        const buisness_account = await buisness_dal.getBusinessesByAccountsIds(req.body.destination);
        Validator.NumberEquals(buisness_account.length, 1);

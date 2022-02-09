@@ -5,7 +5,7 @@ import { IIndividualAccount } from "./individual.model";
 import * as dal from "./individual.dal.js";
 import * as util from "../utils.dal.js";
 import * as Validator from "../../validations/validator.js";
-import { IChangeStatus } from "../../types/types";
+import { account_status, IChangeStatus } from "../../types/types";
 
 // Create an individual account
 export async function createNewIndividualAccount(payload: IIndividualAccount): Promise<any> {
@@ -13,7 +13,7 @@ export async function createNewIndividualAccount(payload: IIndividualAccount): P
     //       add validations
     // no buisness validations
     payload.balance = payload.balance? payload.balance : 0;
-    payload.status_id = 1;
+    payload.status_id = account_status.ACTIVE;
     const individual_account = await dal.createIndividualAccount(payload);
     return individual_account;
 }

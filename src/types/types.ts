@@ -38,4 +38,9 @@ export interface IRemoveIndividualsToFamily{
 export interface simple_transfer {
     account_id:number,
     new_balance:number
-  }
+}
+
+export enum account_status {
+  ACTIVE = 1,
+  INACTIVE = 2,
+}

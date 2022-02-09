@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { IBusinessAccount } from './business.model';
 import * as dal from './business.dal.js';
-import { ITransfer } from '../../types/types';
+import { account_status, ITransfer } from '../../types/types';
 import * as util from '../utils.dal.js';
 import * as Validator from '../../validations/validator.js';
 import { simple_transfer } from '../../types/types.js';
@@ -15,7 +16,7 @@ export async function createNewBusinessAccount(payload: IBusinessAccount): Promi
   //       add validations
   //no buisness logic
   payload.black_list = payload.black_list? payload.black_list : false;
-  payload.status_id = 1;
+  payload.status_id = account_status.ACTIVE;
   
   const business_account = await dal.createBusinessAccount(payload);
   return business_account;
