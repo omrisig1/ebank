@@ -38,7 +38,7 @@ export async function getIndividualsByIndividualsIds(
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
                 WHERE individual_id IN (?);`;
-  const [individuals] = await db.query(sql, individual_ids);
+  const [individuals] = await db.query(sql, [individual_ids]);
   return individuals as IIndividualAccount[];
 }
 
@@ -48,7 +48,7 @@ export async function getIndividualsByAccountsIds(
   const sql = `SELECT * 
                 FROM Accounts as A JOIN IndividualAccounts as I
                     ON A.account_id = I.account_id 
-                WHERE account_id IN (?);`;
-  const [individuals] = await db.query(sql, account_ids);
+                WHERE account_id IN ?;`;
+  const [individuals] = await db.query(sql, [account_ids]);
   return individuals as IIndividualAccount[];
 }

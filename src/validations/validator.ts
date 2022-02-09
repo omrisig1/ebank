@@ -35,6 +35,14 @@ export function NumberGreaterThan(num : string | number, than: string | number) 
   throw new Error("should be greather");
 }
 
+export function NumberLessThan(num : string | number, than: string | number) : boolean{
+  if(Number(num) <= Number(than)) {
+    return true;
+  }
+  throw new Error("should be less then");
+}
+
+
 export function isPositive(num:string) :boolean{
   if(Number(num) > 0) {
     return true;
@@ -140,7 +148,7 @@ export function accountStatusNotEquals(statusA: string, statusB: string) : boole
   throw new Error('status type are NOT the same - cannot change');
 }
 
-export function accountStatusEquals(statusA: undefined |boolean, statusB: boolean | string | number) : boolean | Error{
+export function accountStatusEquals(statusA: undefined |number, statusB: number | string | number) : boolean | Error{
   if (statusA == statusB) {
     return true;
   }
