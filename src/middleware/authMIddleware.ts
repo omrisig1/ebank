@@ -14,11 +14,10 @@ export default async  function testAuth(req: Request, res: Response, next: NextF
     if(secret.length == 0 || !('secret_key' in secret[0])) {
         throw new Error('Not Authorized');
     }
-    const sha256Hasher = crypto.createHmac("sha256", secret[0].secret_key);
+    const salt = req.headers.salt?  req.headers.salt as string : '';
+    const sha256Hasher = crypto.createHmac("sha256", salt+(secret[0].secret_key));
     const hash = sha256Hasher.update(string).digest("hex");
-    const sha256Hasher2 = crypto.createHmac("sha256", req.headers.salt as string);
-    const hash2 = sha256Hasher2.update(hash).digest("hex");
-    if(!req.headers.req_hash || req.headers.req_hash != hash2 ) {
+    if(!req.headers.req_hash || req.headers.req_hash != hash ) {
         throw new Error('Not Authorized');
     }
     next();
