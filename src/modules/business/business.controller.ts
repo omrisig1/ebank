@@ -60,7 +60,7 @@ export async function transferFromBusinessDifferentCurrency(req: Request, res: R
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {
         if(source_and_destination_accounts.hasOwnProperty('success') && source_and_destination_accounts.success === false){
-            throw new HttpException(source_and_destination_accounts.error.code,`Failed to transfer money from ${source} to ${destination}. ${source_and_destination_accounts.error.type}`);
+            throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}. ${source_and_destination_accounts.error.type}`);
 
         }
         const outputResponse: IResponseMessage = {

@@ -48,8 +48,8 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
         Validator.accountStatusEquals(source_account.status_id, '1');
         Validator.accountStatusEquals(destination_account.status_id, '1');
         Validator.checkAccountCurrencyEquals(source_account.currency, destination_account.currency)
-        Validator.isValNumeric(source_account.balance)  ;
         Validator.balanceGreaterThan((Number(source_account.balance)-Number(req.body.amount)), '10000');
+        Validator.isValNumeric(source_account.balance)  ;
       next();
 
 }

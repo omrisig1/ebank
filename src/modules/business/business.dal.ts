@@ -1,7 +1,7 @@
 import { IBusinessAccount } from './business.model.js';
 import { RowDataPacket } from 'mysql2/promise';
 import { connection as db } from '../../db/mysql.connection.js';
-import { createAccount } from '../utils.dal.js';
+import  {createAccount} from '../utils.dal.js';
 
 export async function createBusinessAccount(payload: IBusinessAccount): Promise<IBusinessAccount> {
   const account_id = await createAccount(payload);

@@ -25,7 +25,7 @@ export function NumberEquals(num : string | number, than: string | number) : boo
   if(Number(num) === Number(than)) {
     return true;
   }
-  throw new Error("should be equal");
+  throw new Error(`${num} should be equal to ${than}`);
 }
 
 export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
@@ -79,7 +79,7 @@ export function isValNumeric(val: string | number |undefined) : boolean|never{
   if (val && Number(val)) {
     return true;
   }
-  throw new Error('value is not numeric');
+  throw new Error(`value ${val} is not numeric`);
 }
 
 export function stringLengthAtLeast(val: string, length: number) :boolean|Error {
