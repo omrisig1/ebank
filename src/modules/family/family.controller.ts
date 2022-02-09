@@ -1,25 +1,26 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
-import { IAddIndividualsToFamily, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
+import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
 import * as S from "./family.service.js";
 
 // Create family account
-// export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
-//     const new_family_account_details = await S.createNewFamilyAccount(req.body as ICreateFamilyAccount);
-//     if(!new_family_account_details){
-//         throw new HttpException(400,"Failed to create a new family account.");
-//     } else {
-//         const outputResponse: IResponseMessage = {
-//             status: 200,
-//             message: "Family account created",
-//             data: new_family_account_details,
-//         };
-//         res.status(outputResponse.status).json(outputResponse);
-//     }
-// }
+export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
+    const new_family_account_details = await S.createNewFamilyAccount(req.body as ICreateFamilyAccount);
+    if(!new_family_account_details){
+        throw new HttpException(400,"Failed to create a new family account.");
+    } else {
+        const outputResponse: IResponseMessage = {
+            status: 200,
+            message: "Family account created",
+            data: new_family_account_details,
+        };
+        res.status(outputResponse.status).json(outputResponse);
+    }
+}
 
 // Get family account by ID - FULL/SHORT
 export async function getFamilyAccountById(req: Request, res: Response): Promise<void> {
@@ -69,7 +70,7 @@ export async function deleteIndividualsFromFamily(req: Request, res: Response): 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(req: Request, res: Response): Promise<void> {
     const source_and_destination_accounts = await S.transferFromFamilyToBusiness(req.body as ITransfer);
-    const { source, destination } = req.body as ITransfer;
+    const { source_account: source, destination_account: destination } = req.body as ITransfer;
     if(!source_and_destination_accounts){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {

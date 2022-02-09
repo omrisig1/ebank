@@ -10,8 +10,8 @@ export interface IErrorResponse {
 }
 
 export interface ITransfer {
-    source: string;
-    destination: string;
+    source_account: string;
+    destination_account: string;
     amount: string;
 }
 
@@ -30,4 +30,9 @@ export interface IAddIndividualsToFamily{
 }
 export interface IRemoveIndividualsToFamily{
     individuals_to_remove: [string,string][];
+}
+
+export interface ISimpleTransfer {
+    account_id: number,
+    new_balance: number
 }

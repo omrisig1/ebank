@@ -1,16 +1,16 @@
 import { RowDataPacket } from 'mysql2';
 import { connection as db } from '../../db/mysql.connection.js';
-//import { IFamilyAccount } from "./family.model.js";
+import { IFamilyAccount } from "./family.model.js";
 
 // Create family account
-// export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFamilyAccount> {
-//   // TODO: fix the function to create family account in DB
+export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFamilyAccount> {
+  // TODO: fix the function to create family account in DB
 
-//   const sql = `SELECT *
-//     FROM FamilyAccounts;`;
-//   const [results] = await db.query(sql, payload);
-//   return results;
-// }
+  const sql = `SELECT *
+    FROM FamilyAccounts;`;
+  const [results] = await db.query(sql, payload);
+  return results;
+}
 
 // Get family account by ID - FULL/SHORT
 export async function getFamilyAccountById(
@@ -60,8 +60,8 @@ export async function addIndividualsToFamily(
 // Delete individuals from family account - return FULL/SHORT
 export async function deleteIndividualsFromFamily(
   family_id: number,
-  details_level: string = 'full',
-  payload: object
+  payload: string[],
+  details_level: string = 'full'
 ): Promise<any> {
   // TODO: fix the function to Delete individuals from family account,
   //       and return family model by the details_level

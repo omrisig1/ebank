@@ -30,7 +30,7 @@ export async function transferSameCurrency(payload: ITransfer): Promise<any> {
   //       add validations and logic
   //       check if destination account is business or individual
 
-  const results = await util.updateBalance(Number(payload.source), Number(payload.amount));
+  const results = await util.updateBalance(Number(payload.source_account), Number(payload.amount));
   // const results = await util.updateBalance(payload.destination,amount);
 
   // const results = await util.logTrasnfer(payload);
@@ -45,7 +45,7 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   //       check if destination account is business or individual
   //       add business logic for FX rate - use the module from getRate() from promises assignment.
 
-  const results = await util.updateBalance(Number(payload.source), Number(payload.amount));
+  const results = await util.updateBalance(Number(payload.source_account), Number(payload.amount));
   // const results = await util.updateBalance(payload.destination,amount);
 
   // const results = await util.logTrasnfer(payload);

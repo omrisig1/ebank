@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(express.json())
 
 // Create family account
-// router.post("/",raw(FMiddleware.createFamilyMiddle), raw(C.createFamilyAccount));
+router.post("/",raw(FMiddleware.createFamilyMiddle), raw(C.createFamilyAccount));
 
 // Get family account by ID - FULL/SHORT
 router.get("/:id/:details_level",raw(FMiddleware.getFamilyMiddle), raw(C.getFamilyAccountById));
