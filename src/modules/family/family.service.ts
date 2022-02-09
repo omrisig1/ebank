@@ -140,13 +140,12 @@ export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<
 }
 
 // Close family account by ID
-export async function closeFamilyAccountById(family_id: number): Promise<any> {
-    // TODO: call dal to create new family account
-    //       add validations and business logic
-
-    const results = await dal.closeFamilyAccountById(family_id);
-    return results;
-}
+export async function closeFamilyAccountById(account_id: number): Promise<number | undefined> {
+    const family = await dal.getFamilyAccountByAccountId(account_id, 'short');
+    if (Array.isArray(family.owners) && family.owners.length > 0) return undefined;
+    await util_dal.changeAccountStatus([account_id.toString()], '2');
+    return account_id;
+  }
 
 
 // ** Helper functions for family service **
@@ -181,3 +180,4 @@ export function  generateIndividualsNewBalancesListForRemove(individual_accounts
     });
     return individuals_new_balance;
 }
+

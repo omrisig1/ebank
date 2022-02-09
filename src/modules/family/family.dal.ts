@@ -1,10 +1,10 @@
 // import { RowDataPacket } from 'mysql2';
 // import { connection as db } from '../../db/mysql.connection.js';
 // import { getIndividualsByAccountsIds } from '../individual/individual.dal.js';
-// import { changeAccountStatus, createAccount } from '../utils.dal.js';
+// // import { changeAccountStatus, createAccount } from '../utils.dal.js';
 // import { IFamilyAccount } from './family.model.js';
 
-// // Create family account
+// Create family account
 // export async function createFamilyAccount(payload: IFamilyAccount): Promise<IFamilyAccount> {
 //   const account_id = await createAccount(payload);
 //   const sql2 = 'INSERT INTO FamilyAccounts SET ?;';
@@ -16,7 +16,7 @@
 //   return family_account;
 // }
 
-// // Add individuals to family account - return FULL/SHORT
+// Add individuals to family account - return FULL/SHORT
 // export async function addFamilyOwners(
 //   family_owners: [family_account_id: string, individual_account_id: string][],
 //   details_level: string = 'short'

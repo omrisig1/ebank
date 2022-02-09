@@ -41,7 +41,6 @@ export async function getIndividualsByIndividualsIds(
   const [individuals] = await db.query(sql, [individual_ids]);
   return individuals as IIndividualAccount[];
 }
-
 export async function getIndividualsByAccountsIds(
   account_ids: string[]
 ): Promise<IIndividualAccount[]> {
