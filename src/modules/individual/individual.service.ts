@@ -6,13 +6,14 @@ import * as dal from "./individual.dal.js";
 import * as util from "../utils.dal.js";
 import * as Validator from "../../validations/validator.js";
 import { IChangeStatus } from "../../types/types";
-import { connection as db } from '../../db/mysql.connection.js';
 
 // Create an individual account
 export async function createNewIndividualAccount(payload: IIndividualAccount): Promise<any> {
     // TODO: call dal to create new individual account
     //       add validations
     // no buisness validations
+    payload.balance = payload.balance? payload.balance : 0;
+    payload.status_id = 1;
     const individual_account = await dal.createIndividualAccount(payload);
     return individual_account;
 }
