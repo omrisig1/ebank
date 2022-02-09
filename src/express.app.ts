@@ -20,6 +20,7 @@ class ExpressApp {
   app = express();
 
   private setMiddlewares() {
+    this.app.use(express.json());
     this.app.use(generateRequestID);
     this.app.use(cors());
     this.app.use(morgan('dev'));
