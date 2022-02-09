@@ -133,8 +133,8 @@ export function balanceGreaterThan(num: string | number, than: string | number) 
 }
 
 export function currencyIsValid(currency: string) : boolean | Error{
-  const currencies = ['USD','EUR'];
-  if (currencies.includes(currency)) {
+  // const currencies = ['USD','EUR'];
+  if (config.currencies.includes(currency)) {
     return true;
   }
   throw new Error('invalid currency');
