@@ -5,6 +5,7 @@ import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js'; 
 import * as Util from '../modules/utils.dal.js';
 import * as B_DAL from '../modules/business/business.dal.js';
+import { account_status } from '../types/types.js';
 
 export function createBuisnessMiddle(req: Request, res: Response, next: NextFunction) : void{
      Validator.mandatoryFieldExists(req.body,['company_id','company_name','currency']);
@@ -45,8 +46,8 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
         const destination_account = await Util.getAccountById(req.body.destination_account);
         Validator.isExists(source_account);
         Validator.isExists(destination_account)
-        Validator.accountStatusEquals(source_account.status_id, '1');
-        Validator.accountStatusEquals(destination_account.status_id, '1');
+        Validator.accountStatusEquals(source_account.status_id, account_status.ACTIVE);
+        Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
         Validator.checkAccountCurrencyEquals(source_account.currency, destination_account.currency)
         Validator.balanceGreaterThan((Number(source_account.balance)-Number(req.body.amount)), '10000');
         Validator.isValNumeric(source_account.balance)  ;
@@ -64,8 +65,8 @@ export async function transferBuisnessDiffCurMiddle(req: Request, res: Response,
         const buisness_destination = await B_DAL.getBusinessesByAccountsIds([(req.body.destination_account)]);
         Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
         Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
-        Validator.accountStatusEquals(buisness_source[0].status_id, '1');
-        Validator.accountStatusEquals(buisness_destination[0].status_id, '1');
+        Validator.accountStatusEquals(buisness_source[0].status_id, account_status.ACTIVE);
+        Validator.accountStatusEquals(buisness_destination[0].status_id, account_status.ACTIVE);
         Validator.balanceGreaterThan(buisness_source[0].balance-req.body.amount, 10000)
         next();
         
