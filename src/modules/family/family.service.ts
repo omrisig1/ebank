@@ -131,16 +131,11 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
 // Transfer F2B
 export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
     const accounts1: IFamilyAccount[] = await dal.getFamilyAccountsByAccountIDS([Number(payload.source_account)]);
-
     Validator.NumberEquals(accounts1.length, 1);
-
     const accounts2: IBusinessAccount[] = await buisness_dal.getBusinessesByAccountsIds([(payload.destination_account)]);
-
     const source_acc = accounts1.find((acc)=> acc.account_id == Number(payload.source_account));
     Validator.NumberEquals(accounts2.length, 1);
-
     const destination_acc = accounts2.find((acc)=> acc.account_id == Number(payload.destination_account));
-
     Validator.NumberLessThan(payload.amount, 5000);
     const simple_transfer1 : simple_transfer = {
         account_id: Number(payload.source_account),

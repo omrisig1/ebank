@@ -98,8 +98,7 @@ export async function getOwnersListByFamilyAccountId(account_id: number): Promis
                 FROM OwnersFamily
                 WHERE family_account_id = ?;`;
   const [owners] = (await db.query(sql, [account_id])) as RowDataPacket[][];
-
-  return owners.map((item)=>item['individual_account_id']) as unknown as string[];
+  return owners.map((item)=>item['individual_account_id'].toString());
 }
 
 // Delete individuals from family account - return FULL/SHORT
@@ -143,12 +142,15 @@ export async function closeFamilyAccountById(account_id: number): Promise<IFamil
 export async function getFamilyAccountsByAccountIDS(
   account_ids: number[]
 ): Promise<IFamilyAccount[]> {
+  console.log('family account_ids for function:',account_ids);
+
   const sql = `SELECT *
         FROM Accounts as A JOIN FamilyAccounts as F
             ON A.account_id = F.account_id
         WHERE A.account_id IN (?);`;
-  const [result] = (await db.execute(sql, account_ids)) as RowDataPacket[];
+  const [result] = (await db.query(sql, account_ids)) as RowDataPacket[];
   const family = result as IFamilyAccount[];
+  console.log('family array:',family);
   return family;
 }
 

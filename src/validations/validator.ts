@@ -2,8 +2,8 @@
 import config from '../../config.json';
 import { account_status } from '../types/types.js';
 
-export function inFamily(accounts : string[] , id: string | number): boolean{
-  if(accounts.includes(id.toString())) {
+export function inFamily(accounts : string[] , id: string): boolean{
+  if(accounts.includes(id)) {
     return true;
   }
   throw new Error('account not part of family');}

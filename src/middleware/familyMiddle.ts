@@ -6,6 +6,8 @@ import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js';
 import * as individual_dal from '../modules/individual/individual.dal.js';
 import * as buisness_dal from '../modules/business/business.dal.js';
+import * as family_dal from '../modules/family/family.dal.js';
+
 import * as Util from '../modules/utils.dal.js';
 import { account_status } from '../types/types.js';
 
@@ -48,27 +50,6 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
 			3.1.3.4 same currency as family
 			3.1.3.5 minimum after transfer amount greater than 1000
   */
-  
-//   export function createFamilyOwnerseMiddle(req: Request, res: Response, next: NextFunction) : void{
-//     try {
-//       // const family = req.body;
-//       //validator.sumAmmunts(,req.body.owners.id, 5000);
-//       // for (const individual_id of family.oweners.ID) {
-//       //  let account = INDIVIDUAL_DAL.getAccountByID(individual_id);
-//       //  Validator.accountExists(individual_id);
-//       //  Validaotr.mandatoryFieldExists(account,currency)
-//         // Validator.currencyIsValid(account.currency);
-//         // Validator.checkAccountCurrencyEquals(req.body.family.currency, account.currency);
-//             // Validator.checkAccountTypeEquals('individual', 'individual');
-//        // Validator.checkMinBalance(req.body.individual_id,1000, req.body.owners.amount);
-//       // Validator.checkAccountStatus(account.status, account_status.ACTIVE);
-//       // }
-  
-//       next();
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
 
 export function getFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
     try {
@@ -111,17 +92,17 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
 		3.3.5 all are of type individual
 */
 
-export function removeIndividualFromFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
+export async function removeIndividualFromFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
         Validator.mandatoryFieldExists(req.body,['individuals_to_remove']);
         Validator.mandatoryFieldExists(req.params,['family_id']);
         Validator.isValNumeric(req.params.family_id)
         const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
         amounts.map((amount:string)=>Validator.isPositive(amount));
-        // const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
-        // const family_accounts = getIndividualAccountsByFamily_id(req.params.family_id);
-        // for (const id of remove_ids) {
-        //   Validator.inFamily(family_accounts, id);
-        // }
+        const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
+        const family_accounts = await family_dal.getOwnersListByFamilyAccountId(Number(req.params.family_id));
+        for (const id of remove_ids) {
+          Validator.inFamily(family_accounts, id);
+        }
       next();
 }
 /*
@@ -151,30 +132,28 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
   Validator.isValNumeric(req.body.destination_account);
   Validator.isValNumeric(req.body.amount);
   Validator.isPositive(req.body.amount);
-  const source_family_account = await Util.getAccountById(req.body.source_account);
-  const destination_account = await Util.getAccountById(req.body.destination_account);
-  Validator.isExists(source_family_account.account_id);
-  Validator.isExists(destination_account.account_id);
-  Validator.accountStatusEquals(source_family_account.status_id, account_status.ACTIVE);
-  Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
-  // Validator.checkAccountTypeEquals(source_family_account.type,'family');
-  // Validator.checkAccountTypeEquals(destination_account,'business');
-  const buisness_accounts = await buisness_dal.getBusinessesByAccountsIds([req.body.destination_account]);
-  //  const family_accounts = await family_dal.getFamilysByAccountsIds([req.body.destination]);
-  Validator.NumberEquals(buisness_accounts.length, 1);
-  //  Validator.NumberEquals(family_accounts.length, 1);
-  Validator.checkAccountCurrencyEquals(source_family_account.currency, destination_account.currency);
-  Validator.balanceGreaterThan(source_family_account.balance - req.body.amount, 5000)
-  //    const owners_ids = await Util.getIndividualAccountsByFamily_id(req.body.source);
-  //    const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
-  //    for (const acc of full_accounts_info) {
-  //        Validator.isExists(acc.account_id);
-  //       Validator.accountStatusEquals(acc.status_id, '1');
-  //       Validator.checkAccountTypeEquals(acc.type, 'individual');
-  //       Validator.checkAccountCurrencyEquals(source_family_account.currency, acc.currency);
-    //       
-    //       
-    //   }
+  const source_family_account = await family_dal.getFamilyAccountsByAccountIDS(req.body.source_account);
+  const destination_account = await buisness_dal.getBusinessesByAccountsIds(req.body.destination_account);
+
+  Validator.NumberEquals(destination_account.length, 1);
+  Validator.NumberEquals(source_family_account.length, 1);
+
+  Validator.isExists(source_family_account[0].account_id);
+  Validator.isExists(destination_account[0].account_id);
+  Validator.accountStatusEquals(source_family_account[0].status_id, account_status.ACTIVE);
+  Validator.accountStatusEquals(destination_account[0].status_id, account_status.ACTIVE);
+
+  Validator.checkAccountCurrencyEquals(source_family_account[0].currency, destination_account[0].currency);
+  Validator.balanceGreaterThan(source_family_account[0].balance - req.body.amount, 5000)
+     const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source);
+     const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
+     for (const acc of full_accounts_info) {
+        Validator.isExists(acc.account_id);
+        Validator.accountStatusEquals(acc.status_id, '1');
+        Validator.checkAccountCurrencyEquals(source_family_account[0].currency, acc.currency);
+          
+          
+      }
       next();
 }
 /*
