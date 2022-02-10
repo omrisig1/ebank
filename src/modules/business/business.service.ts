@@ -44,7 +44,7 @@ export async function transferSameCurrency(payload: ITransfer): Promise<IAccount
   // check destination - Business or Individual
   const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
   const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
-  if (!business_destination_acc || !individual_destination_acc) throw new Error('destination account not valid - can be B2B or B2I');
+  if (!business_destination_acc && !individual_destination_acc) throw new Error('destination account not valid - can be B2B or B2I');
 
   // if destination is Business --> transfer B2B
   if (business_destination_acc) {
