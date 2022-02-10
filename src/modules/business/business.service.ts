@@ -8,6 +8,7 @@ import * as util from '../utils.dal.js';
 import * as Validator from '../../validations/validator.js';
 import { simple_transfer,account_status, ITransfer } from '../../types/types.js';
 import fetch from 'node-fetch';
+import config from '../../../config.json';
 
 // Create an business account
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
@@ -41,10 +42,10 @@ export async function transferSameCurrency(payload: ITransfer): Promise<any> {
   const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
   const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));
   if(source_acc?.company_id == destination_acc?.company_id){
-    Validator.NumberLessThan(payload.amount, 10000);
+    Validator.NumberLessThan(payload.amount, config.business.MAX_TRANS_B2B_SAME_COMPANY);
   }
   else{
-    Validator.NumberLessThan(payload.amount, 1000);
+    Validator.NumberLessThan(payload.amount, config.business.MAX_TRANS_B2B_DIF_COMPANY);
   }
   const simple_transfer1 : simple_transfer= 
   {account_id: Number(payload.source_account), 
@@ -67,7 +68,7 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
   const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));
   const base_url = `http://api.exchangeratesapi.io/latest`;
-  const url = `${base_url}?base=${source_acc?.currency}&symbols=${destination_acc?.currency}&access_key=7af0eb50172cf80363666a130fba9745`;
+  const url = `${base_url}?base=${source_acc?.currency}&symbols=${destination_acc?.currency}&access_key=${config.FX_ACCESS_KEY}`;
   let response = await fetch(url);
   let json = await response.json();
   if('error' in (json as any)){
@@ -76,10 +77,10 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   const amount = Number((json as any).rates[(destination_acc as any).currency]) * Number(payload.amount);
   Validator.NumberEquals(accounts.length, 2);
   if(source_acc?.company_id == destination_acc?.company_id){
-    Validator.NumberLessThan(amount, 10000);
+    Validator.NumberLessThan(amount, config.business.MAX_TRANS_B2B_FX_SAME_COMPANY);
   }
   else{
-    Validator.NumberLessThan(amount, 1000);
+    Validator.NumberLessThan(amount, config.business.MAX_TRANS_B2B_FX_DIF_COMPANY);
   }
   const simple_transfer1 : simple_transfer= 
   {account_id: Number(payload.source_account), 
