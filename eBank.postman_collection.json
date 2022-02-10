@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "b2999c84-38d8-42d3-945d-72344b300d9c",
+		"_postman_id": "fdab587f-44f1-4208-9e9a-032e4368490d",
 		"name": "eBank",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individual_id\": \"123\",\n    \"first_name\": \"Yossi\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\"\n}",
+							"raw": "{\n    \"individual_id\": \"1234594\",\n    \"first_name\": \"omri7\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\",\n    \"balance\":\"200000\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3030/api/individual/1",
+							"raw": "localhost:3030/api/individual/68",
 							"host": [
 								"localhost"
 							],
@@ -51,7 +51,7 @@
 							"path": [
 								"api",
 								"individual",
-								"1"
+								"68"
 							]
 						}
 					},
@@ -64,7 +64,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\"123\",\"122\",\"124\"],\n    \"action\": \"deactivate\"\n}",
+							"raw": "{\n    \"list_of_accounts\": [\"95\"],\n    \"action\": \"ghfjh\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,8 +72,8 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/individual/change-status/",
-							"protocol": "https",
+							"raw": "http://localhost:3030/api/individual/change-status/",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
@@ -100,7 +100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": \"123\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\"\n}",
+							"raw": "{\n    \"company_id\": \"12345683\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\",\n    \"balance\":\"20000\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -126,9 +126,25 @@
 					"name": "Get business account by ID",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "access_key",
+								"value": "1234",
+								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "ok",
+								"type": "text"
+							},
+							{
+								"key": "req_hash",
+								"value": "bd7a58ce44f0c7203263b6fb5ceaa501064ab1778c2cb3ff2174e8c400f6dd38",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:3030/api/business/3",
+							"raw": "localhost:3030/api/business/89",
 							"host": [
 								"localhost"
 							],
@@ -136,7 +152,7 @@
 							"path": [
 								"api",
 								"business",
-								"3"
+								"89"
 							]
 						}
 					},
@@ -149,7 +165,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"1234\",\n    \"amount\":\"2000\"\n}\n",
+							"raw": "{\n    \"source_account\":\"16\",\n    \"destination_account\":\"17\",\n    \"amount\":\"99\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -179,7 +195,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"1234\",\n    \"amount\":\"2000\"\n}",
+							"raw": "{\n    \"source_account\":\"12\",\n    \"destination_account\":\"13\",\n    \"amount\":\"100\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -209,7 +225,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\"123,122,124\"],\n    \"action\": \"deactivate\"\n}",
+							"raw": "{\n    \"list_of_accounts\": [\"89\"],\n    \"action\": \"1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,8 +233,8 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/business/change-status/",
-							"protocol": "https",
+							"raw": "http://localhost:3030/api/business/change-status/",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
@@ -245,7 +261,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"owners\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ],\n    \"currency\":\"USD\"\n}",
+							"raw": "{\n    \"owners\": [\n        [\"78\",\"20000\"],\n        [\"79\",\"30001\"]\n    ],\n    \"currency\":\"USD\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -253,8 +269,8 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/family/",
-							"protocol": "https",
+							"raw": "http://localhost:3030/api/family/",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
@@ -275,7 +291,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_add\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"96\",\"10000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -283,7 +299,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/add/1234/full",
+							"raw": "localhost:3030/api/family/add/76/full",
 							"host": [
 								"localhost"
 							],
@@ -292,7 +308,7 @@
 								"api",
 								"family",
 								"add",
-								"1234",
+								"76",
 								"full"
 							]
 						}
@@ -306,7 +322,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_add\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"77\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -314,7 +330,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/add/1234/short",
+							"raw": "localhost:3030/api/family/add/85/short",
 							"host": [
 								"localhost"
 							],
@@ -323,7 +339,7 @@
 								"api",
 								"family",
 								"add",
-								"1234",
+								"85",
 								"short"
 							]
 						}
@@ -337,7 +353,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_remove\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"67\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -345,7 +361,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/remove/1234/short",
+							"raw": "localhost:3030/api/family/remove/76/short",
 							"host": [
 								"localhost"
 							],
@@ -354,7 +370,7 @@
 								"api",
 								"family",
 								"remove",
-								"1234",
+								"76",
 								"short"
 							]
 						}
@@ -368,7 +384,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_remove\": [\n        [\"123\",\"1000\"],\n        [\"456\",\"500\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"77\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -376,7 +392,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/remove/1234/full",
+							"raw": "localhost:3030/api/family/remove/76/full",
 							"host": [
 								"localhost"
 							],
@@ -385,7 +401,7 @@
 								"api",
 								"family",
 								"remove",
-								"1234",
+								"76",
 								"full"
 							]
 						}
@@ -398,7 +414,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3030/api/family/4/short",
+							"raw": "localhost:3030/api/family/87/short",
 							"host": [
 								"localhost"
 							],
@@ -406,7 +422,7 @@
 							"path": [
 								"api",
 								"family",
-								"4",
+								"87",
 								"short"
 							]
 						}
@@ -419,7 +435,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3030/api/family/4/full",
+							"raw": "localhost:3030/api/family/76/full",
 							"host": [
 								"localhost"
 							],
@@ -427,7 +443,7 @@
 							"path": [
 								"api",
 								"family",
-								"4",
+								"76",
 								"full"
 							]
 						}
@@ -441,7 +457,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source\":\"123456788\",\n    \"destination\":\"123456789\",\n    \"amount\":\"2000\"\n}\n",
+							"raw": "{\n    \"source_account\":\"87\",\n    \"destination_account\":\"89\",\n    \"amount\":\"2000\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -449,8 +465,8 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:3030/api/family/transfer",
-							"protocol": "https",
+							"raw": "http://localhost:3030/api/family/transfer",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
@@ -479,7 +495,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/close/4",
+							"raw": "localhost:3030/api/family/close/87",
 							"host": [
 								"localhost"
 							],
@@ -488,7 +504,7 @@
 								"api",
 								"family",
 								"close",
-								"4"
+								"87"
 							]
 						}
 					},
