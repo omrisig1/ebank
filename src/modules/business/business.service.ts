@@ -55,7 +55,6 @@ export async function transferSameCurrency(payload: ITransfer): Promise<any> {
     new_balance:Number(destination_acc?.balance)+Number(payload.amount)
   } ;
   const results = await util.multiTransfer([simple_transfer1,simple_transfer2]);
-  // const results = await util.logTrasnfer(payload);
   return results;
 }
 
@@ -66,15 +65,12 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   const accounts = await dal.getBusinessesByAccountsIds([(payload.source_account),(payload.destination_account)]);
   const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
   const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));
-  const base_url = `http://api.exchangeratesapi.io/latest`;
-  const url = `${base_url}?base=${source_acc?.currency}&symbols=${destination_acc?.currency}&access_key=7af0eb50172cf80363666a130fba9745`;
-  let response = await fetch(url);
-  let json = await response.json();
+  Validator.NumberEquals(accounts.length, 2);
+  let json = await FX_exchange(source_acc as IBusinessAccount, destination_acc as IBusinessAccount);
   if('error' in (json as any)){
     return json;
   }
-  const amount = Number((json as any).rates[(destination_acc as any).currency]) * Number(payload.amount);
-  Validator.NumberEquals(accounts.length, 2);
+  const amount = Number((json as any).rates[(destination_acc as IBusinessAccount).currency]) * Number(payload.amount);
   if(source_acc?.company_id == destination_acc?.company_id){
     Validator.NumberLessThan(amount, 10000);
   }
@@ -90,6 +86,15 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
     new_balance:Number(destination_acc?.balance)+Number(amount)
   } ;
   const results = await util.multiTransfer([simple_transfer1,simple_transfer2]);
-  // const results = await util.logTrasnfer(payload);
   return results;
+}
+
+async function FX_exchange(base:IBusinessAccount, target : IBusinessAccount) {
+  const base_url = `http://api.exchangeratesapi.io/latest`;
+  //fx_access_key
+  const url = `${base_url}?base=${base?.currency}&symbols=${target?.currency}&access_key=7af0eb50172cf80363666a130fba9745`;
+  let response = await fetch(url);
+  let json = await response.json();
+  return json;
+  
 }
