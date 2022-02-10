@@ -7,20 +7,28 @@ import IAddress from '../address/address.model.js';
 
 export async function createIndividualAccount(
   payload: IIndividualAccount
-): Promise<IIndividualAccount> {
-  const account_id = await createAccount(payload);
-  const address_id = await createAddress(payload.address as IAddress);
-  const sql2 = 'INSERT INTO IndividualAccounts SET ?;';
-  await db.query(sql2, {
-    account_id,
-    individual_id: payload.individual_id,
-    first_name: payload.first_name,
-    last_name: payload.last_name,
-    email: payload.email,
-    address_id
-  });
-  const individual = await getIndividualAccountByAccountId(account_id);
-  return individual;
+): Promise<IIndividualAccount | undefined> {
+  await db.beginTransaction();
+  try{
+    const account_id = await createAccount(payload);
+    const address_id = await createAddress(payload.address as IAddress);
+    const sql2 = 'INSERT INTO IndividualAccounts SET ?;';
+    await db.query(sql2, {
+      account_id,
+      individual_id: payload.individual_id,
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      address_id
+    });
+    const individual = await getIndividualAccountByAccountId(account_id);
+    await db.commit();
+    return individual;
+  }
+  catch(err) {
+    await db.rollback();
+    return undefined;
+  }
 }
 
 export async function getIndividualAccountByAccountId(
