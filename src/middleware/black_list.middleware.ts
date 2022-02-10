@@ -1,0 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { NextFunction, Request, Response } from "express";
+import * as buisness_dal from "../modules/business/business.dal.js";
+import * as individual_dal from "../modules/individual/individual.dal.js";
+import * as T from "../types/types.js";
+
+export function black_list_Middleware(type : string) {
+    return async function (req: Request, res: Response, next: NextFunction) :Promise<void>{
+        switch(type) {
+            case (T.INDIVIDUAL):
+                let ind_account = await individual_dal.getIndividualAccountByAccountId(req.body.source_account);
+                if(ind_account.black_list) {
+                    throw new Error("Individual source account black listed for money trasnfer");
+                }
+                break;
+            case (T.BUISNESS):
+                let buis_account = await buisness_dal.getBusinessAccountByAccountId(req.body.source_account);
+                if(buis_account.black_list) {
+                    throw new Error("Buisness source account black listed for money trasnfer");
+                }
+                break;
+        }
+        next();
+    }
+}

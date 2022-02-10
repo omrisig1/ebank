@@ -15,6 +15,7 @@ export async function createIndividualAccount(
     last_name: payload.last_name,
     email: payload.email,
     address_id: payload.address_id,
+    black_list : false
   });
   const individual = await getIndividualAccountByAccountId(account_id);
   return individual;

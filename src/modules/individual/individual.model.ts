@@ -5,4 +5,6 @@ export interface IIndividualAccount extends IAccount {
     last_name: string;
     email?: string;
     address_id?: number;
+    black_list?: boolean;
+
 }
