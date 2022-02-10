@@ -77,7 +77,7 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
 }
 
 export function isValNumeric(val: string | number |undefined) : boolean|never{
-  if (val && Number(val)) {
+  if (val && Number(val) || (val === 0 || val === '0')) {
     return true;
   }
   throw new Error(`value ${val} is not numeric`);
