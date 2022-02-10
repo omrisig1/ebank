@@ -8,7 +8,7 @@
     },
     "individual_account_minimum_transfer":"5000",
     "account_minimum_transfer":{"individual":"5000"},
-    "currencies":["USD","EUR"],
+    "currencies":["USD","EUR","AUD","CAD","JPY","CHF","CNY","GBP"],
     "express-server": {
         "HOST": "localhost",
         "PORT": "3030"
