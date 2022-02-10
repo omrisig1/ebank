@@ -55,3 +55,9 @@ export enum account_type {
   BUSINESS = 'business',
   FAMILY = 'family',
 }
+export interface Idempotency {
+  client_id:string,
+  idempotency_key:string,
+  req_hash:string,
+  response:string
+}

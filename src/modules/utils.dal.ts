@@ -3,7 +3,7 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { simple_transfer } from '../types/types.js';
+import { simple_transfer, Idempotency } from '../types/types.js';
 import config from "../../config.json";
 
 export async function createAccount(payload: IAccount): Promise<number> {
@@ -126,4 +126,12 @@ export async function getRandomAccountID(type? : string) : Promise<string | unde
   else{
     return undefined;
   }
+}
+
+
+export async function logIdempotency(payload: Idempotency): Promise<number> {
+  const sql1 = 'INSERT INTO Idempotency SET ?;';
+  const [result] = (await db.query(sql1, payload)) as ResultSetHeader[];
+  const id = result.insertId;
+  return id;
 }
