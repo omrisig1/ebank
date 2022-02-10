@@ -42,6 +42,9 @@ export async function getBusinessAccountByAccountId(account_id: number): Promise
                     ON B.address_id = Ad.address_id
                 WHERE B.account_id = ?;`
   const [businesses] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  if(businesses.length == 0) {
+    return businesses as unknown as IBusinessAccount;
+  }
   let business_no_address_key = businesses[0];
   delete business_no_address_key.address_id;
 
@@ -57,6 +60,7 @@ export async function getBusinessesByAccountsIds(
   account_ids: string[]
 ): Promise<IBusinessAccount[]> {
   let businesses: IBusinessAccount[] = [];
+  account_ids = Array.isArray(account_ids)? account_ids : [account_ids];
   for (const account_id of account_ids) {
     businesses.push(await getBusinessAccountByAccountId(Number(account_id)));
   }
