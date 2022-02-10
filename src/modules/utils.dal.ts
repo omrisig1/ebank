@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { simple_transfer } from '../types/types.js';
+import config from "../../config.json";
 
 export async function createAccount(payload: IAccount): Promise<number> {
   const sql1 = 'INSERT INTO Accounts SET ?;';
@@ -98,4 +101,29 @@ export function getAccountsIdsArray(
     accounts.push(account[0]);
   }
   return accounts;
+}
+
+export async function getRandomAccountID(type? : string) : Promise<string | undefined>{
+  let query = "SELECT A.account_id FROM accounts A";
+  switch(type) {
+    case config.account_types.INDIVIDUAL:
+      query += " INNER JOIN IndividualAccounts ia ON A.account_id = ia.account_id ORDER BY RAND() LIMIT 1";
+      break;
+    case config.account_types.BUISNESS:
+      query += " INNER JOIN BusinessAccounts ia ON A.account_id = ia.account_id ORDER BY RAND() LIMIT 1";
+      break;
+    case config.account_types.FAMILY:
+      query += " INNER JOIN FamilyAccounts ia ON A.account_id = ia.account_id ORDER BY RAND() LIMIT 1";
+      break;
+    default:
+      query += " ORDER BY RAND() LIMIT 1";
+      break;
+  }
+  const [account_id] = await db.query(query);
+  if(Array.isArray(account_id) && account_id.length > 0) {
+    return (account_id as any)[0].account_id;
+  }
+  else{
+    return undefined;
+  }
 }
