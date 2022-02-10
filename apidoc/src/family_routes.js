@@ -2,7 +2,7 @@
  * @api {get} /family/:id/:details_level Request family account information
  * @apiName GetFamilyAccountInformation
  * @apiVersion 1.0.0
- * @apiGroup Family
+ * @apiGroup Family Account
  * @apiError family The <code>id</code> of the Account was not found.
  * @apiParam {Number} primary_id primary id of the account
  * @apiParam {string} details_level level of wanted details: ['short','full']
@@ -49,7 +49,7 @@
  * @api {post} /family/ create family account information
  * @apiName CreateFamilyAccount
  * @apiVersion 1.0.0
- * @apiGroup Family
+ * @apiGroup Family Account
  * @apiError Family Error creating account for Family.
 
  * @apiParam {string} currency .
@@ -94,7 +94,7 @@
  * @api {post} /family/change-status/:id Change Account Status
  * @apiName ChangeAccountStatus
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Family Account
  * @apiParam {string} new_status new_status.
  * @apiParam {string[]} ids ids to change status for.
  * @apiSuccess {String} status status of the response.
@@ -121,7 +121,7 @@
  * @api {post} /family/transfer/same-currency Trasnfer to Buisness with same currency
  * @apiName TrasnferSameCurrencyFamily
  * @apiVersion 1.0.0
- * @apiGroup Family
+ * @apiGroup Family Account
  * @apiParam {number} source source account primary id.
  * @apiParam {number} destination destination account primary id.
  * @apiParam {number} amount amount to transfer.
@@ -138,7 +138,7 @@
  * @api {post} /family/close/:id Close Account 
  * @apiName CloseAccount 
  * @apiVersion 1.0.0
- * @apiGroup Family
+ * @apiGroup Family Account
  * @apiParam {string} ids primary id to close
  * @apiSuccess {String} status status of the response.
  * @apiSuccessExample {json} Success-Response:
@@ -151,7 +151,7 @@
  * @api {post} family/:family_id/:details_level add individual to family
  * @apiName AdsIndividualToFamily
  * @apiVersion 1.0.0
- * @apiGroup Family
+ * @apiGroup Family Account
  * @apiParam {string} new_status new_status.
  * @apiParam {string[]} ids ids to change status for.
  * @apiSuccess {String} status status of the response.

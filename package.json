@@ -15,7 +15,8 @@
     "prepare": "husky install",
     "test": "mocha",
     "coverage": "rm -rf coverage && nyc report",
-    "perf-tsc": "tsc --extendedDiagnostics"
+    "perf-tsc": "tsc --extendedDiagnostics",
+    "apidoc": "npx apidoc -c apidoc.json -i apidoc/src -o apidoc/output"
   },
   "apidoc": {
     "title": "Custom apiDoc browser title",
