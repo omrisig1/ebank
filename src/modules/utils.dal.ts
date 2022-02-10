@@ -3,7 +3,7 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { simple_transfer } from '../types/types.js';
+import { ITransfer, simple_transfer } from '../types/types.js';
 import config from "../../config.json";
 
 export async function createAccount(payload: IAccount): Promise<number> {
@@ -126,4 +126,21 @@ export async function getRandomAccountID(type? : string) : Promise<string | unde
   else{
     return undefined;
   }
+}
+
+export async function transfer(
+  payload: ITransfer,
+  source_acc: IAccount,
+  destination_acc: IAccount
+):Promise<IAccount[]> {
+  const simple_transfer1: simple_transfer = {
+    account_id: Number(payload.source_account),
+    new_balance: Number(source_acc.balance) - Number(payload.amount),
+  };
+  const simple_transfer2: simple_transfer = {
+    account_id: Number(payload.destination_account),
+    new_balance: Number(destination_acc.balance) + Number(payload.amount),
+  };
+  const results = await multiTransfer([simple_transfer1, simple_transfer2]);
+  return results;
 }
