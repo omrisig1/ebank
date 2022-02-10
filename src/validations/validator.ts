@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import config from "../../config.json";
 import { account_status } from '../types/types.js';
 
 export function inFamily(accounts : string[] , id: string): boolean{
