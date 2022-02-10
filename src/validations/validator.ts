@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import config from '../../config.json';
 import { account_status } from '../types/types.js';
 
 export function inFamily(accounts : string[] , id: string): boolean{
@@ -97,13 +96,13 @@ export function stringLengthEquals(val: string, length: number) :boolean|Error{
   throw new Error('string length error');
 }
 
-export function transferSizeSmallerThan(accountType: string, amount: string) : boolean|Error{
-  const types = JSON.parse(JSON.stringify(config.account_minimum_transfer));
-  if (isValNumeric(amount) && Number(types[accountType]) <= Number(amount)) {
-    return true;
-  }
-  throw new Error('trasnfer amount exceeds account type permition error');
-}
+// export function transferSizeSmallerThan(accountType: string, amount: string): boolean | Error{
+//   const types = JSON.parse(JSON.stringify(config.account_minimum_transfer));
+//   if (isValNumeric(amount) && Number(types[accountType]) <= Number(amount)) {
+//     return true;
+//   }
+//   throw new Error('trasnfer amount exceeds account type permition error');
+// }
 
 export function checkAccountTypeEquals(stringA: string, stringB: string) : boolean|Error{
   if (stringA === stringB) {

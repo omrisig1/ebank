@@ -19,5 +19,25 @@
         "DB_NAME":"ebank_db",
         "DB_USER_NAME":"root",
         "DB_USER_PASSWORD":"qwerty"
-    }
+    },
+    "family":{
+        "MIN_BALANCE": 5000,
+        "TRANS_F2B": 5000
+    },
+    "individual":{
+        "MIN_BALANCE": 1000,
+        "MIN_INDIVIDUAL_ID_NUM": 1000000,
+        "INDIVIDUAL_ID_DIGITS": 7
+    },
+    "business":{
+        "MIN_BALANCE": 10000,
+        "MIN_COMPANY_ID_NUM": 10000000,
+        "COMPANY_ID_DIGITS": 8,
+        "MAX_TRANS_B2B_SAME_COMPANY": 10000,
+        "MAX_TRANS_B2B_DIF_COMPANY": 1000,
+        "MAX_TRANS_B2B_FX_SAME_COMPANY": 10000,
+        "MAX_TRANS_B2B_FX_DIF_COMPANY": 1000,
+        "MAX_TRANS_B2I": 1000
+    },
+    "FX_ACCESS_KEY":"7af0eb50172cf80363666a130fba9745"
 }

@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, ITransfer } from "../../types/types.js";
+import {
+  IAddIndividualsToFamily,
+  ICreateFamilyAccount,
+  IRemoveIndividualsToFamily,
+  ITransfer,
+  simple_transfer,
+  account_status,
+} from '../../types/types.js';
 import * as individual_dal from "../individual/individual.dal.js";
 import * as buisness_dal from "../business/business.dal.js";
-
 import * as dal from "./family.dal.js";
 import * as util_dal from "../utils.dal.js";
 import { IFamilyAccount } from "./family.model.js";
 import { IIndividualAccount } from "../individual/individual.model.js";
 import * as Validator from '../../validations/validator.js';
-import { simple_transfer } from '../../types/types.js';
 import { IBusinessAccount } from "../business/business.model.js";
+import config from '../../../config.json';
 
 
 // Create family account
@@ -23,7 +29,7 @@ export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Pro
     const new_family: IFamilyAccount = {
         currency: payload.currency,
         balance: 0, // initial balnce just for create
-        status_id: 1,
+        status_id: account_status.ACTIVE,
         context: payload.context
     }
 
@@ -64,7 +70,7 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
     const full_family_account: IFamilyAccount = await dal.getFamilyAccountByAccountId(family_id, "full");
 
     // get only active individual accounts from payload
-    const only_active_individuals = individual_accounts.filter(ind_acc=> ind_acc.status_id === 1);
+    const only_active_individuals = individual_accounts.filter(ind_acc=> ind_acc.status_id === account_status.ACTIVE);
     let active_individuals_amounts: [string,string][] = [];
     only_active_individuals.forEach((active)=> {
         active_individuals_amounts = payload.individuals_to_add.filter((individual)=> individual[0] === String(active.account_id));
@@ -106,7 +112,7 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
         }
     } else {
         // make sure a minimum allowed balance (5000) is being kept after the removal.
-        if(family_new_balance < 5000){
+        if(family_new_balance < config.family.MIN_BALANCE){
             return undefined;
         }
     }
@@ -154,7 +160,7 @@ export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<
 export async function closeFamilyAccountById(account_id: number): Promise<number | undefined> {
     const family = await dal.getFamilyAccountByAccountId(account_id, 'short');
     if (Array.isArray(family.owners) && family.owners.length > 0) return undefined;
-    await util_dal.changeAccountStatus([account_id.toString()], '2');
+    await util_dal.changeAccountStatus([account_id.toString()], account_status.INACTIVE.toString());
     return account_id;
   }
 

@@ -6,12 +6,14 @@ import * as Validator from '../validations/validator.js';
 import * as Util from '../modules/utils.dal.js';
 import * as B_DAL from '../modules/business/business.dal.js';
 import { account_status } from '../types/types.js';
+import config from '../../config.json';
 
 export function createBuisnessMiddle(req: Request, res: Response, next: NextFunction) : void{
      Validator.mandatoryFieldExists(req.body,['company_id','company_name','currency']);
      Validator.currencyIsValid(req.body.currency);
      Validator.isValNumeric(req.body.company_id);
-     Validator.stringLengthAtLeast(req.body.company_id,8);
+  //add validation - config.individual.MIN_COMPANY_ID_NUM
+     Validator.stringLengthAtLeast(req.body.company_id,config.business.COMPANY_ID_DIGITS);
     next();
     /*
     2.1.1 mandatory fields:
@@ -49,7 +51,7 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
         Validator.accountStatusEquals(source_account.status_id, account_status.ACTIVE);
         Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
         Validator.checkAccountCurrencyEquals(source_account.currency, destination_account.currency)
-        Validator.balanceGreaterThan((Number(source_account.balance)-Number(req.body.amount)), '10000');
+        Validator.balanceGreaterThan((Number(source_account.balance)-Number(req.body.amount)), config.business.MIN_BALANCE);
         Validator.isValNumeric(source_account.balance)  ;
       next();
 
@@ -67,7 +69,10 @@ export async function transferBuisnessDiffCurMiddle(req: Request, res: Response,
         Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
         Validator.accountStatusEquals(buisness_source[0].status_id, account_status.ACTIVE);
         Validator.accountStatusEquals(buisness_destination[0].status_id, account_status.ACTIVE);
-        Validator.balanceGreaterThan(buisness_source[0].balance-req.body.amount, 10000)
+        Validator.balanceGreaterThan(
+          buisness_source[0].balance - req.body.amount,
+          config.business.MIN_BALANCE
+        );
         next();
         
 }

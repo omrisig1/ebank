@@ -10,6 +10,7 @@ import * as family_dal from '../modules/family/family.dal.js';
 
 import * as Util from '../modules/utils.dal.js';
 import { account_status } from '../types/types.js';
+import config from '../../config.json';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
       Validator.mandatoryFieldExists(req.body,['owners','currency']);
@@ -17,20 +18,20 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
       const account_ids = req.body.owners.map((arr:any)=> arr[0]);
       const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
       const sum = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
-      Validator.NumberGreaterThan(sum,5000);
+      Validator.NumberGreaterThan(sum, config.family.MIN_BALANCE);
       Validator.NumberEquals(accounts.length, req.body.owners.length);
       for (const acc of accounts) {
           for (const owner of req.body.owners) {
               if(acc.account_id == owner[0]){
                 let withdraw = owner[1];
-                Validator.balanceGreaterThan(acc.balance-withdraw, 1000);
+                Validator.balanceGreaterThan(acc.balance - withdraw, config.individual.MIN_BALANCE);
               }
           }
           Validator.isExists(acc.individual_id);  
           Validator.accountActive(acc.status_id);  
           Validator.checkAccountCurrencyEquals(acc.currency, req.body.currency)
           Validator.isValNumeric(acc.individual_id);
-          Validator.stringLengthAtLeast(acc.individual_id.toString(),7)
+          Validator.stringLengthAtLeast(acc.individual_id.toString(), config.individual.INDIVIDUAL_ID_DIGITS);
       }
       next();
     } 
@@ -75,7 +76,7 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
           for (const owner of req.body.individuals_to_add) {
             if(acc.account_id == owner[0]){
               let withdraw = owner[1];
-              Validator.balanceGreaterThan(acc.balance-withdraw, 1000);
+              Validator.balanceGreaterThan(acc.balance - withdraw, config.individual.MIN_BALANCE);
             }
         }
             Validator.checkAccountCurrencyEquals(acc.currency, family_account.currency);
@@ -144,12 +145,12 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
   Validator.accountStatusEquals(destination_account[0].status_id, account_status.ACTIVE);
 
   Validator.checkAccountCurrencyEquals(source_family_account[0].currency, destination_account[0].currency);
-  Validator.balanceGreaterThan(source_family_account[0].balance - req.body.amount, 5000)
+  Validator.balanceGreaterThan(source_family_account[0].balance - req.body.amount, config.family.MIN_BALANCE)
      const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source);
      const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
      for (const acc of full_accounts_info) {
         Validator.isExists(acc.account_id);
-        Validator.accountStatusEquals(acc.status_id, '1');
+        Validator.accountStatusEquals(acc.status_id, account_status.ACTIVE);
         Validator.checkAccountCurrencyEquals(source_family_account[0].currency, acc.currency);
           
           

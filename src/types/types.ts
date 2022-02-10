@@ -44,3 +44,14 @@ export enum account_status {
   ACTIVE = 1,
   INACTIVE = 2,
 }
+
+export enum details_level {
+  FULL = 'full',
+  SHORT = 'short',
+}
+
+export enum account_type {
+  INDIVIDUAL = 'individual',
+  BUSINESS = 'business',
+  FAMILY = 'family',
+}

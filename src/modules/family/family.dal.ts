@@ -8,6 +8,7 @@ import {
   getAccountsIdsArray,
 } from '../utils.dal.js';
 import { IFamilyAccount } from './family.model.js';
+import { details_level, account_status } from '../../types/types.js';
 
 // Create family account
 export async function createFamilyAccount(
@@ -30,7 +31,7 @@ export async function createFamilyAccount(
       account_id,
       family_new_balance,
       individuals_new_balance,
-      'full'
+      details_level.FULL
     );
 
     await db.commit();
@@ -46,7 +47,7 @@ export async function addFamilyOwners(
   account_id: number,
   family_new_balance: number,
   individuals_new_balance: [string, string][],
-  details_level: string = 'short'
+  det_level: string = details_level.SHORT
 ): Promise<IFamilyAccount | undefined> {
   await db.beginTransaction();
   try {
@@ -58,13 +59,12 @@ export async function addFamilyOwners(
     );
     const sql = 'INSERT INTO OwnersFamily (family_account_id, individual_account_id) VALUES (?)';
     for (const item of family_owners) {
-        await db.query(sql, [item]);
+      await db.query(sql, [item]);
     }
 
+    const family_account = await getFamilyAccountByAccountId(account_id, det_level);
 
-    const family_account = await getFamilyAccountByAccountId(account_id, details_level);
-
-   await db.commit();
+    await db.commit();
     return family_account;
   } catch (err) {
     await db.rollback();
@@ -75,7 +75,7 @@ export async function addFamilyOwners(
 // Get family account by ID - FULL/SHORT§
 export async function getFamilyAccountByAccountId(
   account_id: number,
-  details_level: string = 'short'
+  det_level: string = details_level.SHORT
 ): Promise<IFamilyAccount> {
   const sql = `SELECT *
         FROM Accounts as A JOIN FamilyAccounts as F
@@ -85,9 +85,8 @@ export async function getFamilyAccountByAccountId(
   const family = result[0] as IFamilyAccount;
 
   family.owners = await getOwnersListByFamilyAccountId(family.account_id as number);
-  if (details_level === 'full') {
+  if (det_level === details_level.FULL) {
     family.owners = await getIndividualsByAccountsIds(family.owners);
-
   }
 
   return family;
@@ -107,11 +106,10 @@ export async function deleteIndividualsFromFamily(
   family_new_balance: number,
   individuals_new_balance: [string, string][],
   owners: string[],
-  details_level: string = 'short'
+  det_level: string = details_level.SHORT
 ): Promise<IFamilyAccount | undefined> {
   await db.beginTransaction();
   try {
-
     await updateFamilyAndIndividualsBalance(
       account_id,
       family_new_balance,
@@ -121,7 +119,7 @@ export async function deleteIndividualsFromFamily(
                 WHERE family_account_id = ?
                     AND individual_account_id IN (?)`;
     await db.query(sql, [account_id, owners]);
-    const family_account = await getFamilyAccountByAccountId(account_id, details_level);
+    const family_account = await getFamilyAccountByAccountId(account_id, det_level);
 
     await db.commit();
     return family_account;
@@ -135,7 +133,7 @@ export async function deleteIndividualsFromFamily(
 export async function closeFamilyAccountById(account_id: number): Promise<IFamilyAccount> {
   // const family = await getFamilyAccountByAccountId(account_id);
   // await deleteIndividualsFromFamily(account_id, family.owners as string[]);
-  await changeAccountStatus([account_id.toString()], '2');
+  await changeAccountStatus([account_id.toString()], account_status.INACTIVE.toString());
   return await getFamilyAccountByAccountId(account_id);
 }
 

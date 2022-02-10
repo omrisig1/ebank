@@ -3,11 +3,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js'; 
+import config from "../../config.json";
 
 export function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : void{
      Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
      Validator.isValNumeric(req.body.individual_id);
-     Validator.stringLengthAtLeast(req.body.individual_id,7);
+    //add validation - config.individual.MIN_INDIVIDUAL_ID_NUM
+     Validator.stringLengthAtLeast(req.body.individual_id,config.individual.INDIVIDUAL_ID_DIGITS);
      Validator.IndividualIDUnique(req.body.individual_id as string);
     next();
     /*
