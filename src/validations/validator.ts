@@ -155,3 +155,12 @@ export function accountStatusEquals(statusA: undefined | boolean | number, statu
   }
   throw new Error('status type are the same - cannot change');
 }
+
+export function checkTrasnferLimit(amount: string, config_size  : string) {
+  if(!config.TRASNFER_LIMIT_ON){
+    return true;
+  }
+  else{
+    return NumberGreaterThan(amount, config_size);
+  }
+}
