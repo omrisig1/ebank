@@ -2,7 +2,7 @@
  * @api {get} /buisness/:id Request buisness account information
  * @apiName GetBuisnessAccountInformation
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Buisness Account
  * @apiError buisness The <code>id</code> of the Account was not found.
  * @apiParam {Number} primary_id primary id of the account
  * @apiSuccess {number} primary_id .
@@ -38,7 +38,7 @@
  * @api {post} /buisness/ create buisness account information
  * @apiName CreateBuisnessAccount
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Buisness Account
  * @apiError Buisness Error creating account for Buisness.
 
  * @apiParam {string} type Primary ID of the User.
@@ -86,7 +86,7 @@
  * @api {post} /buisness/change-status/:id Change Account Status
  * @apiName ChangeAccountStatus
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Buisness Account
  * @apiParam {string} new_status new_status.
  * @apiParam {string[]} ids ids to change status for.
  * @apiSuccess {String} status status of the response.
@@ -113,7 +113,7 @@
  * @api {post} /buisness/transfer/same-currency Trasnfer to Buisness/Individual with same currency
  * @apiName TrasnferSameCurrency
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Buisness Account
  * @apiParam {number} source source account primary id.
  * @apiParam {number} destination destination account primary id.
  * @apiParam {number} amount amount to transfer.
@@ -130,7 +130,7 @@
  * @api {post} /buisness/transfer/different-currency Trasnfer to Buisness with different currency
  * @apiName TrasnferDifferentCurrency
  * @apiVersion 1.0.0
- * @apiGroup Buisness
+ * @apiGroup Buisness Account
  * @apiParam {number} source source account primary id.
  * @apiParam {number} destination destination account primary id.
  * @apiParam {number} amount amount to transfer.

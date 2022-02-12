@@ -1,7 +1,12 @@
 {
-    "url":"https://localhost/api",
+    "url":"http://localhost/api",
     "name": "Team Rocket's eBank",
     "version": "1.0.0",
     "description": "eBankAPI Documentation",
-    "title": "API Documentation for eBank"
+    "title": "API Documentation for eBank",
+    "order": [
+        "Individual Account",
+        "Buisness Account",
+        "Family Account"
+    ]
 }
