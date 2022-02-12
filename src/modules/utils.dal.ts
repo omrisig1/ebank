@@ -144,3 +144,25 @@ export async function transfer(
   const results = await multiTransfer([simple_transfer1, simple_transfer2]);
   return results;
 }
+export async function getReponseByIdempotencyKey(user: string, key : string[] |string | undefined = '') : Promise<RowDataPacket> {
+  const sql = `SELECT response
+        FROM Idempotency I 
+        WHERE user = ? AND idempotency_key = ?;`;
+  const [response] = (await db.query(sql, [user,key]))as RowDataPacket[][];
+  return response[0];
+}
+
+export async function sameRequest(user: string, req_hash:string ,key : string | undefined = '') : Promise<RowDataPacket> {
+  const sql = `SELECT response
+        FROM Idempotency I 
+        WHERE user = ? AND idempotency_key = ? AND req_hash = ??;`;
+  const [response] = (await db.query(sql, [user, key, req_hash]))as RowDataPacket[][];
+  return response[0];
+}
+
+export async function addIdempotencyResponse(user: string, key:string, res : string) : Promise<RowDataPacket> {
+  const sql = `INSERT INTO Idempotency ('user','idempotency_key','reponse')
+        VALUES (?,?,?)`;
+  const [response] = (await db.query(sql, [user,key,res]))as RowDataPacket[][];
+  return response[0];
+}
