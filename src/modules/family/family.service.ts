@@ -67,11 +67,13 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
     // get individual accounts as list by the tuples list
     // get full family account
     const full_family_account: IFamilyAccount = await dal.getFamilyAccountByAccountId(family_id, "full");
-    
+
     //check individual account not already part of family
-    let owners_account_number_list = (full_family_account.owners?.map((owner)=>  (owner as IIndividualAccount).account_id)) as number[];
+    let owners_account_number_list = (full_family_account.owners?.map((owner)=>  (((owner as IIndividualAccount).account_id) as number).toString()));
     if(owners_account_number_list && owners_account_number_list != undefined){
-        payload.individuals_to_add = payload.individuals_to_add.filter((individual)=>Number(individual[0]) in owners_account_number_list);
+        payload.individuals_to_add = payload.individuals_to_add.filter((individual)=>{
+            owners_account_number_list?.some((owner)=> owner == individual[0]);
+        });
     }
 
     const individual_accounts = await getIndividualAccountsByTuplesList(payload.individuals_to_add);
