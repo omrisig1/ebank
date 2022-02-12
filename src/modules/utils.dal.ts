@@ -3,7 +3,7 @@
 import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { ITransfer, simple_transfer } from '../types/types.js';
+import { ITransfer, simple_transfer, Idempotency, secret} from '../types/types.js';
 import config from "../../config.json";
 
 export async function createAccount(payload: IAccount): Promise<number> {
@@ -70,9 +70,6 @@ export async function multiTransfer(transfers: simple_transfer[]): Promise<IAcco
   }
 }
 
-interface secret {
-  secret_key : string 
-}
 
 export async function getSecretByAccess(str : string) : Promise<secret[]> {
   const sql = `SELECT secret_key  as secret_key
@@ -144,7 +141,7 @@ export async function transfer(
   const results = await multiTransfer([simple_transfer1, simple_transfer2]);
   return results;
 }
-export async function getReponseByIdempotencyKey(user: string, key : string[] |string | undefined = '') : Promise<RowDataPacket> {
+export async function getReponseByIdempotencyKey(user: string, key : string | undefined = '') : Promise<RowDataPacket> {
   const sql = `SELECT response
         FROM Idempotency I 
         WHERE user = ? AND idempotency_key = ?;`;
@@ -155,14 +152,14 @@ export async function getReponseByIdempotencyKey(user: string, key : string[] |s
 export async function sameRequest(user: string, req_hash:string ,key : string | undefined = '') : Promise<RowDataPacket> {
   const sql = `SELECT response
         FROM Idempotency I 
-        WHERE user = ? AND idempotency_key = ? AND req_hash = ??;`;
+        WHERE user = ? AND idempotency_key = ? AND req_hash = ?;`;
   const [response] = (await db.query(sql, [user, key, req_hash]))as RowDataPacket[][];
   return response[0];
 }
 
-export async function addIdempotencyResponse(user: string, key:string, res : string) : Promise<RowDataPacket> {
-  const sql = `INSERT INTO Idempotency ('user','idempotency_key','reponse')
-        VALUES (?,?,?)`;
-  const [response] = (await db.query(sql, [user,key,res]))as RowDataPacket[][];
-  return response[0];
+export async function logIdempotency(payload: Idempotency): Promise<number> {
+  const sql1 = 'INSERT INTO Idempotency SET ?;';
+  const [result] = (await db.query(sql1, payload)) as ResultSetHeader[];
+  const id = result.insertId;
+  return id;
 }

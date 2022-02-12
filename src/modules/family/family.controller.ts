@@ -2,10 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+import * as Util from "../utils.dal.js";
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
 import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
 import * as S from "./family.service.js";
+import {Idempotency} from '../../types/types.js';
 
 // Create family account
 export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
@@ -18,6 +20,15 @@ export async function createFamilyAccount(req: Request, res: Response): Promise<
             message: "Family account created",
             data: new_family_account_details,
         };
+        if('idempotency_key' in req.headers) {
+            const idem : Idempotency = { 
+                idempotency_key: req.headers.idempotency_key as string,
+                account_id : "111",
+                response : JSON.stringify(outputResponse.message),
+                req_hash : "abc"
+            }
+            await Util.logIdempotency(idem);
+        }
         res.status(outputResponse.status).json(outputResponse);
     }
 }

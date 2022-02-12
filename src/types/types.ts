@@ -50,8 +50,18 @@ export enum details_level {
   SHORT = 'short',
 }
 
+export interface Idempotency {
+  account_id:string,
+  idempotency_key:string,
+  req_hash:string,
+  response:string
+}
 export enum account_type {
   INDIVIDUAL = 'individual',
   BUSINESS = 'business',
   FAMILY = 'family',
+}
+
+export interface secret {
+  secret_key : string 
 }
