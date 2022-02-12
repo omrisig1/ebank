@@ -20,6 +20,7 @@
         "DB_USER_NAME":"root",
         "DB_USER_PASSWORD":"qwerty"
     },
+    "TRASNFER_LIMIT_ON":true,
     "family":{
         "MIN_BALANCE": 5000,
         "TRANS_F2B": 5000

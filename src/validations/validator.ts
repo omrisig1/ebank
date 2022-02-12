@@ -196,3 +196,11 @@ export function emailValidation(email : string ){
   }
   throw new Error('not valid email addtress');
 }
+export function checkTrasnferLimit(amount: string, config_size  : string) {
+  if(!config.TRASNFER_LIMIT_ON){
+    return true;
+  }
+  else{
+    return NumberGreaterThan(amount, config_size);
+  }
+}
