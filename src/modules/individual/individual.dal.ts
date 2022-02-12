@@ -46,6 +46,9 @@ export async function getIndividualAccountByAccountId(
                     ON I.address_id = Ad.address_id
                 WHERE I.account_id = ?;`
   const [individuals] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  if(!individuals[0]) {
+    return individuals[0];
+  }
   let individual_no_address_key = individuals[0];
   delete individual_no_address_key.address_id;
 
@@ -54,7 +57,6 @@ export async function getIndividualAccountByAccountId(
     ...individual_no_address_key as IIndividualAccount,
     address: address[0] as IAddress
   }
-  // return individuals[0] as IIndividualAccount;
   return individual;
 }
 
@@ -71,15 +73,13 @@ export async function getIndividualsByAccountsIds(
   return individuals;
 }
 
-// export async function getIndividualsByIndividualsIds(
-//   individual_ids: string[]
-// ): Promise<IIndividualAccount[]> {
-//   const sql = `SELECT * 
-//                 FROM Accounts as A 
-//                 JOIN IndividualAccounts as I
-//                     ON A.account_id = I.account_id
-//                 WHERE individual_id IN (?);`;
-//   const [individuals] = await db.query(sql, [individual_ids]);
-//   return individuals as IIndividualAccount[];
-// }
+export async function getIndividualByAccountId(account_id: number): Promise<IIndividualAccount | undefined> {
+  const sql = `SELECT * 
+               FROM Accounts as A 
+               JOIN IndividualAccounts as I
+                  ON A.account_id = I.account_id
+               WHERE A.account_id = ?;`;
+  const [individuals] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  return individuals[0] as IIndividualAccount;
+}
 
