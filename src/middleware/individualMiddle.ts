@@ -43,7 +43,6 @@ export function getIndividualMiddle(req: Request, res: Response, next: NextFunct
     */
 }
 
-
 export async function transferIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
     Validator.isValNumeric(req.body.source_account);
