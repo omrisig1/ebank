@@ -4,7 +4,8 @@ import raw from "../../middleware/route.async.wrapper.js";
 import * as C from "./individual.controller.js";
 import express from 'express';
 import * as IMiddleware from '../../middleware/individualMiddle.js';
-
+import { black_list_Middleware } from "../../middleware/black_list.middleware.js";
+import * as T from "../../types/types.js";
 const router = express.Router();
 
 // Parse json req.body on post routes
@@ -20,7 +21,7 @@ router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccou
 router.put("/change-status", raw(C.changeAccountStatus));
 
 // Transfer F2B
-router.post("/transfer",raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
+router.post("/transfer",raw(black_list_Middleware(T.account_type.INDIVIDUAL)), raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
 
   
 export default router;
