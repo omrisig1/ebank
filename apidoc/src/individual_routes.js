@@ -1,5 +1,9 @@
 /**
  * @api {get} /individual/:id 1. Get individual account information
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName GetIndividualAccountInformation
  * @apiVersion 1.0.0
  * @apiGroup Individual Account
@@ -64,33 +68,34 @@
 
 /**
  * @api {post} /individual/ 2. create individual account information
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName CreateIndividualAccount
  * @apiVersion 1.0.0
  * @apiGroup Individual Account
  * @apiError Individual Error creating account for Individual.
 
- * @apiParam {string} type Primary ID of the User.
- * @apiParam {string} first_name Primary ID of the User.
- * @apiParam {string} last_name Primary ID of the User.
- * @apiParam {number} account_id Primary ID of the User.
- * @apiParam {string} currency Primary ID of the User.
- * @apiParam {number} balance Primary ID of the User.
- * @apiParam {string} status Primary ID of the User.
- * @apiParam {number} address_id Primary ID of the User.
- * @apiParam {number} individuel_id Primary ID of the User.
- * @apiParam {string} email Primary ID of the User.
+ * @apiParam {string} first_name 
+ * @apiParam {string} last_name 
+ * @apiParam {string = ['USD', 'EUR']} currency 
+ * @apiParam {number} [balance=0] 
+ * @apiParam {number} [address = null] 
+ * @apiParam {number} individual_id 
+ * @apiParam {string} [email=null] 
 
  * @apiSuccess {number} primary_id Primary ID of the User.
- * @apiSuccess {string} type Primary ID of the User.
- * @apiSuccess {string} first_name Primary ID of the User.
- * @apiSuccess {string} last_name Primary ID of the User.
- * @apiSuccess {number} account_id Primary ID of the User.
- * @apiSuccess {string} currency Primary ID of the User.
- * @apiSuccess {number} balance Primary ID of the User.
- * @apiSuccess {string} status Primary ID of the User.
- * @apiSuccess {number} address_id Primary ID of the User.
- * @apiSuccess {number} individuel_id Primary ID of the User.
- * @apiSuccess {string} email Primary ID of the User.
+ * @apiSuccess {string} type 
+ * @apiSuccess {string} first_name 
+ * @apiSuccess {string} last_name 
+ * @apiSuccess {number} account_id 
+ * @apiSuccess {string} currency 
+ * @apiSuccess {number} balance 
+ * @apiSuccess {string} status 
+ * @apiSuccess {number} address_id 
+ * @apiSuccess {number} individuel_id 
+ * @apiSuccess {string} email 
  * @apiSuccess {String} firstname Firstname of the User.
  * @apiSuccess {String} lastname  Lastname of the User.
  * @apiErrorExample {json} Error-Response:
@@ -117,12 +122,16 @@
  */
 
 /**
- * @api {post} /individual/change-status/:id 3. Change Account Status
+ * @api {post} /individual/change-status/ 3. Change Account Status
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName ChangeAccountStatus
  * @apiVersion 1.0.0
  * @apiGroup Individual Account
  * @apiParam {string} new_status new status.
- * @apiParam {string[]} ids ids to change status for.
+ * @apiParam {string[] = ["ACTIVE","INACTIVE]"} ids ids to change status for.
  * @apiSuccess {String} status status of the response.
  * @apiSuccess {object[]} changed objects.
  * @apiSuccessExample {json} Success-Response:

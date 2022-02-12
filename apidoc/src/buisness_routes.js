@@ -1,10 +1,14 @@
 /**
  * @api {get} /buisness/:id 1.Request buisness account information
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName GetBuisnessAccountInformation
  * @apiVersion 1.0.0
  * @apiGroup Buisness Account
  * @apiError buisness The <code>id</code> of the Account was not found.
- * @apiParam {Number} primary_id primary id of the account 
+ * @apiParam {Number} id primary id of the account 
  * @apiSuccess {number} primary_id .
  * @apiSuccess {string} currency .
  * @apiSuccess {number} balance .
@@ -46,18 +50,22 @@
 
 /**
  * @api {post} /buisness/ 2.create buisness account information
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName CreateBuisnessAccount
  * @apiVersion 1.0.0
  * @apiGroup Buisness Account
  * @apiError Buisness Error creating account for Buisness.
 
  * @apiParam {number} primary_id .78 digit bigger than 1000000 number
- * @apiParam {string} currency . Currency of the Account
- * @apiParam {number} balance . Initial Balance Of The Account
- * @apiParam {Object} address . 
+ * @apiParam {string = ['USD','EUR']} currency . Currency of the Account
+ * @apiParam {number} [balance = 0]  . Initial Balance Of The Account
+ * @apiParam {Object} [address = null] . 
  * @apiParam {number} company_id . 8 digit bigger than 10000000 number
- * @apiParam {string} company_name . The Comapny Name
- * @apiParam {string} context . The Context Which The Account Is For.
+ * @apiParam {string} [company_name = null] . The Comapny Name
+ * @apiParam {string} [context= null] . The Context Which The Account Is For.
 
  * @apiSuccess {number} primary_id .
  * @apiSuccess {number} account_id .
@@ -98,7 +106,11 @@
  */
 
 /**
- * @api {post} /buisness/change-status/:id 5.Change Account Status
+ * @api {post} /buisness/change-status/ 5.Change Account Status
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName ChangeAccountStatus
  * @apiVersion 1.0.0
  * @apiGroup Buisness Account
@@ -131,6 +143,10 @@
 
 /**
  * @api {post} /buisness/transfer/same-currency 3.Trasnfer to Buisness/Individual with same currency
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName TrasnferSameCurrency
  * @apiVersion 1.0.0
  * @apiGroup Buisness Account
@@ -180,6 +196,10 @@
 
 /**
  * @api {post} /buisness/transfer/different-currency 4.Trasnfer to Buisness with different currency
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName TrasnferDifferentCurrency
  * @apiVersion 1.0.0
  * @apiGroup Buisness Account

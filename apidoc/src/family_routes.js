@@ -1,11 +1,15 @@
 /**
  * @api {get} /family/:id/:details_level 1.Request family account information
+ * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName GetFamilyAccountInformation
  * @apiVersion 1.0.0
  * @apiGroup Family Account
  * @apiError family The <code>id</code> of the Account was not found.
- * @apiParam {Number} primary_id primary id of the account
- * @apiParam {string} details_level level of wanted details: ['short','full']
+ * @apiParam {Number} id primary id of the account
+ * @apiParam {string= ['short','full']} details_level level of wanted details: 
  * @apiSuccess {number} primary_id .
  * @apiSuccess {string} currency .
  * @apiSuccess {number} balance .
@@ -62,16 +66,19 @@
 
 /**
  * @api {post} /family/ 2.create family account information
+ * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName CreateFamilyAccount
  * @apiVersion 1.0.0
  * @apiGroup Family Account
  * @apiError Family Error creating account for Family.
 
  * @apiParam {string} currency .
- * @apiParam {number} balance .
- * @apiParam {string} status .
- * @apiParam {number} address_id .
- * @apiParam {string} context .
+ * @apiParam {number} [balance=0] .
+ * @apiParam {number} [address=null] .
+ * @apiParam {string} [context=null] .
  * @apiParam {object} owners tuple list of owners and how much each first deposit ['1234567',100].
  * 
  * @apiSuccess {number} primary_id .
@@ -132,6 +139,10 @@
 
 /**
  * @api {post} /family/transfer 3.Trasnfer to Buisness with same currency
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName TrasnferSameCurrencyFamily
  * @apiVersion 1.0.0
  * @apiGroup Family Account
@@ -141,37 +152,66 @@
  * @apiSuccess {String} status status of the response.
  * @apiSuccess {string} message action outcome.
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     "status":"success",
- *     "message": "money transfered"
+{
+    "status": 200,
+    "message": "Transfer has done successfully.",
+    "data": [
+        {
+            "account_id": 218,
+            "currency": "EUR",
+            "balance": 22000,
+            "status_id": 1,
+            "a_date": "2022-02-12T10:13:41.000Z",
+            "e_date": "2022-02-12T12:25:54.000Z"
+        },
+        {
+            "account_id": 223,
+            "currency": "EUR",
+            "balance": 902000,
+            "status_id": 1,
+            "a_date": "2022-02-12T12:25:49.000Z",
+            "e_date": "2022-02-12T12:25:54.000Z"
+        }
+    ]
+}
  */
 
  /**
  * @api {post} /family/close/:id 6.Close Account 
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName CloseAccount 
  * @apiVersion 1.0.0
  * @apiGroup Family Account
- * @apiParam {string} ids primary id to close
+ * @apiParam {string} id id in the params -  primary id to close
  * @apiSuccess {String} status status of the response.
  * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     "status":"success",
- *     "message":"account closed"
+{
+    "status": 200,
+    "message": "Family account has closed successfully.",
+    "data": 213
+}
  */
 
  /**
  * @api {post} family/add/:family_id/:details_level 4.add individual to family
+ * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName AddIndividualToFamily
  * @apiVersion 1.0.0
  * @apiGroup Family Account
- * @apiParam {string} new_status new_status.
- * @apiParam {string[]} ids ids to change status for.
+ * @apiParam {string[][]} individuals_to_add individuals to add and thier amount
  * @apiSuccess {String} status status of the response.
- * @apiSuccess {object[]} changed objects.
+ * @apiSuccess {String} message description of the response.
+ * @apiSuccess {object} family with owners.
  * @apiSuccessExample {json} Success-Response:
  {
     "status": 200,
-    "message": "Family account found",
+    "message": "Individuals added to family account.",
     "data": {
         "account_id": 218,
         "currency": "EUR",
@@ -237,13 +277,19 @@
 
  /**
  * @api {post} family/remove/:family_id/:details_level 5. remove individual to family
+  * @apiHeader {String} access-key Users unique access-key.
+ * @apiHeader {String} req_hash hash of the request according to predetermined rules
+ * @apiHeader {String} idempotency_key 
+ * @apiHeader {String} salt  random generated string
  * @apiName RemoveIndividualFromFamily
  * @apiVersion 1.0.0
  * @apiGroup Family Account
- * @apiParam {string} new_status new_status.
- * @apiParam {string[]} ids ids to change status for.
+ * @apiParam {string} family account id to remove from 
+ * @apiParam {string=['short','full']} details_level reponse
+ * @apiParam {string[][]} individuals_to_remove individuals to remove and thier amount
  * @apiSuccess {String} status status of the response.
- * @apiSuccess {object[]} changed objects.
+ * @apiSuccess {String} message description of the response.
+ * @apiSuccess {object} family with owners.
  * @apiSuccessExample {json} Success-Response:
  {
     "status": 200,
