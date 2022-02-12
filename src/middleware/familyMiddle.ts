@@ -5,11 +5,10 @@
 import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js';
 import * as individual_dal from '../modules/individual/individual.dal.js';
-import * as buisness_dal from '../modules/business/business.dal.js';
 import * as family_dal from '../modules/family/family.dal.js';
 
 import * as Util from '../modules/utils.dal.js';
-import { account_status } from '../types/types.js';
+import { account_status, account_type } from '../types/types.js';
 import config from '../../config.json';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
@@ -133,25 +132,28 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
   Validator.isValNumeric(req.body.destination_account);
   Validator.isValNumeric(req.body.amount);
   Validator.isPositive(req.body.amount);
-  const source_family_account = await family_dal.getFamilyAccountsByAccountIDS(req.body.source_account);
-  const destination_account = await buisness_dal.getBusinessesByAccountsIds(req.body.destination_account);
+  await Validator.isAccountExists(Number(req.body.source_account));
+  await Validator.isAccountExists(Number(req.body.destination_account));
+  const source_family_account = await Util.getAccountById(req.body.source_account);
+  const destination_account = await Util.getAccountById(req.body.destination_account);
 
-  Validator.NumberEquals(destination_account.length, 1);
-  Validator.NumberEquals(source_family_account.length, 1);
+  // Validator.NumberEquals(destination_account.length, 1);
+  // Validator.NumberEquals(source_family_account.length, 1);
 
-  Validator.isExists(source_family_account[0].account_id);
-  Validator.isExists(destination_account[0].account_id);
-  Validator.accountStatusEquals(source_family_account[0].status_id, account_status.ACTIVE);
-  Validator.accountStatusEquals(destination_account[0].status_id, account_status.ACTIVE);
+  await Validator.checkAccountTypeEquals(source_family_account.account_id as number, account_type.FAMILY);
+  await Validator.checkAccountTypeEquals(destination_account.account_id as number, account_type.BUSINESS);
+  
+  Validator.accountStatusEquals(source_family_account.status_id, account_status.ACTIVE);
+  Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
 
-  Validator.checkAccountCurrencyEquals(source_family_account[0].currency, destination_account[0].currency);
-  Validator.balanceGreaterThan(source_family_account[0].balance - req.body.amount, config.family.MIN_BALANCE)
+  Validator.checkAccountCurrencyEquals(source_family_account.currency, destination_account.currency);
+  Validator.balanceGreaterThan(source_family_account.balance - req.body.amount, config.family.MIN_BALANCE)
      const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source);
      const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
      for (const acc of full_accounts_info) {
         Validator.isExists(acc.account_id);
         Validator.accountStatusEquals(acc.status_id, account_status.ACTIVE);
-        Validator.checkAccountCurrencyEquals(source_family_account[0].currency, acc.currency);
+        Validator.checkAccountCurrencyEquals(source_family_account.currency, acc.currency);
           
           
       }

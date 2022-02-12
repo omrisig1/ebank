@@ -1,7 +1,15 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import config from "../../config.json";
-import { account_status } from '../types/types.js';
 import * as individual_dal from "../modules/individual/individual.dal.js";
+import validationException from "../exceptions/validation-exception.js";
+import IAccount from "../modules/account.model";
+import { getBusinessByAccountId } from "../modules/business/business.dal.js";
+import { getFamilyByAccountId } from "../modules/family/family.dal.js";
+import { getIndividualByAccountId } from "../modules/individual/individual.dal.js";
+import { account_status, account_type } from '../types/types.js';
+import * as Util from '../modules/utils.dal.js';
 
 export function inFamily(accounts : string[] , id: string): boolean{
   if(accounts.includes(id)) {
@@ -23,12 +31,21 @@ export function isExists(val: any ) : boolean|Error{
   throw new Error('account does not exists');
 }
 
+export async function isAccountExists(account_id: number) : Promise<boolean | Error>{
+  const account : IAccount = await Util.getAccountById(account_id)
+  if(account) {
+    return true;
+  }
+  throw new validationException(400, `Account ${account_id} doesn't exist.`)
+}
+
 export function NumberEquals(num : string | number, than: string | number) : boolean{
   if(Number(num) === Number(than)) {
     return true;
   }
   throw new Error(`${num} should be equal to ${than}`);
 }
+
 
 export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
   if(Number(num) > Number(than)) {
@@ -82,7 +99,7 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
 }
 
 export function isValNumeric(val: string | number |undefined) : boolean|never{
-  if (val && Number(val)) {
+  if (val && Number(val) || (val === 0 || val === '0')) {
     return true;
   }
   throw new Error(`value ${val} is not numeric`);
@@ -110,11 +127,16 @@ export function stringLengthEquals(val: string, length: number) :boolean|Error{
 //   throw new Error('trasnfer amount exceeds account type permition error');
 // }
 
-export function checkAccountTypeEquals(stringA: string, stringB: string) : boolean|Error{
-  if (stringA === stringB) {
+export async function checkAccountTypeEquals(account_id: number, account_to_be_equal: string) : Promise<boolean | Error>{
+  let account_type_param: string = "";
+  if(await getIndividualByAccountId(account_id)) account_type_param = account_type.INDIVIDUAL;
+  if(await getBusinessByAccountId(account_id)) account_type_param = account_type.BUSINESS;
+  if(await getFamilyByAccountId(account_id)) account_type_param = account_type.FAMILY;
+
+  if (account_type_param === account_to_be_equal) {
     return true;
   }
-  throw new Error('account of different type');
+  throw new validationException(400, `Expected account type of ${account_to_be_equal}, but got ${account_type_param}.`)
 }
 
 export function checkAccountTypeNotEquals(stringA: string, stringB: string) : boolean|Error{

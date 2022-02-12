@@ -72,7 +72,7 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
     let owners_account_number_list = (full_family_account.owners?.map((owner)=>  (((owner as IIndividualAccount).account_id) as number).toString()));
     if(owners_account_number_list && owners_account_number_list != undefined){
         payload.individuals_to_add = payload.individuals_to_add.filter((individual)=>{
-            owners_account_number_list?.some((owner)=> owner == individual[0]);
+            return owners_account_number_list?.every((owner)=> owner != individual[0]);
         });
     }
 
@@ -82,12 +82,17 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
 
     let active_individuals_amounts: [string,string][] = [];
     only_active_individuals.forEach((active)=> {
-        active_individuals_amounts = payload.individuals_to_add.filter((individual)=> individual[0] === String(active.account_id));
+        for (const individual of payload.individuals_to_add) {
+            if(individual[0] === String(active.account_id)) {
+                active_individuals_amounts.push(individual);
+            }
+        }
     });
+
     // sum all active individuals ammounts 
     let amounts_sum = active_individuals_amounts.reduce((total,current)=> total + Number(current[1]),0);
-    const family_new_balance = full_family_account.balance + amounts_sum;
 
+    const family_new_balance = full_family_account.balance + amounts_sum;
     // generate list of tuples with ids and new balance to update - for adding individuals to family
     const individuals_new_balance = generateIndividualsNewBalancesList(only_active_individuals, payload.individuals_to_add);
     

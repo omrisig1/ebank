@@ -78,9 +78,10 @@ export async function getFamilyAccountByAccountId(
   det_level: string = details_level.SHORT
 ): Promise<IFamilyAccount> {
   const sql = `SELECT *
-        FROM Accounts as A JOIN FamilyAccounts as F
-            ON A.account_id = F.account_id
-        WHERE A.account_id = ?;`;
+               FROM Accounts as A 
+               JOIN FamilyAccounts as F
+                  ON A.account_id = F.account_id
+               WHERE A.account_id = ?;`;
   const [result] = (await db.execute(sql, [account_id])) as RowDataPacket[];
   const family = result[0] as IFamilyAccount;
 
@@ -140,15 +141,13 @@ export async function closeFamilyAccountById(account_id: number): Promise<IFamil
 export async function getFamilyAccountsByAccountIDS(
   account_ids: number[]
 ): Promise<IFamilyAccount[]> {
-  console.log('family account_ids for function:',account_ids);
-
   const sql = `SELECT *
-        FROM Accounts as A JOIN FamilyAccounts as F
-            ON A.account_id = F.account_id
-        WHERE A.account_id IN (?);`;
+               FROM Accounts as A 
+               JOIN FamilyAccounts as F
+                  ON A.account_id = F.account_id
+               WHERE A.account_id IN (?);`;
   const [result] = (await db.query(sql, account_ids)) as RowDataPacket[];
   const family = result as IFamilyAccount[];
-  console.log('family array:',family);
   return family;
 }
 
@@ -169,4 +168,14 @@ export async function updateFamilyAndIndividualsBalance(
   sql += `end) WHERE account_id IN (?)`;
 
   await db.query(sql, [accounts]);
+}
+
+export async function getFamilyByAccountId(account_id: number): Promise<IFamilyAccount | undefined> {
+  const sql = `SELECT * 
+               FROM Accounts as A 
+               JOIN FamilyAccounts as F
+                  ON A.account_id = F.account_id
+               WHERE A.account_id = ?;`;
+  const [familys] = (await db.query(sql, account_id)) as RowDataPacket[][];
+  return familys[0] as IFamilyAccount;
 }
