@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import config from "../../config.json";
 import { account_status } from '../types/types.js';
+import * as individual_dal from "../modules/individual/individual.dal.js";
 
 export function inFamily(accounts : string[] , id: string): boolean{
   if(accounts.includes(id)) {
@@ -51,8 +52,12 @@ export function isPositive(num:string) :boolean{
   throw new Error("amount should be positive");
 }
 
-export function IndividualIDUnique(str:string) :string{
-  return str;
+export async function IndividualIDUnique(str:string) : Promise<boolean | never>{
+  const result = await individual_dal.getIndividualsByIndividualsIds([str]);
+  if (result && result.length>0) {
+    throw new Error('individual ID already exists');
+  }
+  return true;
 }
 
 export function stringNotEmpty(str: string):boolean|''{

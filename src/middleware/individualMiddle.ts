@@ -5,12 +5,12 @@ import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js'; 
 import config from "../../config.json";
 
-export function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : void{
+export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
      Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
      Validator.isValNumeric(req.body.individual_id);
     //add validation - config.individual.MIN_INDIVIDUAL_ID_NUM
      Validator.stringLengthAtLeast(req.body.individual_id,config.individual.INDIVIDUAL_ID_DIGITS);
-     Validator.IndividualIDUnique(req.body.individual_id as string);
+     await Validator.IndividualIDUnique(req.body.individual_id);
     next();
     /*
     1.1 create individual account:

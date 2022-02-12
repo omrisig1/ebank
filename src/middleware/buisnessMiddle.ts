@@ -65,8 +65,9 @@ export async function transferBuisnessDiffCurMiddle(req: Request, res: Response,
         Validator.isPositive(req.body.amount);
         const buisness_source = await B_DAL.getBusinessesByAccountsIds([(req.body.source_account)]);
         const buisness_destination = await B_DAL.getBusinessesByAccountsIds([(req.body.destination_account)]);
+        
         Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
-        Validator.NumberEquals(buisness_source.length, 1); // account exists and it's buisness
+        Validator.NumberEquals(buisness_destination.length, 1); // account exists and it's buisness
         Validator.accountStatusEquals(buisness_source[0].status_id, account_status.ACTIVE);
         Validator.accountStatusEquals(buisness_destination[0].status_id, account_status.ACTIVE);
         Validator.balanceGreaterThan(
