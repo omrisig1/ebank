@@ -12,19 +12,19 @@ import fetch from 'node-fetch';
 import config from '../../../config.json';
 import IAccount from '../account.model.js';
 // Create an business account
-export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
+export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<IBusinessAccount|undefined> {
   // TODO: call dal to create new business account
   //       add validations
   //no buisness logic
-  payload.black_list = payload.black_list? payload.black_list : false;
+  payload.black_list = payload.black_list ? payload.black_list : false;
   payload.status_id = account_status.ACTIVE;
-  
+
   const business_account = await business_dal.createBusinessAccount(payload);
   return business_account;
 }
 
 // Get business account by ID
-export async function getBusinessAccountById(idToRead: number): Promise<any> {
+export async function getBusinessAccountById(idToRead: number): Promise<IBusinessAccount> {
   // TODO: call dal to create new business account
   //       add validations
   // np buisness logic

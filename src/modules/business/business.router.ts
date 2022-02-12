@@ -5,6 +5,7 @@ import * as C from "./business.controller.js";
 import express from 'express';
 import { changeAccountStatus } from "../individual/individual.controller.js";
 import * as BMiddleware from '../../middleware/buisnessMiddle.js';
+import { changeStatusMiddle } from "../../middleware/changeStatusMiddle.js";
 
 const router = express.Router();
 
@@ -24,6 +25,6 @@ router.post("/transfer/same-currency",raw(BMiddleware.transferBuisnessSameCurMid
 router.post("/transfer/different-currency",raw(BMiddleware.transferBuisnessDiffCurMiddle), raw(C.transferFromBusinessDifferentCurrency));
 
 // Activate/Deactivate accounts - uses the individual controller
-router.put("/change-status", raw(changeAccountStatus));
+router.put("/change-status", raw(changeStatusMiddle), raw(changeAccountStatus));
   
 export default router;

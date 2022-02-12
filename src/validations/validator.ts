@@ -76,8 +76,26 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
   return true;
 }
 
-export function isValNumeric(val: string | number |undefined) : boolean|never{
-  if (val && Number(val) || (val === 0 || val === '0')) {
+// export function isValNumeric(val: string | number | undefined, field?: string): boolean | never;
+// export function isValNumeric(val: string[] | number[], field?: string | string[]): boolean | never;
+// export function isValNumeric(val: any, field?: string | string[]): boolean | never {
+//   if (Array.isArray(val) && (Array.isArray(field))) {
+//     for (const [i, v] of val.entries()) {
+//       if (!((v && Number(v)) || v === 0 || v === '0')) {
+//         throw new Error(`Field ${field[i]} value is not numeric`);
+//       }
+//     }
+//     return true;
+//   } else if (Array.isArray(val)){
+//     if (val.every((v) => (v && Number(v)) || v === 0 || v === '0')) return true;
+//     throw new Error(`Field ${field as string} include value that is not numeric`);
+//    }
+//   else if ((val && Number(val)) || val === 0 || val === '0') return true;
+//   throw new Error(`Field ${field as string} value is not numeric`);
+// }
+
+export function isValNumeric(val: string | number | undefined): boolean | never {
+  if ((val && Number(val)) || val === 0 || val === '0') {
     return true;
   }
   throw new Error(`value ${val} is not numeric`);
@@ -143,15 +161,29 @@ export function currencyIsValid(currency: string) : boolean | Error{
 }
 
 export function accountStatusNotEquals(statusA: string, statusB: string) : boolean | Error{
-  if (statusA !== statusB) {
+  if (statusA.toUpperCase() !== statusB.toUpperCase()) {
     return true;
   }
   throw new Error('status type are NOT the same - cannot change');
 }
 
 export function accountStatusEquals(statusA: undefined | boolean | number, statusB: boolean | string | number) : boolean | Error{
-  if (statusA == statusB) {
+  if (Number(statusA) == Number(statusB)) {
     return true;
   }
   throw new Error('status type are the same - cannot change');
+}
+
+export function isTypeArray(val: any, field: string): boolean | never {
+  if (Array.isArray(val)) {
+    return true;
+  }
+  throw new Error(`Field ${field} input should be array`);
+}
+
+export function isStatusExists(status: string): boolean | never {
+  if (status.toUpperCase() in account_status) {
+    return true;
+  }
+  throw new Error(`Status ${status} not exists`);
 }

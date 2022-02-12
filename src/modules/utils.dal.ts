@@ -29,7 +29,7 @@ export async function getAccountsByIds(account_ids: string[]): Promise<IAccount[
   const sql = `SELECT * 
                 FROM Accounts as A 
                 WHERE A.account_id IN (?);`;
-  const [accounts] = await db.query(sql, account_ids);
+  const [accounts] = await db.query(sql, [account_ids]);
   return accounts as IAccount[];
 }
 

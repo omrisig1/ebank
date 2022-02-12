@@ -14,8 +14,21 @@ import config from '../../config.json';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
       Validator.mandatoryFieldExists(req.body,['owners','currency']);
-      Validator.currencyIsValid(req.body.currency)
-      const account_ids = req.body.owners.map((arr:any)=> arr[0]);
+      Validator.currencyIsValid(req.body.currency);
+      if (req.body.balance) {
+        Validator.isValNumeric(req.body.balance);
+        Validator.balanceGreaterThan(req.body.balance, 0);
+      }
+      Validator.isTypeArray(req.body.owners, 'owners');
+      Validator.NumberGreaterThan(req.body.owners.length, 0);
+      for (const owner of req.body.owners) {
+        Validator.isTypeArray(owner, 'owners[]');//array inside the array
+        Validator.NumberEquals(owner.length, 2);
+        Validator.isValNumeric(owner[0]);
+        Validator.isValNumeric(owner[1]);
+        Validator.NumberGreaterThan(owner[1], 0);
+      }
+      const account_ids = req.body.owners.map((arr: any) => arr[0]);
       const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
       const sum = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
       Validator.NumberGreaterThan(sum, config.family.MIN_BALANCE);
@@ -66,6 +79,15 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
         Validator.mandatoryFieldExists(req.body,['individuals_to_add']);
         Validator.mandatoryFieldExists(req.params,['family_id']);
         Validator.isValNumeric(req.params.family_id);
+        Validator.isTypeArray(req.body.individuals_to_add, 'individuals_to_add');
+        Validator.NumberGreaterThan(req.body.individuals_to_add.length, 0);
+        for (const owner of req.body.individuals_to_add) {
+          Validator.isTypeArray(owner, 'individuals_to_add[]'); //array inside the array
+          Validator.NumberEquals(owner.length, 2);
+          Validator.isValNumeric(owner[0]);
+          Validator.isValNumeric(owner[1]);
+          Validator.NumberGreaterThan(owner[1], 0);
+        }
         const amounts = req.body.individuals_to_add.map((item:any)=>item[1]) ;
         amounts.map((amount:any)=>Validator.isPositive(amount));
         const account_ids = req.body.individuals_to_add.map((arr:any)=> arr[0]);
@@ -97,6 +119,15 @@ export async function removeIndividualFromFamilyMiddle(req: Request, res: Respon
         Validator.mandatoryFieldExists(req.body,['individuals_to_remove']);
         Validator.mandatoryFieldExists(req.params,['family_id']);
         Validator.isValNumeric(req.params.family_id)
+        Validator.isTypeArray(req.body.individuals_to_remove, 'individuals_to_remove');
+        Validator.NumberGreaterThan(req.body.individuals_to_remove.length, 0);
+        for (const owner of req.body.individuals_to_remove) {
+          Validator.isTypeArray(owner, 'individuals_to_remove[]'); //array inside the array
+          Validator.NumberEquals(owner.length, 2);
+          Validator.isValNumeric(owner[0]);
+          Validator.isValNumeric(owner[1]);
+          Validator.NumberGreaterThan(owner[1], 0);
+        }
         const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
         amounts.map((amount:string)=>Validator.isPositive(amount));
         const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);

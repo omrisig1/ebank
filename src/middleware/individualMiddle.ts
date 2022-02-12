@@ -8,9 +8,13 @@ import config from "../../config.json";
 export function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : void{
      Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
      Validator.isValNumeric(req.body.individual_id);
-    //add validation - config.individual.MIN_INDIVIDUAL_ID_NUM
-     Validator.stringLengthAtLeast(req.body.individual_id,config.individual.INDIVIDUAL_ID_DIGITS);
+     Validator.NumberGreaterThan(req.body.individual_id, config.individual.MIN_INDIVIDUAL_ID_NUM);
+     Validator.NumberEquals(req.body.individual_id.length,config.individual.INDIVIDUAL_ID_DIGITS);
      Validator.IndividualIDUnique(req.body.individual_id as string);
+      if (req.body.balance) {
+        Validator.isValNumeric(req.body.balance);
+        Validator.balanceGreaterThan(req.body.balance, 0);
+      }
     next();
     /*
     1.1 create individual account:
