@@ -18,6 +18,7 @@ import { IIndividualAccount } from "../individual/individual.model.js";
 import * as Validator from '../../validations/validator.js';
 import { IBusinessAccount } from "../business/business.model.js";
 import config from '../../../config.json';
+import IAccount from '../account.model.js';
 
 
 // Create family account
@@ -133,7 +134,7 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
 }
 
 // Transfer F2B
-export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
+export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<IAccount[]> {
     const accounts1: IFamilyAccount[] = await dal.getFamilyAccountsByAccountIDS([Number(payload.source_account)]);
     const accounts2: IBusinessAccount[] = await buisness_dal.getBusinessesByAccountsIds([(payload.destination_account)]);
     const source_acc = accounts1.find((acc)=> acc.account_id == Number(payload.source_account));
