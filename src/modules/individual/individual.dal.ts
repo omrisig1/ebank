@@ -99,8 +99,3 @@ export async function getIndividualsByIndividualsIds(
 }
 
 
-
-
-export function getFamilyAccountsByAccountIDS(arg0: number[]): any[] | PromiseLike<any[]> {
-    throw new Error("Function not implemented.");
-}
