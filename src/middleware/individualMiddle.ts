@@ -7,6 +7,9 @@ import config from "../../config.json";
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
      Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
+     if(req.body.email) {
+         Validator.emailValidation(req.body.email);
+     }
      Validator.isValNumeric(req.body.individual_id);
     //add validation - config.individual.MIN_INDIVIDUAL_ID_NUM
      Validator.stringLengthAtLeast(req.body.individual_id,config.individual.INDIVIDUAL_ID_DIGITS);

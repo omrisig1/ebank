@@ -182,3 +182,11 @@ export function accountStatusEquals(statusA: undefined | boolean | number, statu
   }
   throw new Error('status type are the same - cannot change');
 }
+
+export function emailValidation(email : string ){
+  const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  if (emailRegexp.test(email)) {
+    return true;
+  }
+  throw new Error('not valid email addtress');
+}
