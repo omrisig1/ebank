@@ -19,7 +19,7 @@ export async function createNewBusinessAccount(payload: IBusinessAccount): Promi
   //no buisness logic
   payload.black_list = payload.black_list? payload.black_list : false;
   payload.status_id = account_status.ACTIVE;
-  
+  payload.balance = payload.balance? payload.balance : 0;
   const business_account = await business_dal.createBusinessAccount(payload);
   return business_account;
 }
