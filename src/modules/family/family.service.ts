@@ -65,12 +65,19 @@ export async function getFamilyAccountById(family_id: number, details_level: str
 // Add individuals to family account - return FULL/SHORT
 export async function addIndividualsToFamily(family_id: number, details_level: string = "full", payload: IAddIndividualsToFamily): Promise<IFamilyAccount> {
     // get individual accounts as list by the tuples list
-    const individual_accounts = await getIndividualAccountsByTuplesList(payload.individuals_to_add);
     // get full family account
     const full_family_account: IFamilyAccount = await dal.getFamilyAccountByAccountId(family_id, "full");
+    
+    //check individual account not already part of family
+    let owners_account_number_list = (full_family_account.owners?.map((owner)=>  (owner as IIndividualAccount).account_id)) as number[];
+    if(owners_account_number_list && owners_account_number_list != undefined){
+        payload.individuals_to_add = payload.individuals_to_add.filter((individual)=>Number(individual[0]) in owners_account_number_list);
+    }
 
+    const individual_accounts = await getIndividualAccountsByTuplesList(payload.individuals_to_add);
     // get only active individual accounts from payload
     const only_active_individuals = individual_accounts.filter(ind_acc=> ind_acc.status_id === account_status.ACTIVE);
+
     let active_individuals_amounts: [string,string][] = [];
     only_active_individuals.forEach((active)=> {
         active_individuals_amounts = payload.individuals_to_add.filter((individual)=> individual[0] === String(active.account_id));
