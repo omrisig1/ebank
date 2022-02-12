@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import raw from "../../middleware/route.async.wrapper.js";
 import * as C from "./individual.controller.js";
@@ -17,5 +18,9 @@ router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccou
 
 // Activate/Deactivate accounts
 router.put("/change-status", raw(C.changeAccountStatus));
+
+// Transfer F2B
+router.post("/transfer",raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
+
   
 export default router;
