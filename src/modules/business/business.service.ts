@@ -14,9 +14,6 @@ import IAccount from '../account.model.js';
 
 // Create an business account
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
-  // TODO: call dal to create new business account
-  //       add validations
-  //no buisness logic
   payload.black_list = payload.black_list? payload.black_list : false;
   payload.status_id = account_status.ACTIVE;
   
@@ -26,33 +23,27 @@ export async function createNewBusinessAccount(payload: IBusinessAccount): Promi
 
 // Get business account by ID
 export async function getBusinessAccountById(idToRead: number): Promise<any> {
-  // TODO: call dal to create new business account
-  //       add validations
-  // np buisness logic
   const business_account = await business_dal.getBusinessAccountByAccountId(idToRead);
   return business_account;
 }
 
 // Transfer B2B/B2I (same currency)
-// TODO: call dal to create new business account
-//       add validations and logic
-//       check if destination account is business or individual
 export async function transferSameCurrency(payload: ITransfer): Promise<IAccount[]> {
   // buisness logic:
   // check source - Business
   const source_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.source_account));
-  Validator.isExists(source_acc);
+  // await Validator.isAccountExists(source_acc.account_id as number);
   // check destination - Business or Individual
   const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
   const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
-  if (!business_destination_acc && !individual_destination_acc) throw new Error('destination account not valid - can be B2B or B2I');
+  // if (!business_destination_acc && !individual_destination_acc) throw new Error('destination account not valid - can be B2B or B2I');
 
   // if destination is Business --> transfer B2B
   if (business_destination_acc) {
     if (source_acc.company_id == business_destination_acc.company_id) {
-      Validator.NumberLessThan(payload.amount, 10000);
+      Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_SAME_COMPANY,`maximum transfer in the same compamy (${config.business.MAX_TRANS_B2B_SAME_COMPANY})`]);
     } else {
-      Validator.NumberLessThan(payload.amount, 1000);
+      Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_DIF_COMPANY,`maximum transfer to different compamy (${config.business.MAX_TRANS_B2B_DIF_COMPANY})`]);
     }
     return await util.transfer(payload, source_acc, business_destination_acc);
   }
@@ -61,23 +52,21 @@ export async function transferSameCurrency(payload: ITransfer): Promise<IAccount
 }
 
 // Transfer B2B (different currency)
-
 export async function transferDifferentCurrency(payload: ITransfer): Promise<any> {
   //buisness logic:
   const accounts = await business_dal.getBusinessesByAccountsIds([(payload.source_account),(payload.destination_account)]);
   const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
   const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));
-  Validator.NumberEquals(accounts.length, 2);
   let json = await FX_exchange(source_acc as IBusinessAccount, destination_acc as IBusinessAccount);
   if('error' in (json as any)){
     return json;
   }
   const amount = Number((json as any).rates[(destination_acc as IBusinessAccount).currency]) * Number(payload.amount);
   if(source_acc?.company_id == destination_acc?.company_id){
-    Validator.NumberLessThan(amount, config.business.MAX_TRANS_B2B_FX_SAME_COMPANY);
+    Validator.NumberLessThan([amount,"amount"], [config.business.MAX_TRANS_B2B_FX_SAME_COMPANY,`maximum transfer in the same compamy and different currency(${config.business.MAX_TRANS_B2B_FX_SAME_COMPANY})`]);
   }
   else{
-    Validator.NumberLessThan(amount, config.business.MAX_TRANS_B2B_FX_DIF_COMPANY);
+    Validator.NumberLessThan([amount,"amount"], [config.business.MAX_TRANS_B2B_FX_DIF_COMPANY,`maximum transfer to different compamy and different currency(${config.business.MAX_TRANS_B2B_FX_DIF_COMPANY})`]);
   }
   return await util.transfer(payload, source_acc as IBusinessAccount, destination_acc as IBusinessAccount);
 }

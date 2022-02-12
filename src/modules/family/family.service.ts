@@ -45,14 +45,6 @@ export async function createNewFamilyAccount(payload: ICreateFamilyAccount): Pro
     // and update the family balance by the sum of individual's amounts from payload
     // and add owners to this family
     const full_family_account = await dal.createFamilyAccount(new_family, family_new_balance, individuals_new_balance as [string,string][]);
-
-    // give dal the owners to add to the family account
-    // let family_account_owners: [family_account_id: string,individual_account_id: string][] = [];
-    // for (const owner of payload.owners) {
-    //     family_account_owners.push([String(family_account_without_owners.account_id),owner[0]]);
-    // }
-    //const full_family_account: IFamilyAccount = await dal.addFamilyOwners(family_account_owners,"full");
-
     return full_family_account;
 }
 
@@ -98,14 +90,8 @@ export async function addIndividualsToFamily(family_id: number, details_level: s
     
     // update each active individual's balance (subtract the amount from his balance)
     // update the family balance by the sum of active individual's amounts from payload
-    const family_account_by_details = await dal.addFamilyOwners(family_id, family_new_balance, individuals_new_balance as [string,string][], details_level);
-
     // add active individuals to family account
-    // let family_account_owners: [family_account_id: string,individual_account_id: string][] = [];
-    // for (const active_individual of only_active_individuals) {
-    //         family_account_owners.push([String(family_id),String(active_individual.account_id)]);
-    // }
-    // const family_account_by_details = await dal.addFamilyOwners(family_account_owners,details_level);
+    const family_account_by_details = await dal.addFamilyOwners(family_id, family_new_balance, individuals_new_balance as [string,string][], details_level);
     return family_account_by_details as IFamilyAccount;
 }
 
@@ -141,22 +127,18 @@ export async function deleteIndividualsFromFamily(family_id: number, details_lev
     // update the family balance by the sum of individual's amounts from payload
     const owners_ids = payload.individuals_to_remove.map(individual=> individual[0]);
 
-    const family_account_by_details = await dal.deleteIndividualsFromFamily(family_id, family_new_balance, individuals_new_balance as [string,string][], owners_ids, details_level);
-
     // remove individuals from family account
-    // const family_account_by_details = await dal.deleteIndividualsFromFamily(family_id, owners_ids, details_level);
+    const family_account_by_details = await dal.deleteIndividualsFromFamily(family_id, family_new_balance, individuals_new_balance as [string,string][], owners_ids, details_level);
     return family_account_by_details;
 }
 
 // Transfer F2B
 export async function transferFromFamilyToBusiness(payload: ITransfer): Promise<any> {
     const accounts1: IFamilyAccount[] = await dal.getFamilyAccountsByAccountIDS([Number(payload.source_account)]);
-    Validator.NumberEquals(accounts1.length, 1);
     const accounts2: IBusinessAccount[] = await buisness_dal.getBusinessesByAccountsIds([(payload.destination_account)]);
     const source_acc = accounts1.find((acc)=> acc.account_id == Number(payload.source_account));
-    Validator.NumberEquals(accounts2.length, 1);
     const destination_acc = accounts2.find((acc)=> acc.account_id == Number(payload.destination_account));
-    Validator.NumberLessThan(payload.amount, 5000);
+    Validator.NumberLessThan([payload.amount,"amount"], [config.family.TRANS_F2B,`the maximum transfer from family to business (${config.family.TRANS_F2B})`]);
     const simple_transfer1 : simple_transfer = {
         account_id: Number(payload.source_account),
         new_balance:Number(source_acc?.balance) - Number(payload.amount)

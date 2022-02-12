@@ -12,28 +12,30 @@ import { account_status, account_type } from '../types/types.js';
 import config from '../../config.json';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-      Validator.mandatoryFieldExists(req.body,['owners','currency']);
-      Validator.currencyIsValid(req.body.currency)
-      const account_ids = req.body.owners.map((arr:any)=> arr[0]);
-      const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
-      const sum = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
-      Validator.NumberGreaterThan(sum, config.family.MIN_BALANCE);
-      Validator.NumberEquals(accounts.length, req.body.owners.length);
-      for (const acc of accounts) {
-          for (const owner of req.body.owners) {
-              if(acc.account_id == owner[0]){
-                let withdraw = owner[1];
-                Validator.balanceGreaterThan(acc.balance - withdraw, config.individual.MIN_BALANCE);
-              }
+  Validator.mandatoryFieldExists(req.body,['owners','currency']);
+  Validator.currencyIsValid(req.body.currency)
+  const account_ids = req.body.owners.map((arr:any)=> arr[0]);
+  const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
+  const sum_provided = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
+  // Validator.NumberGreaterThan(sum_provided, config.family.MIN_BALANCE);
+  Validator.balanceGreaterThan(sum_provided,"sum of provided owners", config.family.MIN_BALANCE, `family minimun balance (${config.family.MIN_BALANCE})`);
+  Validator.NumberEquals([accounts.length,"number of accounts"], [req.body.owners.length,"provided owners list length"]);
+  for (const acc of accounts) {
+    await Validator.isAccountExists(acc.account_id as number); 
+    await Validator.checkAccountTypeEquals(acc.account_id as number,[account_type.INDIVIDUAL]) 
+      for (const owner of req.body.owners) {
+          if(acc.account_id == owner[0]){
+            let withdraw = owner[1];
+            Validator.balanceGreaterThan(acc.balance - withdraw,"individual balance after transfer", config.individual.MIN_BALANCE,`individual minimum balance (${config.individual.MIN_BALANCE})`);
           }
-          Validator.isExists(acc.individual_id);  
-          Validator.accountActive(acc.status_id);  
-          Validator.checkAccountCurrencyEquals(acc.currency, req.body.currency)
-          Validator.isValNumeric(acc.individual_id);
-          Validator.stringLengthAtLeast(acc.individual_id.toString(), config.individual.INDIVIDUAL_ID_DIGITS);
       }
-      next();
-    } 
+      Validator.accountActive(acc.status_id,acc.account_id as number);  
+      Validator.checkAccountCurrencyEquals([acc.currency,"individual currency"], [req.body.currency,"provided currency"])
+      Validator.isValNumeric(acc.individual_id,"individual_id");
+      Validator.stringLengthAtLeast(acc.individual_id.toString(),"individual id", config.individual.INDIVIDUAL_ID_DIGITS);
+  }
+  next();
+} 
 
 
   /*
@@ -51,36 +53,37 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
 			3.1.3.5 minimum after transfer amount greater than 1000
   */
 
-export function getFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
-    try {
-       Validator.mandatoryFieldExists(req.params,['id']);
-       Validator.isValNumeric(req.params.id)
-      next();
-    } catch (err) {
-      next(err);
-    }
+export async function getFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
+  Validator.mandatoryFieldExists(req.params,['id']);
+  Validator.isValNumeric(req.params.id,"id");
+  await Validator.isAccountExists(Number(req.params.id)); 
+  await Validator.checkAccountTypeEquals(Number(req.params.id),[account_type.FAMILY]);
+  next();
 }
 
 export async function addIndividualToFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-        Validator.mandatoryFieldExists(req.body,['individuals_to_add']);
-        Validator.mandatoryFieldExists(req.params,['family_id']);
-        Validator.isValNumeric(req.params.family_id);
-        const amounts = req.body.individuals_to_add.map((item:any)=>item[1]) ;
-        amounts.map((amount:any)=>Validator.isPositive(amount));
-        const account_ids = req.body.individuals_to_add.map((arr:any)=> arr[0]);
-        const family_account = await Util.getAccountById(Number(req.params.family_id));
-        const individual_accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
-        Validator.NumberEquals(individual_accounts.length, req.body.individuals_to_add.length);
-        for (const acc of individual_accounts) {
-          for (const owner of req.body.individuals_to_add) {
-            if(acc.account_id == owner[0]){
-              let withdraw = owner[1];
-              Validator.balanceGreaterThan(acc.balance - withdraw, config.individual.MIN_BALANCE);
-            }
-        }
-            Validator.checkAccountCurrencyEquals(acc.currency, family_account.currency);
-        }
-        next();
+  Validator.mandatoryFieldExists(req.body,['individuals_to_add']);
+  Validator.mandatoryFieldExists(req.params,['family_id']);
+  Validator.isValNumeric(req.params.family_id,"family_id");
+  await Validator.checkAccountTypeEquals(Number(req.params.family_id),[account_type.FAMILY]);
+  const amounts = req.body.individuals_to_add.map((item:any)=>item[1]) ;
+  amounts.map((amount:any)=>Validator.isPositive(amount,"Amount"));
+  const account_ids = req.body.individuals_to_add.map((arr:any)=> arr[0]);
+  const family_account = await Util.getAccountById(Number(req.params.family_id));
+  const individual_accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
+  Validator.NumberEquals([individual_accounts.length,"number of individual accounts"], [req.body.individuals_to_add.length,"provided owners list to add"]);
+  for (const acc of individual_accounts) {
+    await Validator.isAccountExists(acc.account_id as number);
+    await Validator.checkAccountTypeEquals(acc.account_id as number,[account_type.INDIVIDUAL]);
+    for (const owner of req.body.individuals_to_add) {
+      if(acc.account_id == owner[0]){
+        let withdraw = owner[1];
+        Validator.balanceGreaterThan(acc.balance - withdraw,"individual balance after transfer", config.individual.MIN_BALANCE,`individual minimum balance(${config.individual.MIN_BALANCE})`);              
+      }
+  }
+      Validator.checkAccountCurrencyEquals([acc.currency,"individual account currency"], [family_account.currency,"family account currency"]);
+  }
+  next();
 }
 /*
 3.3.1 mandatory fields:
@@ -93,17 +96,26 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
 */
 
 export async function removeIndividualFromFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-        Validator.mandatoryFieldExists(req.body,['individuals_to_remove']);
-        Validator.mandatoryFieldExists(req.params,['family_id']);
-        Validator.isValNumeric(req.params.family_id)
-        const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
-        amounts.map((amount:string)=>Validator.isPositive(amount));
-        const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
-        const family_accounts = await family_dal.getOwnersListByFamilyAccountId(Number(req.params.family_id));
-        for (const id of remove_ids) {
-          Validator.inFamily(family_accounts, id);
-        }
-      next();
+  Validator.mandatoryFieldExists(req.body,['individuals_to_remove']);
+  Validator.mandatoryFieldExists(req.params,['family_id']);
+  Validator.isValNumeric(req.params.family_id,"family_id");
+  await Validator.checkAccountTypeEquals(Number(req.params.family_id),[account_type.FAMILY]);
+  const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
+  amounts.map((amount:string)=>Validator.isPositive(amount,"Amount"));
+  const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
+  const family_account = await Util.getAccountById(Number(req.params.family_id));
+  const family_accounts = await family_dal.getOwnersListByFamilyAccountId(Number(req.params.family_id));
+  const individual_accounts = await individual_dal.getIndividualsByAccountsIds(remove_ids);
+  Validator.NumberEquals([individual_accounts.length,"number of individual accounts"], [req.body.individuals_to_remove.length,"provided owners list to remove"]);
+  for (const id of remove_ids) {
+    await Validator.isAccountExists(id as number);
+    Validator.inFamily(family_accounts, id, family_account.account_id as number);
+  }
+  for (const acc of individual_accounts) {
+    await Validator.checkAccountTypeEquals(acc.account_id as number,[account_type.INDIVIDUAL]);
+    Validator.checkAccountCurrencyEquals([acc.currency,"individual account currency"], [family_account.currency,"family account currency"]);
+  }
+  next();
 }
 /*
 3.4.1 mandatory fields:
@@ -115,9 +127,9 @@ export async function removeIndividualFromFamilyMiddle(req: Request, res: Respon
 */
 
 export function closeFamilyMiddle(req: Request, res: Response, next: NextFunction) : void{
-       Validator.mandatoryFieldExists(req.params,['id']);
-       Validator.isValNumeric(req.params.id)
-      next();
+  Validator.mandatoryFieldExists(req.params,['id']);
+  Validator.isValNumeric(req.params.id,"id");
+  next();
 }
 /*
 3.6.1 mandatory fields:
@@ -128,10 +140,10 @@ export function closeFamilyMiddle(req: Request, res: Response, next: NextFunctio
 
 export async function transferFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
   Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
-  Validator.isValNumeric(req.body.source_account);
-  Validator.isValNumeric(req.body.destination_account);
-  Validator.isValNumeric(req.body.amount);
-  Validator.isPositive(req.body.amount);
+  Validator.isValNumeric(req.body.source_account,"source_account");
+  Validator.isValNumeric(req.body.destination_account,"destination_account");
+  Validator.isValNumeric(req.body.amount,"amount");
+  Validator.isPositive(req.body.amount,"Amount");
   await Validator.isAccountExists(Number(req.body.source_account));
   await Validator.isAccountExists(Number(req.body.destination_account));
   const source_family_account = await Util.getAccountById(req.body.source_account);
@@ -140,22 +152,20 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
   // Validator.NumberEquals(destination_account.length, 1);
   // Validator.NumberEquals(source_family_account.length, 1);
 
-  await Validator.checkAccountTypeEquals(source_family_account.account_id as number, account_type.FAMILY);
-  await Validator.checkAccountTypeEquals(destination_account.account_id as number, account_type.BUSINESS);
+  await Validator.checkAccountTypeEquals(source_family_account.account_id as number, [account_type.FAMILY]);
+  await Validator.checkAccountTypeEquals(destination_account.account_id as number, [account_type.BUSINESS]);
   
-  Validator.accountStatusEquals(source_family_account.status_id, account_status.ACTIVE);
-  Validator.accountStatusEquals(destination_account.status_id, account_status.ACTIVE);
+  Validator.accountStatusEquals([source_family_account.status_id as number,"source account status"], [account_status.ACTIVE,"Active"]);
+  Validator.accountStatusEquals([destination_account.status_id as number,"destination account status"], [account_status.ACTIVE, "Active"]);
 
-  Validator.checkAccountCurrencyEquals(source_family_account.currency, destination_account.currency);
-  Validator.balanceGreaterThan(source_family_account.balance - req.body.amount, config.family.MIN_BALANCE)
+  Validator.checkAccountCurrencyEquals([source_family_account.currency,"source account currency"], [destination_account.currency,"destination account currency"]);
+  Validator.balanceGreaterThan(source_family_account.balance - req.body.amount,"family balance after transfer", config.family.MIN_BALANCE, `family minimum balance(${config.family.MIN_BALANCE})`)
      const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source);
      const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
      for (const acc of full_accounts_info) {
-        Validator.isExists(acc.account_id);
-        Validator.accountStatusEquals(acc.status_id, account_status.ACTIVE);
-        Validator.checkAccountCurrencyEquals(source_family_account.currency, acc.currency);
-          
-          
+        await Validator.isAccountExists(acc.account_id as number);
+        Validator.accountStatusEquals([acc.status_id as number,"individual account status"], [account_status.ACTIVE,"Active"]);
+        Validator.checkAccountCurrencyEquals([source_family_account.currency,"family account currency"], [acc.currency, "individual account currency"]);
       }
       next();
 }

@@ -32,7 +32,7 @@ export async function changeAccountStatus(payload: IChangeStatus): Promise<any> 
     // TODO: call dal to create new individual account
     //       add validations and business logic
     const accounts = await util.getAccountsByIds(payload.list_of_accounts);
-    Validator.NumberEquals(accounts.length, payload.list_of_accounts.length);
+    Validator.NumberEquals([accounts.length,"number of accounts"], [payload.list_of_accounts.length,"provided list of accounts"]);
     const accounts_statuses = await util.changeAccountStatus(payload.list_of_accounts, payload.action);
     return accounts_statuses;
 }

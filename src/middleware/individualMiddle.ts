@@ -4,13 +4,14 @@
 import { Response, Request, NextFunction } from 'express';
 import * as Validator from '../validations/validator.js'; 
 import config from "../../config.json";
+import { account_type } from '../types/types.js';
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-     Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
-     Validator.isValNumeric(req.body.individual_id);
+    Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
+    Validator.isValNumeric(req.body.individual_id, "individual_id");
     //add validation - config.individual.MIN_INDIVIDUAL_ID_NUM
-     Validator.stringLengthAtLeast(req.body.individual_id,config.individual.INDIVIDUAL_ID_DIGITS);
-     await Validator.IndividualIDUnique(req.body.individual_id);
+    Validator.stringLengthAtLeast(req.body.individual_id,"individual id",config.individual.INDIVIDUAL_ID_DIGITS);
+    await Validator.IndividualIDUnique(req.body.individual_id,"individual id");
     next();
     /*
     1.1 create individual account:
@@ -25,9 +26,11 @@ export async function createIndividualMiddle(req: Request, res: Response, next: 
     */
 }
 
-export function getIndividualMiddle(req: Request, res: Response, next: NextFunction) : void{
-     Validator.mandatoryFieldExists(req.params,['id']);
-     Validator.isValNumeric(req.params.id);
+export async function getIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
+    Validator.mandatoryFieldExists(req.params,['id']);
+    Validator.isValNumeric(req.params.id, "id");
+    await Validator.isAccountExists(Number(req.params.id)); 
+    await Validator.checkAccountTypeEquals(Number(req.params.id),[account_type.INDIVIDUAL]);
     next();
     /*
     1.2 get individual account:
