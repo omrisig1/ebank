@@ -46,6 +46,12 @@ export function NumberEquals(num : string | number, than: string | number) : boo
   throw new Error(`${num} should be equal to ${than}`);
 }
 
+export function NumberNotEquals(num : string | number, than: string | number) : boolean{
+  if(Number(num) !== Number(than)) {
+    return true;
+  }
+  throw new Error(`${num} should not be equal to ${than}`);
+}
 
 export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
   if(Number(num) > Number(than)) {
