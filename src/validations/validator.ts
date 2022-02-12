@@ -11,25 +11,26 @@ import { getIndividualByAccountId } from "../modules/individual/individual.dal.j
 import { account_status, account_type } from '../types/types.js';
 import * as Util from '../modules/utils.dal.js';
 
-export function inFamily(accounts : string[] , id: string): boolean{
+export function inFamily(accounts : string[] , id: string, family_id: number): boolean{
   if(accounts.includes(id)) {
     return true;
   }
-  throw new Error('account not part of family');}
+  throw new validationException(400, `Account ${id} is not part of the given family (${family_id}).`);
+}
 
-export function accountActive(status: number | boolean | undefined) : boolean|Error{
+export function accountActive(status: number | boolean | undefined, id_to_check: number) : boolean|Error{
   if (Number(status) === account_status.ACTIVE) {
     return true;
   }
-  throw new Error('account is not active');
+  throw new validationException(400, `Account ${id_to_check} is not active`);
 }
 
-export function isExists(val: any ) : boolean|Error{
-  if (val) {
-    return true;
-  }
-  throw new Error('account does not exists');
-}
+// export function isExists(val: any ) : boolean|Error{
+//   if (val) {
+//     return true;
+//   }
+//   throw new Error('account does not exists');
+// }
 
 export async function isAccountExists(account_id: number) : Promise<boolean | Error>{
   const account : IAccount = await Util.getAccountById(account_id)
@@ -39,11 +40,22 @@ export async function isAccountExists(account_id: number) : Promise<boolean | Er
   throw new validationException(400, `Account ${account_id} doesn't exist.`)
 }
 
-export function NumberEquals(num : string | number, than: string | number) : boolean{
-  if(Number(num) === Number(than)) {
+// export function NumberEquals(num : string | number, than: string | number) : boolean{
+//   if(Number(num) === Number(than)) {
+//     return true;
+//   }
+//   throw new validationException(400, `${num} should be equal to ${than}.`)
+// }
+export function NumberEquals(value_field_tuples_got: [value: string | number, field: string | number], value_field_tuples_expected: [value: string | number, field: string | number]) : boolean{
+  const value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1]; 
+
+  if(Number(value_got) === Number(value_expected)) {
     return true;
   }
-  throw new Error(`${num} should be equal to ${than}`);
+  throw new validationException(400, `${field_got} should be equal to ${field_expected}.`)
 }
 
 export function NumberNotEquals(num : string | number, than: string | number) : boolean{
@@ -53,32 +65,36 @@ export function NumberNotEquals(num : string | number, than: string | number) : 
   throw new Error(`${num} should not be equal to ${than}`);
 }
 
-export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
-  if(Number(num) > Number(than)) {
+// export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
+//   if(Number(num) > Number(than)) {
+//     return true;
+//   }
+//   throw new Error("should be greather");
+// }
+
+export function NumberLessThan(value_field_tuples_got: [value: string | number, field: string | number], value_field_tuples_expected: [value: string | number, field: string | number]) : boolean{
+  const value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1]; 
+  if(Number(value_got) <= Number(value_expected)) {
     return true;
   }
-  throw new Error("should be greather");
-}
-
-export function NumberLessThan(num : string | number, than: string | number) : boolean{
-  if(Number(num) <= Number(than)) {
-    return true;
-  }
-  throw new Error("should be less then");
+  throw new validationException(400, `${field_got} should be less than to ${field_expected}.`)
 }
 
 
-export function isPositive(num:string) :boolean{
+export function isPositive(num: string, field_checked: string) :boolean{
   if(Number(num) > 0) {
     return true;
   }
-  throw new Error("amount should be positive");
+  throw new validationException(400,`${field_checked} should be positive.`);
 }
 
-export async function IndividualIDUnique(str:string) : Promise<boolean | never>{
+export async function IndividualIDUnique(str: string , field_checked: string) : Promise<boolean | never>{
   const result = await individual_dal.getIndividualsByIndividualsIds([str]);
   if (result && result.length>0) {
-    throw new Error('individual ID already exists');
+    throw new validationException(400,`${field_checked} ${str} should be unique.`);
   }
   return true;
 }
@@ -94,36 +110,36 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
   if(typeof object ==='object'){
     for (const fieldName of fieldNames) {
       if (!(fieldName in object)) {
-        throw new Error('mandatory field missing');
+        throw new validationException(400,`mandatory field ${fieldName} is missing.`);
       }
     }
   }
   else{
-    throw new Error('input is not an object');
+    throw new validationException(400,'input is not an object');
   }
   return true;
 }
 
-export function isValNumeric(val: string | number |undefined) : boolean|never{
-  if (val && Number(val) || (val === 0 || val === '0')) {
+export function isValNumeric(val: string | number |undefined, field_checked: string) : boolean|never{
+  if (val && Number(val)) {
     return true;
   }
-  throw new Error(`value ${val} is not numeric`);
+  throw new validationException(400,`Field ${field_checked} is not numeric`);
 }
 
-export function stringLengthAtLeast(val: string, length: number) :boolean|Error {
-  if (stringNotEmpty(val) && val.length >= length) {
+export function stringLengthAtLeast(val: string, field_checked: string, expected_length: number) :boolean|Error {
+  if (stringNotEmpty(val) && val.length >= expected_length) {
     return true;
   }
-  throw new Error('string length error');
+  throw new validationException(400,`Field ${field_checked} should be of length ${expected_length}.`);
 }
 
-export function stringLengthEquals(val: string, length: number) :boolean|Error{
-  if (stringNotEmpty(val) && val.length === length) {
-    return true;
-  }
-  throw new Error('string length error');
-}
+// export function stringLengthEquals(val: string, length: number) :boolean|Error{
+//   if (stringNotEmpty(val) && val.length === length) {
+//     return true;
+//   }
+//   throw new Error('string length error');
+// }
 
 // export function transferSizeSmallerThan(accountType: string, amount: string): boolean | Error{
 //   const types = JSON.parse(JSON.stringify(config.account_minimum_transfer));
@@ -133,60 +149,79 @@ export function stringLengthEquals(val: string, length: number) :boolean|Error{
 //   throw new Error('trasnfer amount exceeds account type permition error');
 // }
 
-export async function checkAccountTypeEquals(account_id: number, account_to_be_equal: string) : Promise<boolean | Error>{
+export async function checkAccountTypeEquals(account_id: number, accounts_to_be_equal: string[]) : Promise<boolean | Error>{
   let account_type_param: string = "";
   if(await getIndividualByAccountId(account_id)) account_type_param = account_type.INDIVIDUAL;
   if(await getBusinessByAccountId(account_id)) account_type_param = account_type.BUSINESS;
   if(await getFamilyByAccountId(account_id)) account_type_param = account_type.FAMILY;
 
-  if (account_type_param === account_to_be_equal) {
+  if (accounts_to_be_equal.includes(account_type_param)) {
     return true;
   }
-  throw new validationException(400, `Expected account type of ${account_to_be_equal}, but got ${account_type_param}.`)
+  throw new validationException(400, `Expected account type of ${accounts_to_be_equal}, but got ${account_type_param}.`)
 }
 
-export function checkAccountTypeNotEquals(stringA: string, stringB: string) : boolean|Error{
-  if (stringA !== stringB) {
+// export function checkAccountTypeNotEquals(stringA: string, stringB: string) : boolean|Error{
+//   if (stringA !== stringB) {
+//     return true;
+//   }
+//   throw new Error('account of not proper type');
+// }
+
+export function checkAccountCurrencyEquals(value_field_tuples_got: [value: string , field: string], value_field_tuples_expected: [value: string, field: string]) : boolean|Error{
+  const value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1]; 
+
+  if (value_got === value_expected) {
     return true;
   }
-  throw new Error('account of not proper type');
+  throw new validationException(400, `${field_expected}(${value_expected}) should be equal to ${field_got}(${value_got})`);
 }
 
-export function checkAccountCurrencyEquals(stringA: string, stringB: string) : boolean|Error{
-  if (stringA === stringB) {
+export function checkAccountCurrencyNotEquals(value_field_tuples_got: [value: string , field: string], value_field_tuples_expected: [value: string, field: string]) : boolean|Error{
+  const value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1]; 
+
+  if (value_got !== value_expected) {
     return true;
   }
-  throw new Error('currency of different type');
+  throw new validationException(400, `${field_expected}(${value_expected}) should be different from ${field_got}(${value_got}).`);
 }
 
-export function balanceGreaterThan(num: string | number, than: string | number) : boolean|Error{
-  if (isValNumeric(num) && isValNumeric(than) && Number(num) >= Number(than)) {
+export function balanceGreaterThan(balance: string | number, balance_field: string, minimum: string | number, minimum_field: string) : boolean|Error{
+  if (isValNumeric(balance,balance_field) && isValNumeric(minimum,minimum_field) && Number(balance) >= Number(minimum)) {
     return true;
   }
-  throw new Error('insufficient balance');
+  throw new validationException(400,`${balance_field} should be greater than ${minimum_field}.`);
 }
 
 export function currencyIsValid(currency: string) : boolean | Error{
-  // const currencies = ['USD','EUR'];
   if (config.currencies.includes(currency)) {
     return true;
   }
-  throw new Error('invalid currency');
-
+  throw new validationException(400,`Invalid currency, got ${currency} and support only: ${config.currencies}.`);
 }
 
 export function accountStatusNotEquals(statusA: string, statusB: string) : boolean | Error{
-  if (statusA !== statusB) {
+  if (statusA.toUpperCase() !== statusB.toUpperCase()) {
     return true;
   }
-  throw new Error('status type are NOT the same - cannot change');
+  throw new validationException(400, `At least one of the provided accounts has equal status as the procided action.`);
 }
+export function accountStatusEquals(value_field_tuples_got: [status_value_got: number , field: string], value_field_tuples_expected: [status_value_expected: number, field: string]) : boolean | Error{
+  const status_value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const status_value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1]; 
 
-export function accountStatusEquals(statusA: undefined | boolean | number, statusB: boolean | string | number) : boolean | Error{
-  if (statusA == statusB) {
+  if (status_value_got == status_value_expected) {
     return true;
   }
-  throw new Error('status type are the same - cannot change');
+  throw new validationException(400, `${field_got} should be ${field_expected} but got ${status_value_got}.`);
 }
 
 export function emailValidation(email : string ){
@@ -195,12 +230,4 @@ export function emailValidation(email : string ){
     return true;
   }
   throw new Error('not valid email addtress');
-}
-export function checkTrasnferLimit(amount: string, config_size  : string) {
-  if(!config.TRASNFER_LIMIT_ON){
-    return true;
-  }
-  else{
-    return NumberGreaterThan(amount, config_size);
-  }
 }

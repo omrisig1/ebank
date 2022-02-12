@@ -21,7 +21,6 @@ router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccou
 router.put("/change-status", raw(C.changeAccountStatus));
 
 // Transfer F2B
-router.post("/transfer",raw(black_list_Middleware(T.account_type.INDIVIDUAL)), raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
+router.post("/transfer",raw(black_list_Middleware(T.account_type.INDIVIDUAL)),raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
 
-  
 export default router;
