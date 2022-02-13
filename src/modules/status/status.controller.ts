@@ -10,7 +10,7 @@ import * as S from "./status.service.js";
 // Activate/Deactivate accounts
 export async function changeAccountStatus(req: Request, res: Response): Promise<void> {
     const accounts_statuses = await S.changeAccountStatus(req.body as IChangeStatus);
-    if(!accounts_statuses){
+    if(!accounts_statuses || accounts_statuses.length === 0){
         throw new HttpException(400,"Failed to change accounts statuses.");
     } else {
         const outputResponse: IResponseMessage = {

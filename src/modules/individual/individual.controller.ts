@@ -41,7 +41,7 @@ export async function transferFromOwnerToFamily(req: Request, res: Response): Pr
     const source_and_destination_accounts = await S.transferFromIndividualToFamily(req.body as ITransfer);
 
     const { source_account, destination_account } = req.body as ITransfer;
-    if(!source_and_destination_accounts){
+    if(!source_and_destination_accounts || (Array.isArray(source_and_destination_accounts) && source_and_destination_accounts.length === 0)){
         throw new HttpException(400,`Failed to transfer money from ${source_account} to ${destination_account}.`);
     } else {
         const outputResponse: IResponseMessage = {
