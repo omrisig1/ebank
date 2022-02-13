@@ -9,9 +9,11 @@ export const idempotencyCheck = async (req: Request, res: Response, next: NextFu
                 //same request
                 res.status(200).json(JSON.parse(response.response as unknown as string));
                 res.end();
+                return;
             }
             //not same request
             res.status(412).json({message: 'PRECONDITION FAILED'});
+            res.end()
         }
     }
     next();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { IIndividualAccount } from './individual.model.js';
 import { RowDataPacket } from 'mysql2/promise';
 import { connection as db } from '../../db/mysql.connection.js';
