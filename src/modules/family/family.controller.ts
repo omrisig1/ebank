@@ -8,6 +8,7 @@ import HttpException from "../../exceptions/http-exception.js";
 import { IAddIndividualsToFamily, ICreateFamilyAccount, IRemoveIndividualsToFamily, IResponseMessage, ITransfer } from "../../types/types.js";
 import * as S from "./family.service.js";
 import {Idempotency} from '../../types/types.js';
+import { IncomingHttpHeaders } from "http";
 
 // Create family account
 export async function createFamilyAccount(req: Request, res: Response): Promise<void> {
@@ -20,18 +21,12 @@ export async function createFamilyAccount(req: Request, res: Response): Promise<
             message: "Family account created",
             data: new_family_account_details,
         };
-        if('idempotency_key' in req.headers) {
-            const idem : Idempotency = { 
-                idempotency_key: req.headers.idempotency_key as string,
-                account_id : "111",
-                response : JSON.stringify(outputResponse.message),
-                req_hash : "abc"
-            }
-            await Util.logIdempotency(idem);
-        }
+        await Util.saveIdempotency(req.headers, outputResponse);
         res.status(outputResponse.status).json(outputResponse);
     }
 }
+
+
 
 // // Get family account by ID - FULL/SHORT
 export async function getFamilyAccountById(req: Request, res: Response): Promise<void> {

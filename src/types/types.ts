@@ -51,7 +51,7 @@ export enum details_level {
 }
 
 export interface Idempotency {
-  account_id:string,
+  user:string,
   idempotency_key:string,
   req_hash:string,
   response:string

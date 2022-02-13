@@ -5,9 +5,9 @@ import crypto from 'crypto';
 
 // Middleware to generate requestID
 export default async  function testAuth(req: Request, res: Response, next: NextFunction) : Promise<void>{
-    const string = req.method + req.url + req.params + req.body + req.headers;
+    const string = req.method + JSON.stringify(req.url) + JSON.stringify(req.params) + JSON.stringify(req.body);
     if(!('access_key' in req.headers)) {
-        throw new Error('Not Authorized');        return;
+        throw new Error('Not Authorized'); 
     }
     const access_key = req.headers['access_key'];
     const secret = await Util.getSecretByAccess(access_key as string);
@@ -17,6 +17,7 @@ export default async  function testAuth(req: Request, res: Response, next: NextF
     const salt = req.headers.salt?  req.headers.salt as string : '';
     const sha256Hasher = crypto.createHmac("sha256", salt+(secret[0].secret_key));
     const hash = sha256Hasher.update(string).digest("hex");
+    console.log(hash);
     if(!req.headers.req_hash || req.headers.req_hash != hash ) {
         throw new Error('Not Authorized');
     }

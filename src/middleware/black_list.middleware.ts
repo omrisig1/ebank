@@ -11,13 +11,13 @@ export function black_list_Middleware(type : string) {
             case (T.account_type.INDIVIDUAL):
                 let ind_account = await individual_dal.getIndividualAccountByAccountId(req.body.source_account);
                 if(ind_account.black_list) {
-                    throw new Error("Individual source account black listed for money trasnfer");
+                    throw new Error("Individual source account black listed for money transfer");
                 }
                 break;
             case (T.account_type.BUSINESS):
                 let buis_account = await buisness_dal.getBusinessAccountByAccountId(req.body.source_account);
                 if(buis_account.black_list) {
-                    throw new Error("Buisness source account black listed for money trasnfer");
+                    throw new Error("Buisness source account black listed for money transfer");
                 }
                 break;
         }

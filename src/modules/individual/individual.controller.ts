@@ -5,7 +5,7 @@ import HttpException from "../../exceptions/http-exception.js";
 import { IResponseMessage, ITransfer } from "../../types/types.js";
 import { IIndividualAccount } from "./individual.model.js";
 import * as S from "./individual.service.js";
-
+import * as Util from "../utils.dal.js";
 // Create an individual account
 export async function createIndividualAccount(req: Request, res: Response): Promise<void> {
     const new_individual_account = await S.createNewIndividualAccount(req.body as IIndividualAccount);
@@ -32,6 +32,7 @@ export async function getIndividualAccountByAccountId(req: Request, res: Respons
             message: "Individual account found",
             data: individual_account,
         };
+        await Util.saveIdempotency(req.headers, outputResponse);
         res.status(outputResponse.status).json(outputResponse);
     }
 }

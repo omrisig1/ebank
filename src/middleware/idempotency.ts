@@ -7,7 +7,7 @@ export const idempotencyCheck = async (req: Request, res: Response, next: NextFu
         if(response){
             if(await Util.sameRequest(req.headers.user as string,req.headers.req_hash as string, req.headers.idempotency_key as string)){
                 //same request
-                res.status(200).json(response);
+                res.status(200).json(JSON.parse(response.response as unknown as string));
                 res.end();
             }
             //not same request
