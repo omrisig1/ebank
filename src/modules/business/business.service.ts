@@ -7,10 +7,11 @@ import * as business_dal from './business.dal.js';
 import * as individual_dal from '../individual/individual.dal.js';
 import * as util from '../utils.dal.js';
 import * as Validator from '../../validations/validator.js';
-import { account_status, ITransfer } from '../../types/types.js';
+import { account_status, ITransfer, simple_transfer } from '../../types/types.js';
 import fetch from 'node-fetch';
 import config from '../../../config.json';
 import IAccount from '../account.model.js';
+import { multiTransfer } from '../utils.dal.js';
 
 // Create an business account
 export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
@@ -61,17 +62,26 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   if('error' in (json as any)){
     return json;
   }
-  const amount = Number((json as any).rates[(destination_acc as IBusinessAccount).currency]) * Number(payload.amount);
+  const new_amount = ((json as any).rates[(destination_acc as IBusinessAccount).currency] * Number(payload.amount)).toString();
+  const simple_transfer1: simple_transfer = {
+    account_id: Number(payload.source_account),
+    new_balance: Number(source_acc?.balance) - Number(payload.amount),
+  };
+  const simple_transfer2: simple_transfer = {
+    account_id: Number(payload.destination_account),
+    new_balance: Number(destination_acc?.balance) + Number(new_amount),
+  };
   if(config.TRASNFER_LIMIT_ON){
     if(source_acc?.company_id == destination_acc?.company_id){
-      Validator.NumberLessThan([amount,"amount"], [config.business.MAX_TRANS_B2B_FX_SAME_COMPANY,`maximum transfer in the same compamy and different currency(${config.business.MAX_TRANS_B2B_FX_SAME_COMPANY})`]);
+      Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_FX_SAME_COMPANY,`maximum transfer in the same compamy and different currency(${config.business.MAX_TRANS_B2B_FX_SAME_COMPANY})`]);
     }
     else{
-      Validator.NumberLessThan([amount,"amount"], [config.business.MAX_TRANS_B2B_FX_DIF_COMPANY,`maximum transfer to different compamy and different currency(${config.business.MAX_TRANS_B2B_FX_DIF_COMPANY})`]);
+      Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_FX_DIF_COMPANY,`maximum transfer to different compamy and different currency(${config.business.MAX_TRANS_B2B_FX_DIF_COMPANY})`]);
     }
   }
-  
-  return await util.transfer(payload, source_acc as IBusinessAccount, destination_acc as IBusinessAccount);
+  const results = await multiTransfer([simple_transfer1, simple_transfer2]);
+  return results;
+
 }
 
 async function FX_exchange(base:IBusinessAccount, target : IBusinessAccount) {

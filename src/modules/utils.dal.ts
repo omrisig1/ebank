@@ -130,7 +130,7 @@ export async function transfer(
   source_acc: IAccount,
   destination_acc: IAccount
 ):Promise<IAccount[]> {
-  const simple_transfer1: simple_transfer = {
+   const simple_transfer1: simple_transfer = {
     account_id: Number(payload.source_account),
     new_balance: Number(source_acc.balance) - Number(payload.amount),
   };
