@@ -6,12 +6,11 @@ import { IIndividualAccount } from "./individual.model";
 import * as dal from "./individual.dal.js";
 import * as util from "../utils.dal.js";
 import * as Validator from "../../validations/validator.js";
-import { account_status, IChangeStatus, ITransfer, simple_transfer } from "../../types/types.js";
+import { account_status, ITransfer, simple_transfer } from "../../types/types.js";
 import { IFamilyAccount } from "../family/family.model.js";
 import * as individual_dal from "../individual/individual.dal.js";
 import * as family_dal from "../family/family.dal.js";
 import config from "../../../config.json";
-import IAccount from "../account.model.js";
 
 // Create an individual account
 export async function createNewIndividualAccount(payload: IIndividualAccount): Promise<IIndividualAccount|undefined> {
@@ -31,19 +30,6 @@ export async function getIndividualAccountByAccountId(idToRead: number): Promise
     //no buisness validations
     const individual_account = await dal.getIndividualAccountByAccountId(idToRead);
     return individual_account;
-}
-
-// Activate/Deactivate accounts
-export async function changeAccountStatus(payload: IChangeStatus): Promise<IAccount[]> {
-    // TODO: call dal to create new individual account
-    //       add validations and business logic
-    const accounts = await util.getAccountsByIds(payload.list_of_accounts);
-    Validator.NumberEquals([accounts.length,"number of accounts"], [payload.list_of_accounts.length,"provided list of accounts"]);
-    const accounts_statuses = await util.changeAccountStatus(
-      payload.list_of_accounts,
-      account_status[payload.action.toUpperCase() as keyof typeof account_status].toString()
-    );
-    return accounts_statuses;
 }
 
 

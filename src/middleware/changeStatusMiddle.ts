@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
 import { getAccountsByIds } from '../modules/utils.dal.js';
-import { account_status } from '../types/types.js';
+import { account_status, account_type } from '../types/types.js';
 import * as Validator from '../validations/validator.js'; 
 // import * as family_dal from '../modules/family/family.dal.js';
 
@@ -11,13 +11,16 @@ export async function changeStatusMiddle(req: Request, res: Response, next: Next
   Validator.isTypeArray(req.body.list_of_accounts, 'list_of_accounts');
   Validator.isStatusExists(req.body.action);
   Validator.NumberGreaterThan(req.body.list_of_accounts.length, 0, "list_of_accounts array length");
+  for (const account_id of req.body.list_of_accounts) {
+    await Validator.checkAccountTypeEquals(account_id as number, [account_type.INDIVIDUAL, account_type.BUSINESS]);
+  }
   const accounts = await getAccountsByIds(req.body.list_of_accounts);
   Validator.NumberEquals(
     [req.body.list_of_accounts.length, 'list_of_accounts array length provided'],
     [accounts.length, 'array length expected']
-  );
+    );
+   
   for (const acc of accounts) {
-    // Validator.checkAccountTypeEquals((acc.account_id as number).toString(), account_type.FAMILY);
     Validator.accountStatusNotEquals(account_status[acc.status_id as number], req.body.action);
   }
   next();

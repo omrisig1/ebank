@@ -6,7 +6,6 @@ import express from 'express';
 import * as IMiddleware from '../../middleware/individualMiddle.js';
 import { black_list_Middleware } from "../../middleware/black_list.middleware.js";
 import * as T from "../../types/types.js";
-import { changeStatusMiddle } from "../../middleware/changeStatusMiddle.js";
 
 const router = express.Router();
 
@@ -18,9 +17,6 @@ router.post("/", raw(IMiddleware.createIndividualMiddle) ,raw(C.createIndividual
   
 // Get individual account by ID
 router.get("/:id",raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccountByAccountId));
-
-// Activate/Deactivate accounts
-router.put('/change-status', raw(changeStatusMiddle), raw(C.changeAccountStatus));
 
 // Transfer F2B
 router.post("/transfer",raw(black_list_Middleware(T.account_type.INDIVIDUAL)),raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));

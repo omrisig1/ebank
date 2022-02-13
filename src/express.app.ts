@@ -8,6 +8,8 @@ import { connect as connect_sqlDb } from './db/mysql.connection.js';
 import individual_account_router from "./modules/individual/individual.router.js";
 import business_account_router from "./modules/business/business.router.js";
 import family_account_router from "./modules/family/family.router.js";
+import change_status_router from "./modules/status/status.router.js";
+
 import { generateRequestID } from './middleware/requestId.js';
 import { errorLogger, not_found, responseWithError, urlNotFoundHandler } from './middleware/errors.handler.js';
 import { appendToErrorLogger } from './middleware/loggers/error.log.js';
@@ -31,6 +33,8 @@ class ExpressApp {
     this.app.use("/api/individual", individual_account_router);
     this.app.use("/api/business", business_account_router);
     this.app.use("/api/family", family_account_router);
+    this.app.use("/api", change_status_router);
+
   }
 
   private setErrorHandlers() {

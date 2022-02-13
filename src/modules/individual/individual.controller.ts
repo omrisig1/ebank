@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
-import { IChangeStatus, IResponseMessage, ITransfer } from "../../types/types.js";
+import { IResponseMessage, ITransfer } from "../../types/types.js";
 import { IIndividualAccount } from "./individual.model.js";
 import * as S from "./individual.service.js";
 
@@ -36,20 +36,6 @@ export async function getIndividualAccountByAccountId(req: Request, res: Respons
     }
 }
 
-// Activate/Deactivate accounts
-export async function changeAccountStatus(req: Request, res: Response): Promise<void> {
-    const accounts_statuses = await S.changeAccountStatus(req.body as IChangeStatus);
-    if(!accounts_statuses){
-        throw new HttpException(400,"Failed to change accounts statuses.");
-    } else {
-        const outputResponse: IResponseMessage = {
-            status: 200,
-            message: "Account's statuses changed.",
-            data: accounts_statuses,
-        };
-        res.status(outputResponse.status).json(outputResponse);
-    }
-}
 
 export async function transferFromOwnerToFamily(req: Request, res: Response): Promise<void> {
     const source_and_destination_accounts = await S.transferFromIndividualToFamily(req.body as ITransfer);
