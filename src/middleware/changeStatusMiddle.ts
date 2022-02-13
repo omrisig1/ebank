@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
 import { getAccountsByIds } from '../modules/utils.dal.js';
-import { account_status } from '../types/types.js';
+import { account_status, account_type } from '../types/types.js';
 import * as Validator from '../validations/validator.js'; 
 // import * as family_dal from '../modules/family/family.dal.js';
 
@@ -17,7 +17,7 @@ export async function changeStatusMiddle(req: Request, res: Response, next: Next
     [accounts.length, 'array length expected']
   );
   for (const acc of accounts) {
-    // Validator.checkAccountTypeEquals((acc.account_id as number).toString(), account_type.FAMILY);
+    await Validator.checkAccountTypeEquals(acc.account_id as number, [account_type.INDIVIDUAL, account_type.BUSINESS]);
     Validator.accountStatusNotEquals(account_status[acc.status_id as number], req.body.action);
   }
   next();

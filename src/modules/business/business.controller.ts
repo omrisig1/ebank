@@ -41,7 +41,7 @@ export async function getBusinessAccountById(req: Request, res: Response): Promi
 export async function transferFromBusinessSameCurrency(req: Request, res: Response): Promise<void> {
     const source_and_destination_accounts = await S.transferSameCurrency(req.body as ITransfer);
     const { source_account: source, destination_account: destination } = req.body as ITransfer;
-    if(!source_and_destination_accounts){
+    if(!source_and_destination_accounts || source_and_destination_accounts.length === 0){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {
         const outputResponse: IResponseMessage = {
@@ -57,7 +57,7 @@ export async function transferFromBusinessSameCurrency(req: Request, res: Respon
 export async function transferFromBusinessDifferentCurrency(req: Request, res: Response): Promise<void> {
     const source_and_destination_accounts_and_FX_Rate = await S.transferDifferentCurrency(req.body as ITransfer);
     const { source_account: source, destination_account: destination } = req.body as ITransfer;
-    if(!source_and_destination_accounts_and_FX_Rate){
+    if(!source_and_destination_accounts_and_FX_Rate || (Array.isArray(source_and_destination_accounts_and_FX_Rate) && source_and_destination_accounts_and_FX_Rate.length === 0)){
         throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
     } else {
         if(source_and_destination_accounts_and_FX_Rate.hasOwnProperty('success') && source_and_destination_accounts_and_FX_Rate.success === false){

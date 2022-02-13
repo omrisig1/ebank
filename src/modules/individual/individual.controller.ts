@@ -39,15 +39,15 @@ export async function getIndividualAccountByAccountId(req: Request, res: Respons
 // Activate/Deactivate accounts
 export async function changeAccountStatus(req: Request, res: Response): Promise<void> {
     const accounts_statuses = await S.changeAccountStatus(req.body as IChangeStatus);
-    if(!accounts_statuses){
-        throw new HttpException(400,"Failed to change accounts statuses.");
+    if (!accounts_statuses || accounts_statuses.length === 0) {
+      throw new HttpException(400, 'Failed to change accounts statuses.');
     } else {
-        const outputResponse: IResponseMessage = {
-            status: 200,
-            message: "Account's statuses changed.",
-            data: accounts_statuses,
-        };
-        res.status(outputResponse.status).json(outputResponse);
+      const outputResponse: IResponseMessage = {
+        status: 200,
+        message: "Account's statuses changed.",
+        data: accounts_statuses,
+      };
+      res.status(outputResponse.status).json(outputResponse);
     }
 }
 
@@ -55,7 +55,7 @@ export async function transferFromOwnerToFamily(req: Request, res: Response): Pr
     const source_and_destination_accounts = await S.transferFromIndividualToFamily(req.body as ITransfer);
 
     const { source_account, destination_account } = req.body as ITransfer;
-    if(!source_and_destination_accounts){
+    if(!source_and_destination_accounts || (Array.isArray(source_and_destination_accounts) && source_and_destination_accounts.length === 0)){
         throw new HttpException(400,`Failed to transfer money from ${source_account} to ${destination_account}.`);
     } else {
         const outputResponse: IResponseMessage = {

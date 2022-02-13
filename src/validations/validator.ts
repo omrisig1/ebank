@@ -263,3 +263,10 @@ export function isStatusExists(status: string): boolean | never {
   }
   throw new validationException(400, `Status ${status} not exists`);
 }
+
+export function isFamilyNotClosed(status: string, family_id: string): boolean | never {
+  if (status.toUpperCase() === account_status[1]) {
+    return true;
+  }
+  throw new validationException(400, `Family account ${family_id} already closed`);
+}
