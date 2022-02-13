@@ -3,11 +3,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
-import * as Validator from '../validations/validator.js';
-import * as individual_dal from '../modules/individual/individual.dal.js';
-import * as family_dal from '../modules/family/family.dal.js';
+import Validator from '../validations/validator.js';
+import individual_dal from '../modules/individual/individual.dal.js';
+import family_dal from '../modules/family/family.dal.js';
 
-import * as Util from '../modules/utils.dal.js';
+import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
 import config from '../../config.json';
 
@@ -76,11 +76,13 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
   const amounts = req.body.individuals_to_add.map((item:any)=>item[1]) ;
   amounts.map((amount:any)=>Validator.isPositive(amount,"Amount"));
   const account_ids = req.body.individuals_to_add.map((arr:any)=> arr[0]);
+  for (const id of account_ids) {
+    await Validator.isAccountExists(id);
+  }
   const family_account = await Util.getAccountById(Number(req.params.family_id));
   const individual_accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
   Validator.NumberEquals([individual_accounts.length,"number of individual accounts"], [req.body.individuals_to_add.length,"provided owners list to add"]);
-  for (const acc of individual_accounts) {
-    await Validator.isAccountExists(acc.account_id as number);
+  for (const acc of individual_accounts) {    
     await Validator.checkAccountTypeEquals(acc.account_id as number,[account_type.INDIVIDUAL]);
     for (const owner of req.body.individuals_to_add) {
       Validator.isTypeArray(owner, 'individuals_to_add[]');//array inside the array

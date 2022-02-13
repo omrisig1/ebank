@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { NextFunction, Request, Response } from "express";
-import * as buisness_dal from "../modules/business/business.dal.js";
-import * as individual_dal from "../modules/individual/individual.dal.js";
+import buisness_dal from "../modules/business/business.dal.js";
+import individual_dal from "../modules/individual/individual.dal.js";
 import * as T from "../types/types.js";
 
 export function black_list_Middleware(type : string) {

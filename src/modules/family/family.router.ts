@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import raw from "../../middleware/route.async.wrapper.js";
-import * as C from "./family.controller.js";
+import C from "./family.controller.js";
 import express from 'express';
 import * as FMiddleware from '../../middleware/familyMiddle.js';
 

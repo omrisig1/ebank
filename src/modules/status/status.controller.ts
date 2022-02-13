@@ -4,7 +4,7 @@
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
 import { IChangeStatus, IResponseMessage } from "../../types/types.js";
-import * as S from "./status.service.js";
+import S from "./status.service.js";
 
 
 // Activate/Deactivate accounts

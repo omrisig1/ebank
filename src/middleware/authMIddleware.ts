@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NextFunction, Request, Response } from "express";
-import * as Util from '../modules/utils.dal.js';
+import Util from '../modules/utils.dal.js';
 import crypto from 'crypto';
 
 // Middleware to generate requestID

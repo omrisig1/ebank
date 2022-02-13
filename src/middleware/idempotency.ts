@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import * as Util from '../modules/utils.dal.js';
+import Util from '../modules/utils.dal.js';
 
 export const idempotencyCheck = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
     if ('idempotency_key' in req.headers && 'req_hash' in req.headers && 'user' in req.headers) {

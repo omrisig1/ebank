@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
-import { getAccountsByIds } from '../modules/utils.dal.js';
+import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
-import * as Validator from '../validations/validator.js'; 
+import Validator from '../validations/validator.js'; 
 // import * as family_dal from '../modules/family/family.dal.js';
 
 export async function changeStatusMiddle(req: Request, res: Response, next: NextFunction) : Promise<void> {
@@ -11,7 +11,7 @@ export async function changeStatusMiddle(req: Request, res: Response, next: Next
   Validator.isTypeArray(req.body.list_of_accounts, 'list_of_accounts');
   Validator.isStatusExists(req.body.action);
   Validator.NumberGreaterThan(req.body.list_of_accounts.length, 0, "list_of_accounts array length");
-  const accounts = await getAccountsByIds(req.body.list_of_accounts);
+  const accounts = await Util.getAccountsByIds(req.body.list_of_accounts);
   Validator.NumberEquals(
     [req.body.list_of_accounts.length, 'list_of_accounts array length provided'],
     [accounts.length, 'array length expected']

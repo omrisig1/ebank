@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
-import * as Validator from '../validations/validator.js'; 
-import * as Util from '../modules/utils.dal.js';
+import Validator from '../validations/validator.js'; 
+import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
 import config from '../../config.json';
 
