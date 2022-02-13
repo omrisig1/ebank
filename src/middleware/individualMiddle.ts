@@ -10,22 +10,14 @@ import family_dal from "../modules/family/family.dal.js";
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body, ['individual_id', 'first_name', 'last_name', 'currency']);
+    await Validator.individualIdValidation(req.body.individual_id);  
     Validator.currencyIsValid(req.body.currency);
     if(req.body.email) {
         Validator.emailValidation(req.body.email);
     }
-    Validator.isValNumeric(req.body.individual_id, "individual_id");
-    Validator.NumberGreaterThan(req.body.individual_id, config.individual.MIN_INDIVIDUAL_ID_NUM,"individual_id");
-    Validator.NumberEquals(
-      [req.body.individual_id.length, 'individual_id length'],
-      [config.individual.INDIVIDUAL_ID_DIGITS, "number of digits"]
-    );
-    await Validator.IndividualIDUnique(req.body.individual_id,"individual id");
-
-      if (req.body.balance) {
-        Validator.isValNumeric(req.body.balance, "balance");
-        Validator.balanceGreaterThan(req.body.balance, 'balance', 0, 'individual minimum balance');
-      }
+    if (req.body.balance) {
+      Validator.balanceValidation(req.body.balance, 'individual minimum balance');
+    }
     next();
     /*
     1.1 create individual account:
@@ -56,12 +48,9 @@ export async function getIndividualMiddle(req: Request, res: Response, next: Nex
 
 export async function transferIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
-    Validator.isValNumeric(req.body.source_account, "source account");
-    Validator.isValNumeric(req.body.destination_account, "destination account");
-    Validator.isValNumeric(req.body.amount,"ammount");
-    Validator.isPositive(req.body.amount,"amount");
-    await Validator.isAccountExists(Number(req.body.source_account));
-    await Validator.isAccountExists(Number(req.body.destination_account));
+    Validator.isValNumeric([req.body.source_account, req.body.destination_account], ["source account", "destination account"]);
+    await Validator.isAccountExists([Number(req.body.source_account), Number(req.body.destination_account)]);
+    Validator.amountValidation(req.body.amount);
     Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
     const source_individual_account = await Util.getAccountById(req.body.source_account);
     const destination_account = await Util.getAccountById(req.body.destination_account);
@@ -69,8 +58,6 @@ export async function transferIndividualMiddle(req: Request, res: Response, next
     await Validator.checkAccountTypeEquals(destination_account.account_id as number, [account_type.FAMILY]);
     const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.destination_account);
     Validator.inFamily(owners_ids,String(req.body.source_account),Number(req.body.destination_account));
-    // Validator.NumberEquals(destination_account.length, 1);
-    // Validator.NumberEquals(source_family_account.length, 1);
     await Validator.checkAccountTypeEquals(source_individual_account.account_id as number, [account_type.INDIVIDUAL]);
     await Validator.checkAccountTypeEquals(destination_account.account_id as number, [account_type.FAMILY]);
     Validator.accountStatusEquals([source_individual_account.status_id as number,"source status"], [account_status.ACTIVE, "Active"]);

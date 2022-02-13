@@ -27,7 +27,7 @@ class UtilDal {
       return accounts[0] as IAccount;
     }
     
-     async  getAccountsByIds(account_ids: string[]): Promise<IAccount[]> {
+     async  getAccountsByIds(account_ids: string[] | number[]): Promise<IAccount[]> {
       const sql = `SELECT * 
                     FROM Accounts as A 
                     WHERE A.account_id IN (?);`;

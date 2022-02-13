@@ -4,9 +4,11 @@ import { NextFunction, Request, Response } from "express";
 import buisness_dal from "../modules/business/business.dal.js";
 import individual_dal from "../modules/individual/individual.dal.js";
 import * as T from "../types/types.js";
+import Validator from '../validations/validator.js'; 
 
 export function black_list_Middleware(type : string) {
-    return async function (req: Request, res: Response, next: NextFunction) :Promise<void>{
+    return async function (req: Request, res: Response, next: NextFunction): Promise<void>{
+        await Validator.isAccountExists(Number(req.body.source_account));
         switch(type) {
             case (T.account_type.INDIVIDUAL):
                 let ind_account = await individual_dal.getIndividualAccountByAccountId(req.body.source_account);
