@@ -58,11 +58,16 @@ export function NumberEquals(value_field_tuples_got: [value: string | number, fi
   throw new validationException(400, `${field_got} should be equal to ${field_expected}.`)
 }
 
-export function NumberNotEquals(num : string | number, than: string | number) : boolean{
-  if(Number(num) !== Number(than)) {
+export function NumberNotEquals(value_field_tuples_got: [value: string | number, field: string | number], value_field_tuples_expected: [value: string | number, field: string | number]) : boolean{
+  const value_got = value_field_tuples_got[0];
+  const field_got = value_field_tuples_got[1]; 
+  const value_expected = value_field_tuples_expected[0];
+  const field_expected = value_field_tuples_expected[1];
+
+  if(Number(value_got) !== Number(value_expected)) {
     return true;
   }
-  throw new Error(`${num} should not be equal to ${than}`);
+  throw new validationException(400, `${field_got} should be different from ${field_expected}.`)
 }
 
 export function NumberGreaterThan(num : string | number, than: string | number, field: string) : boolean{

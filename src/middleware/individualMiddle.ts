@@ -10,6 +10,7 @@ import * as family_dal from "../modules/family/family.dal.js";
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body, ['individual_id', 'first_name', 'last_name', 'currency']);
+    Validator.currencyIsValid(req.body.currency);
     if(req.body.email) {
         Validator.emailValidation(req.body.email);
     }

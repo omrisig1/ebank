@@ -62,6 +62,8 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
   if('error' in (json as any)){
     return json;
   }
+  const rate = (json as any).rates[(destination_acc as IBusinessAccount).currency]; 
+
   const new_amount = ((json as any).rates[(destination_acc as IBusinessAccount).currency] * Number(payload.amount)).toString();
   const simple_transfer1: simple_transfer = {
     account_id: Number(payload.source_account),
@@ -79,9 +81,16 @@ export async function transferDifferentCurrency(payload: ITransfer): Promise<any
       Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_FX_DIF_COMPANY,`maximum transfer to different compamy and different currency(${config.business.MAX_TRANS_B2B_FX_DIF_COMPANY})`]);
     }
   }
-  const results = await multiTransfer([simple_transfer1, simple_transfer2]);
-  return results;
+  let results = await multiTransfer([simple_transfer1, simple_transfer2]);
+  if(results[0]) {
+    const results_obj = {
+      accounts: results,
+      rate: rate as number
+    }
 
+    return results_obj;
+  }
+  return results;
 }
 
 async function FX_exchange(base:IBusinessAccount, target : IBusinessAccount) {
