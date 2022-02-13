@@ -87,7 +87,6 @@ export async function transferBuisnessDiffCurMiddle(req: Request, res: Response,
   Validator.accountStatusEquals([source_account.status_id as number,"source account status"], [account_status.ACTIVE,"Active"]);
   Validator.accountStatusEquals([destination_account.status_id as number,"destination account status"], [account_status.ACTIVE, "Active"]);
 
-  Validator.checkAccountCurrencyNotEquals([source_account.currency,"source account currency"], [destination_account.currency,"destination account currency"]);
   Validator.balanceGreaterThan((Number(source_account.balance)-Number(req.body.amount)),"business balance after transfer", config.business.MIN_BALANCE, `business minimum balance(${config.business.MIN_BALANCE})`);
   Validator.isValNumeric(source_account.balance,"balance")  ;
 
