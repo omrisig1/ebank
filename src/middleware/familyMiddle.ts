@@ -16,6 +16,13 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
   Validator.currencyIsValid(req.body.currency);
   Validator.isTypeArray(req.body.owners, 'owners');
   Validator.NumberGreaterThan(req.body.owners.length, 0, "owners array length");
+  for (const owner of req.body.owners) {
+    Validator.isTypeArray(owner, 'owners[]');//array inside the array
+    Validator.NumberEquals([owner.length, "owner length"], [2, "2 - [individual_account_id, amount]"]);
+    Validator.isValNumeric(owner[0], "individual_account_id");
+    Validator.isValNumeric(owner[1], "amount");
+    Validator.NumberGreaterThan(owner[1], 0, "amount");
+  }
   const account_ids = req.body.owners.map((arr:any)=> arr[0]);
   const accounts = await individual_dal.getIndividualsByAccountsIds(account_ids);
   const sum_provided = req.body.owners.reduce((total:number,curr:any)=> {return total+Number(curr[1])},0);
@@ -25,11 +32,6 @@ export async function createFamilyMiddle(req: Request, res: Response, next: Next
     await Validator.isAccountExists(acc.account_id as number); 
     await Validator.checkAccountTypeEquals(acc.account_id as number, [account_type.INDIVIDUAL])
     for (const owner of req.body.owners) {
-      Validator.isTypeArray(owner, 'owners[]');//array inside the array
-      Validator.NumberEquals([owner.length, "owner length"], [2, "2 - [individual_account_id, amount]"]);
-      Validator.isValNumeric(owner[0], "individual_account_id");
-      Validator.isValNumeric(owner[1], "amount");
-      Validator.NumberGreaterThan(owner[1], 0, "amount");
       if (acc.account_id == owner[0]) {
         let withdraw = owner[1];
         Validator.balanceGreaterThan(acc.balance - withdraw, "individual balance after transfer", config.individual.MIN_BALANCE, `individual minimum balance (${config.individual.MIN_BALANCE})`);
@@ -72,6 +74,13 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
   Validator.isValNumeric(req.params.family_id, "family_id");
   Validator.isTypeArray(req.body.individuals_to_add, 'individuals_to_add');
   Validator.NumberGreaterThan(req.body.individuals_to_add.length, 0, "individuals_to_add length");
+  for (const owner of req.body.individuals_to_add) {
+    Validator.isTypeArray(owner, 'individuals_to_add[]');//array inside the array
+    Validator.NumberEquals([owner.length, "individual length"], [2, "2 - [individual_account_id, amount]"]);
+    Validator.isValNumeric(owner[0], "individual_account_id");
+    Validator.isValNumeric(owner[1], "amount");
+    Validator.NumberGreaterThan(owner[1], 0, "amount");
+  }
   await Validator.checkAccountTypeEquals(Number(req.params.family_id), [account_type.FAMILY]);
   const amounts = req.body.individuals_to_add.map((item:any)=>item[1]) ;
   amounts.map((amount:any)=>Validator.isPositive(amount,"Amount"));
@@ -85,11 +94,6 @@ export async function addIndividualToFamilyMiddle(req: Request, res: Response, n
   for (const acc of individual_accounts) {    
     await Validator.checkAccountTypeEquals(acc.account_id as number,[account_type.INDIVIDUAL]);
     for (const owner of req.body.individuals_to_add) {
-      Validator.isTypeArray(owner, 'individuals_to_add[]');//array inside the array
-      Validator.NumberEquals([owner.length, "individual length"], [2, "2 - [individual_account_id, amount]"]);
-      Validator.isValNumeric(owner[0], "individual_account_id");
-      Validator.isValNumeric(owner[1], "amount");
-      Validator.NumberGreaterThan(owner[1], 0, "amount");
       if(acc.account_id == owner[0]){
         let withdraw = owner[1];
         Validator.balanceGreaterThan(acc.balance - withdraw,"individual balance after transfer", config.individual.MIN_BALANCE,`individual minimum balance(${config.individual.MIN_BALANCE})`);              
@@ -115,7 +119,6 @@ export async function removeIndividualFromFamilyMiddle(req: Request, res: Respon
   Validator.isValNumeric(req.params.family_id, "family_id");
   Validator.isTypeArray(req.body.individuals_to_remove, 'individuals_to_remove');
   Validator.NumberGreaterThan(req.body.individuals_to_remove.length, 0, 'individuals_to_remove array length');
-  await Validator.checkAccountTypeEquals(Number(req.params.family_id), [account_type.FAMILY]);
   for (const owner of req.body.individuals_to_remove) {
     Validator.isTypeArray(owner, 'individuals_to_remove[]');//array inside the array
     Validator.NumberEquals([owner.length, "individual length"], [2, "2 - [individual_account_id, amount]"]);
@@ -123,6 +126,7 @@ export async function removeIndividualFromFamilyMiddle(req: Request, res: Respon
     Validator.isValNumeric(owner[1], "amount");
     Validator.NumberGreaterThan(owner[1], 0, "amount");
   }
+  await Validator.checkAccountTypeEquals(Number(req.params.family_id), [account_type.FAMILY]);
   const amounts = req.body.individuals_to_remove.map((item:string)=>item[1]);
   amounts.map((amount:string)=>Validator.isPositive(amount,"Amount"));
   const remove_ids = req.body.individuals_to_remove.map((item:string)=>item[0]);
