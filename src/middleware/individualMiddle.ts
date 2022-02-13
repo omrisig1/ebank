@@ -10,6 +10,7 @@ import * as family_dal from "../modules/family/family.dal.js";
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body, ['individual_id', 'first_name', 'last_name', 'currency']);
+    Validator.currencyIsValid(req.body.currency);
     if(req.body.email) {
         Validator.emailValidation(req.body.email);
     }
@@ -61,7 +62,7 @@ export async function transferIndividualMiddle(req: Request, res: Response, next
     Validator.isPositive(req.body.amount,"amount");
     await Validator.isAccountExists(Number(req.body.source_account));
     await Validator.isAccountExists(Number(req.body.destination_account));
-    Validator.NumberNotEquals(req.body.source_account, req.body.destination_account);
+    Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
     const source_individual_account = await Util.getAccountById(req.body.source_account);
     const destination_account = await Util.getAccountById(req.body.destination_account);
     await Validator.checkAccountTypeEquals(source_individual_account.account_id as number, [account_type.INDIVIDUAL]);

@@ -11,16 +11,13 @@ export async function changeStatusMiddle(req: Request, res: Response, next: Next
   Validator.isTypeArray(req.body.list_of_accounts, 'list_of_accounts');
   Validator.isStatusExists(req.body.action);
   Validator.NumberGreaterThan(req.body.list_of_accounts.length, 0, "list_of_accounts array length");
-  for (const account_id of req.body.list_of_accounts) {
-    await Validator.checkAccountTypeEquals(account_id as number, [account_type.INDIVIDUAL, account_type.BUSINESS]);
-  }
   const accounts = await getAccountsByIds(req.body.list_of_accounts);
   Validator.NumberEquals(
     [req.body.list_of_accounts.length, 'list_of_accounts array length provided'],
     [accounts.length, 'array length expected']
     );
-   
   for (const acc of accounts) {
+    await Validator.checkAccountTypeEquals(acc.account_id as number, [account_type.INDIVIDUAL,account_type.BUSINESS]);
     Validator.accountStatusNotEquals(account_status[acc.status_id as number], req.body.action);
   }
   next();
