@@ -9,13 +9,22 @@ import * as Util from "../modules/utils.dal.js";
 import * as family_dal from "../modules/family/family.dal.js";
 
 export async function createIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
-    Validator.mandatoryFieldExists(req.body,['individual_id','first_name','last_name','currency']);
-    Validator.isValNumeric(req.body.individual_id, "individual_id");
+    Validator.mandatoryFieldExists(req.body, ['individual_id', 'first_name', 'last_name', 'currency']);
     if(req.body.email) {
         Validator.emailValidation(req.body.email);
     }
-    Validator.stringLengthAtLeast(req.body.individual_id,"individual id",config.individual.INDIVIDUAL_ID_DIGITS);
+    Validator.isValNumeric(req.body.individual_id, "individual_id");
+    Validator.NumberGreaterThan(req.body.individual_id, config.individual.MIN_INDIVIDUAL_ID_NUM,"individual_id");
+    Validator.NumberEquals(
+      [req.body.individual_id.length, 'individual_id length'],
+      [config.individual.INDIVIDUAL_ID_DIGITS, "number of digits"]
+    );
     await Validator.IndividualIDUnique(req.body.individual_id,"individual id");
+
+      if (req.body.balance) {
+        Validator.isValNumeric(req.body.balance, "balance");
+        Validator.balanceGreaterThan(req.body.balance, 'balance', 0, 'individual minimum balance');
+      }
     next();
     /*
     1.1 create individual account:
@@ -26,7 +35,7 @@ export async function createIndividualMiddle(req: Request, res: Response, next: 
 		1.1.1.4 currency
 		1.1.2 numeric individual_id
 		1.1.3 unique individual_id
-		1.1.4 individual_id length greater equal than 7
+		1.1.4 individual_id length equal to 7
     */
 }
 

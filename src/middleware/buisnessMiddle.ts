@@ -11,8 +11,15 @@ export function createBuisnessMiddle(req: Request, res: Response, next: NextFunc
      Validator.mandatoryFieldExists(req.body,['company_id','company_name','currency']);
      Validator.currencyIsValid(req.body.currency);
      Validator.isValNumeric(req.body.company_id,"company_id");
-  //add validation - config.individual.MIN_COMPANY_ID_NUM
-     Validator.stringLengthAtLeast(req.body.company_id,"company id",config.business.COMPANY_ID_DIGITS);
+     Validator.NumberGreaterThan(req.body.company_id, config.business.MIN_COMPANY_ID_NUM, "company_id");
+      Validator.NumberEquals(
+        [req.body.company_id.length, 'company_id length'],
+        [config.business.COMPANY_ID_DIGITS, 'number of digits']
+      );
+      if (req.body.balance) {
+        Validator.isValNumeric(req.body.balance, 'balance');
+        Validator.balanceGreaterThan(req.body.balance, 'balance', 0, 'business minimum balance');
+      }
     next();
     /*
     2.1.1 mandatory fields:

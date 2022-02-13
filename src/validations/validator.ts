@@ -65,12 +65,12 @@ export function NumberNotEquals(num : string | number, than: string | number) : 
   throw new Error(`${num} should not be equal to ${than}`);
 }
 
-// export function NumberGreaterThan(num : string | number, than: string | number) : boolean{
-//   if(Number(num) > Number(than)) {
-//     return true;
-//   }
-//   throw new Error("should be greather");
-// }
+export function NumberGreaterThan(num : string | number, than: string | number, field: string) : boolean{
+  if(Number(num) > Number(than)) {
+    return true;
+  }
+  throw new validationException(400, `Field ${field} - ${num} should be greater than ${than}.`);
+}
 
 export function NumberLessThan(value_field_tuples_got: [value: string | number, field: string | number], value_field_tuples_expected: [value: string | number, field: string | number]) : boolean{
   const value_got = value_field_tuples_got[0];
@@ -120,8 +120,26 @@ export function mandatoryFieldExists(object: object, fieldNames: string[]) : boo
   return true;
 }
 
+
+// export function isValNumeric(val: string | number | undefined, field?: string): boolean | never;
+// export function isValNumeric(val: string[] | number[], field?: string | string[]): boolean | never;
+// export function isValNumeric(val: any, field?: string | string[]): boolean | never {
+//   if (Array.isArray(val) && (Array.isArray(field))) {
+//     for (const [i, v] of val.entries()) {
+//       if (!((v && Number(v)) || v === 0 || v === '0')) {
+//         throw new Error(`Field ${field[i]} value is not numeric`);
+//       }
+//     }
+//     return true;
+//   } else if (Array.isArray(val)){
+//     if (val.every((v) => (v && Number(v)) || v === 0 || v === '0')) return true;
+//     throw new Error(`Field ${field as string} include value that is not numeric`);
+//    }
+//   else if ((val && Number(val)) || val === 0 || val === '0') return true;
+//   throw new Error(`Field ${field as string} value is not numeric`);
+// }
 export function isValNumeric(val: string | number |undefined, field_checked: string) : boolean|never{
-  if (val && Number(val)) {
+  if ((val && Number(val)) || val === 0 || val === '0') {
     return true;
   }
   throw new validationException(400,`Field ${field_checked} is not numeric`);
@@ -229,5 +247,19 @@ export function emailValidation(email : string ){
   if (emailRegexp.test(email)) {
     return true;
   }
-  throw new Error('not valid email addtress');
+  throw new validationException(400, `${email} is not valid email addtress`);
+}
+
+export function isTypeArray(val: any, field: string): boolean | never {
+  if (Array.isArray(val)) {
+    return true;
+  }
+    throw new validationException(400, `Field ${field} input should be array`);
+}
+
+export function isStatusExists(status: string): boolean | never {
+  if (status.toUpperCase() in account_status) {
+    return true;
+  }
+  throw new validationException(400, `Status ${status} not exists`);
 }

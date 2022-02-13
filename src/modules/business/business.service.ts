@@ -14,8 +14,8 @@ import IAccount from '../account.model.js';
 import { multiTransfer } from '../utils.dal.js';
 
 // Create an business account
-export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<any> {
-  payload.black_list = payload.black_list? payload.black_list : false;
+export async function createNewBusinessAccount(payload: IBusinessAccount): Promise<IBusinessAccount|undefined> {
+  payload.black_list = payload.black_list ? payload.black_list : false;
   payload.status_id = account_status.ACTIVE;
   payload.balance = payload.balance? payload.balance : 0;
   const business_account = await business_dal.createBusinessAccount(payload);
@@ -23,7 +23,7 @@ export async function createNewBusinessAccount(payload: IBusinessAccount): Promi
 }
 
 // Get business account by ID
-export async function getBusinessAccountById(idToRead: number): Promise<any> {
+export async function getBusinessAccountById(idToRead: number): Promise<IBusinessAccount> {
   const business_account = await business_dal.getBusinessAccountByAccountId(idToRead);
   return business_account;
 }
