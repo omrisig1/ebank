@@ -175,7 +175,7 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
   Validator.isPositive(req.body.amount,"Amount");
   await Validator.isAccountExists(Number(req.body.source_account));
   await Validator.isAccountExists(Number(req.body.destination_account));
-  Validator.NumberNotEquals(req.body.source_account, req.body.destination_account);
+  Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
   const source_family_account = await Util.getAccountById(req.body.source_account);
   const destination_account = await Util.getAccountById(req.body.destination_account);
 
@@ -190,7 +190,7 @@ export async function transferFamilyMiddle(req: Request, res: Response, next: Ne
 
   Validator.checkAccountCurrencyEquals([source_family_account.currency,"source account currency"], [destination_account.currency,"destination account currency"]);
   Validator.balanceGreaterThan(source_family_account.balance - req.body.amount,"family balance after transfer", config.family.MIN_BALANCE, `family minimum balance(${config.family.MIN_BALANCE})`)
-     const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source);
+     const owners_ids = await family_dal.getOwnersListByFamilyAccountId(req.body.source_account);
      const full_accounts_info = await individual_dal.getIndividualsByAccountsIds(owners_ids);
      for (const acc of full_accounts_info) {
         await Validator.isAccountExists(acc.account_id as number);

@@ -54,6 +54,8 @@ export async function transferBuisnessSameCurMiddle(req: Request, res: Response,
   Validator.isPositive(req.body.amount,"Amount");
   await Validator.isAccountExists(Number(req.body.source_account));
   await Validator.isAccountExists(Number(req.body.destination_account));
+  Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
+
   const source_account = await Util.getAccountById(req.body.source_account);
   const destination_account = await Util.getAccountById(req.body.destination_account);
 
@@ -78,6 +80,8 @@ export async function transferBuisnessDiffCurMiddle(req: Request, res: Response,
   Validator.isPositive(req.body.amount,"Amount");
   await Validator.isAccountExists(Number(req.body.source_account));
   await Validator.isAccountExists(Number(req.body.destination_account));
+  Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
+  
   const source_account = await Util.getAccountById(req.body.source_account);
   const destination_account = await Util.getAccountById(req.body.destination_account);
 

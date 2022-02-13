@@ -62,7 +62,7 @@ export async function transferIndividualMiddle(req: Request, res: Response, next
     Validator.isPositive(req.body.amount,"amount");
     await Validator.isAccountExists(Number(req.body.source_account));
     await Validator.isAccountExists(Number(req.body.destination_account));
-    Validator.NumberNotEquals(req.body.source_account, req.body.destination_account);
+    Validator.NumberNotEquals([req.body.source_account,"source account"], [req.body.destination_account,"destination account"]);
     const source_individual_account = await Util.getAccountById(req.body.source_account);
     const destination_account = await Util.getAccountById(req.body.destination_account);
     await Validator.checkAccountTypeEquals(source_individual_account.account_id as number, [account_type.INDIVIDUAL]);

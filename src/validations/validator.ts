@@ -233,18 +233,18 @@ export function accountStatusNotEquals(statusA: string, statusB: string) : boole
   if (statusA.toUpperCase() !== statusB.toUpperCase()) {
     return true;
   }
-  throw new validationException(400, `At least one of the provided accounts has equal status as the procided action.`);
+  throw new validationException(400, `At least one of the provided accounts has equal status as the provided action.`);
 }
 export function accountStatusEquals(value_field_tuples_got: [status_value_got: number , field: string], value_field_tuples_expected: [status_value_expected: number, field: string]) : boolean | Error{
   const status_value_got = value_field_tuples_got[0];
   const field_got = value_field_tuples_got[1]; 
   const status_value_expected = value_field_tuples_expected[0];
   const field_expected = value_field_tuples_expected[1]; 
-
   if (status_value_got == status_value_expected) {
     return true;
   }
-  throw new validationException(400, `${field_got} should be ${field_expected} but got ${status_value_got}.`);
+  const status_as_string = account_status[status_value_got];
+  throw new validationException(400, `${field_got} should be ${field_expected} but it is ${status_as_string}.`);
 }
 
 export function emailValidation(email : string ){
