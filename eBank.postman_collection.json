@@ -12,10 +12,26 @@
 					"name": "Create individual account",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "access_key",
+								"value": "1234",
+								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "okkkk",
+								"type": "text"
+							},
+							{
+								"key": "req_hash",
+								"value": "4612f4698b179afc177f595a96b402b923855684283e03c52a245352f96af5f2",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individual_id\": \"1234594\",\n    \"first_name\": \"omri7\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\",\n    \"balance\":\"200000\"\n}",
+							"raw": "{\n    \"individual_id\": \"1000160\",\n    \"first_name\": \"omri7\",\n    \"last_name\": \"Cohen\",\n    \"status_id\": \"1\",\n    \"currency\": \"USD\",\n    \"email\": \"omri@gmail.com\",\n    \"balance\": \"900000\",\n    \"address\": {\n        \"country_name\":\"oklslsa\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -41,9 +57,35 @@
 					"name": "Get individual account by ID",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "access_key",
+								"value": "1234",
+								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "ok",
+								"type": "text"
+							},
+							{
+								"key": "req_hash",
+								"value": "517135485f71e3c9b2ebf938e827aa2245f78ba13e88e60f9582d1cfec803f8a",
+								"type": "text"
+							},
+							{
+								"key": "idempotency_key",
+								"value": "yallarrrrqweefdfd",
+								"type": "text"
+							},
+							{
+								"key": "user",
+								"value": "111",
+								"type": "text"
+							}
+						],
 						"url": {
-							"raw": "localhost:3030/api/individual/68",
+							"raw": "localhost:3030/api/individual/test/65",
 							"host": [
 								"localhost"
 							],
@@ -51,20 +93,21 @@
 							"path": [
 								"api",
 								"individual",
-								"68"
+								"test",
+								"65"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Activate/Deactivate account by ID",
+					"name": "owner to family",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\"95\"],\n    \"action\": \"ghfjh\"\n}",
+							"raw": "{\n    \"source_account\":\"31\",\n    \"destination_account\":\"32\",\n    \"amount\":\"2000\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,7 +115,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:3030/api/individual/change-status/",
+							"raw": "http://localhost:3030/api/individual/transfer",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -81,8 +124,7 @@
 							"path": [
 								"api",
 								"individual",
-								"change-status",
-								""
+								"transfer"
 							]
 						}
 					},
@@ -97,10 +139,26 @@
 					"name": "Create business account",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "access_key",
+								"value": "1234",
+								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "okiwiw",
+								"type": "text"
+							},
+							{
+								"key": "req_hash",
+								"value": "9104bbfb731ba32cc3bcbfac3ac9403ba663b4988670d64ce6708bc03b2907cb",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": \"12345683\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\",\n    \"balance\":\"20000\"\n}",
+							"raw": "{\n    \"company_id\": \"12345692\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\",\n    \"context\":\"forfun\",\n    \"balance\":\"900000\"\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -124,6 +182,9 @@
 				},
 				{
 					"name": "Get business account by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -140,11 +201,16 @@
 							{
 								"key": "req_hash",
 								"value": "bd7a58ce44f0c7203263b6fb5ceaa501064ab1778c2cb3ff2174e8c400f6dd38",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
-							"raw": "localhost:3030/api/business/89",
+							"raw": "localhost:3030/api/business/63",
 							"host": [
 								"localhost"
 							],
@@ -152,7 +218,7 @@
 							"path": [
 								"api",
 								"business",
-								"89"
+								"63"
 							]
 						}
 					},
@@ -165,7 +231,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"16\",\n    \"destination_account\":\"17\",\n    \"amount\":\"99\"\n}\n",
+							"raw": "{\n    \"source_account\":\"33\",\n    \"destination_account\":\"61\",\n    \"amount\":\"90\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -195,7 +261,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"12\",\n    \"destination_account\":\"13\",\n    \"amount\":\"100\"\n}",
+							"raw": "{\n    \"source_account\":\"33\",\n    \"destination_account\":\"65\",\n    \"amount\":\"100\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -217,37 +283,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Activate/Deactivate account by ID",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\"89\"],\n    \"action\": \"1\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3030/api/business/change-status/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3030",
-							"path": [
-								"api",
-								"business",
-								"change-status",
-								""
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -258,10 +293,23 @@
 					"name": "Create family account",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "idempotency_key",
+								"value": "123",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "req_hash",
+								"value": "abc",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"owners\": [\n        [\"78\",\"20000\"],\n        [\"79\",\"30001\"]\n    ],\n    \"currency\":\"USD\"\n}",
+							"raw": "{\n    \"owners\": [\n       [\"51\",\"20000\"]\n    ],\n    \"currency\":\"USD\",\n    \"balance\":\"3000\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -291,7 +339,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_add\": [\n        [\"96\",\"10000\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"65\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -299,7 +347,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/add/76/full",
+							"raw": "localhost:3030/api/family/add/64/full",
 							"host": [
 								"localhost"
 							],
@@ -308,7 +356,7 @@
 								"api",
 								"family",
 								"add",
-								"76",
+								"64",
 								"full"
 							]
 						}
@@ -322,7 +370,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_add\": [\n        [\"77\",\"1000\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"54\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -330,7 +378,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/add/85/short",
+							"raw": "localhost:3030/api/family/add/64/short",
 							"host": [
 								"localhost"
 							],
@@ -339,7 +387,7 @@
 								"api",
 								"family",
 								"add",
-								"85",
+								"64",
 								"short"
 							]
 						}
@@ -353,7 +401,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_remove\": [\n        [\"67\",\"1000\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"65\",\"2000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -361,7 +409,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/remove/76/short",
+							"raw": "localhost:3030/api/family/remove/64/short",
 							"host": [
 								"localhost"
 							],
@@ -370,7 +418,7 @@
 								"api",
 								"family",
 								"remove",
-								"76",
+								"64",
 								"short"
 							]
 						}
@@ -384,7 +432,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_remove\": [\n        [\"77\",\"1000\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_remove\": [\n        [\"62\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -392,7 +440,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/remove/76/full",
+							"raw": "localhost:3030/api/family/remove/64/full",
 							"host": [
 								"localhost"
 							],
@@ -401,7 +449,7 @@
 								"api",
 								"family",
 								"remove",
-								"76",
+								"64",
 								"full"
 							]
 						}
@@ -414,7 +462,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3030/api/family/87/short",
+							"raw": "localhost:3030/api/family/64/short",
 							"host": [
 								"localhost"
 							],
@@ -422,7 +470,7 @@
 							"path": [
 								"api",
 								"family",
-								"87",
+								"64",
 								"short"
 							]
 						}
@@ -435,7 +483,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3030/api/family/76/full",
+							"raw": "localhost:3030/api/family/64/full",
 							"host": [
 								"localhost"
 							],
@@ -443,7 +491,7 @@
 							"path": [
 								"api",
 								"family",
-								"76",
+								"64",
 								"full"
 							]
 						}
@@ -457,7 +505,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"87\",\n    \"destination_account\":\"89\",\n    \"amount\":\"2000\"\n}\n",
+							"raw": "{\n    \"source_account\":\"48\",\n    \"destination_account\":\"44\",\n    \"amount\":\"2000\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -495,7 +543,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/close/87",
+							"raw": "localhost:3030/api/family/close/64",
 							"host": [
 								"localhost"
 							],
@@ -504,7 +552,73 @@
 								"api",
 								"family",
 								"close",
-								"87"
+								"64"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transfer to owner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_account\":\"140\",\n    \"destination_account\":\"125\",\n    \"amount\":\"2000\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/api/family/transfer/owner",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"family",
+								"transfer",
+								"owner"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "change-status",
+			"item": [
+				{
+					"name": "Activate/Deactivate account by ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"list_of_accounts\": [\n        [\"1\",\"individual\"],\n        [\"5\",\"business\"]\n    ],\n    \"action\": \"ACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3030/api/change-status/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"change-status",
+								""
 							]
 						}
 					},
