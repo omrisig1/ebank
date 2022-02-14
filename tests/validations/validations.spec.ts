@@ -168,10 +168,10 @@ describe('The validations module',  ()=> {
     context(`#NumberGreaterThan - On failure`,()=> {
 
         it(`company_id (number) is smaller than company_id_min_val (number) - should throw error`,()=> {
-            expect(()=>V.NumberGreaterThan("25",30,"company_id")).to.throw("Field company_id - 25 should be greater than 30.");
+            expect(()=>V.NumberGreaterThan("25",30,"company_id")).to.throw("Field company_id = 25, should be greater than 30.");
         })
         it(`company_id (string) is equal to company_id_min_val - should throw error`,()=> {
-            expect(()=>V.NumberGreaterThan("20",20,"company_id")).to.throw("Field company_id - 20 should be greater than 20.");
+            expect(()=>V.NumberGreaterThan("20",20,"company_id")).to.throw("Field company_id = 20, should be greater than 20.");
         })
     })
 
