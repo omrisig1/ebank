@@ -1,36 +1,37 @@
-// import { expect } from "chai";
-// import * as V from "../src/validations/validator";
+/* eslint-disable @typescript-eslint/unbound-method */
+import { expect } from "chai";
+import V from "../src/validations/validator";
 
-// describe('The validations module',  ()=> {
+describe('The validations module',  ()=> {
 
-//     context(`#isPositive`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.isPositive).to.be.a('function')
-//             expect(V.isPositive).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.isPositive('2');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             try{
-//                 V.isPositive('-1');
-//             }
-//             catch(err){
-//                 expect((err as any).message).to.equal('amount should be positive')
-//             }
-//         })
-//         it(`should throw`,()=> {
-//             try{
-//                 V.isPositive('0');
-//             }
-//             catch(err){
-//                 expect((err as any).message).to.equal('amount should be positive')
-//             }
-//         })
+    context(`#isPositive`,()=> {
+        it(`should exist`,()=> {
+            expect(V.isPositive).to.be.a('function')
+            expect(V.isPositive).to.be.instanceOf(Function)
+        })
+        // it(`should be true`,()=> {
+        //     let actual = V.isPositive('2');
+        //     expect(actual).to.equal(true)
+        // })
+        // it(`should throw`,()=> {
+        //     try{
+        //         V.isPositive('-1');
+        //     }
+        //     catch(err){
+        //         expect((err as any).message).to.equal('amount should be positive')
+        //     }
+        // })
+        // it(`should throw`,()=> {
+        //     try{
+        //         V.isPositive('0');
+        //     }
+        //     catch(err){
+        //         expect((err as any).message).to.equal('amount should be positive')
+        //     }
+        //})
 
-//     })
-
+    })
+})
 //     context(`#inFamily`,()=> {
 //         it(`should exist`,()=> {
 //             expect(V.inFamily).to.be.a('function')

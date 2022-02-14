@@ -33,11 +33,9 @@ class BuisnessService {
     // buisness logic:
     // check source - Business
     const source_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.source_account));
-    // await Validator.isAccountExists(source_acc.account_id as number);
     // check destination - Business or Individual
     const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
     const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
-    // if (!business_destination_acc && !individual_destination_acc) throw new Error('destination account not valid - can be B2B or B2I');
 
     // if destination is Business --> transfer B2B
     if (business_destination_acc && config.TRASNFER_LIMIT_ON) {

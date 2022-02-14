@@ -63,7 +63,7 @@ class BuisnessController {
         if(!source_and_destination_accounts_and_FX_Rate || (Array.isArray(source_and_destination_accounts_and_FX_Rate.accounts) && source_and_destination_accounts_and_FX_Rate.accounts.length === 0)){
             throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}.`);
         } else {
-            if(source_and_destination_accounts_and_FX_Rate.accounts.hasOwnProperty('success') && source_and_destination_accounts_and_FX_Rate.accounts.success === false){
+            if(!source_and_destination_accounts_and_FX_Rate.accounts || source_and_destination_accounts_and_FX_Rate.accounts.hasOwnProperty('success') && source_and_destination_accounts_and_FX_Rate.accounts.success === false){
                 throw new HttpException(400,`Failed to transfer money from ${source} to ${destination}. ${source_and_destination_accounts_and_FX_Rate.error.type}`);
 
             }

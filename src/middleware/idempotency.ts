@@ -4,6 +4,7 @@ import Util from '../modules/utils.dal.js';
 export const idempotencyCheck = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
     if ('idempotency_key' in req.headers && 'req_hash' in req.headers && 'user' in req.headers) {
         const response = await Util.getReponseByIdempotencyKey(req.headers.user as string,req.headers.idempotency_key as string);
+        
         if(response){
             if(await Util.sameRequest(req.headers.user as string,req.headers.req_hash as string, req.headers.idempotency_key as string)){
                 //same request
