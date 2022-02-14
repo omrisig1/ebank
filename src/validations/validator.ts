@@ -48,7 +48,7 @@ class Validator {
       if (accounts && Array.isArray(accounts) && accounts.length === arg1.length) {
         return true;
       }
-      const account_exist = accounts.map(a=>a.account_id);
+      const account_exist = accounts.map((a) => a.account_id);
       const accounts_not_exist = arg1.filter((value) => !account_exist.includes(value));
       if (accounts_not_exist.length === 1) {
         throw new validationException(400, `Account ${accounts_not_exist} doesn't exist.`);
@@ -97,7 +97,7 @@ class Validator {
     if (Number(num) > Number(than)) {
       return true;
     }
-    throw new validationException(400, `Field ${field} - ${num} should be greater than ${than}.`);
+    throw new validationException(400, `Field ${field} = ${num}, should be greater than ${than}.`);
   }
 
   NumberLessThan(
@@ -353,7 +353,7 @@ class Validator {
     this.NumberGreaterThan(individual_id, config.individual.MIN_INDIVIDUAL_ID_NUM, 'individual_id');
     this.NumberEquals(
       [individual_id.length, 'individual_id length'],
-      [config.individual.INDIVIDUAL_ID_DIGITS, 'number of digits']
+      [config.individual.INDIVIDUAL_ID_DIGITS, `${config.individual.INDIVIDUAL_ID_DIGITS} digits`]
     );
     await this.IndividualIDUnique(individual_id, 'individual id');
   }
@@ -367,6 +367,45 @@ class Validator {
     this.isValNumeric(amount, 'amount');
     this.isPositive(amount as string, 'amount');
   }
+
+  companyIdValidation(company_id: string) {
+    this.isValNumeric(company_id, 'company_id');
+    this.NumberGreaterThan(company_id, config.business.MIN_COMPANY_ID_NUM, 'company_id');
+    this.NumberEquals(
+      [company_id.length, 'company_id length'],
+      [config.business.COMPANY_ID_DIGITS, `${config.business.COMPANY_ID_DIGITS} digits`]
+    );
+  }
+
+  async sourceAndDestinationValidation(source_account: string, destination_account: string) {
+    this.isValNumeric([source_account, destination_account], ["source account", "destination account"]);
+    this.NumberNotEquals([source_account, "source account"], [destination_account, "destination account"]);
+    await this.isAccountExists([Number(source_account), Number(destination_account)]);
+  }
+  
+  async ownersArrayOfArraysValidation(individuals_to_add: string[][], field_name: string) {
+    this.isTypeArray(individuals_to_add, field_name);
+    this.NumberGreaterThan(individuals_to_add.length, 0, `${field_name} array length`);
+    const account_ids = [];
+    for (const owner of individuals_to_add) {
+      this.isTypeArray(owner, `${field_name}[]`); //array inside the array
+      this.NumberEquals([owner.length, 'individual length'], [2, '2 - [individual_account_id, amount]']);
+      this.isValNumeric(owner[0], 'individual_account_id');
+      await this.isAccountExists(Number(owner[0]));
+      await this.checkAccountTypeEquals(Number(owner[0]), [account_type.INDIVIDUAL]);
+      this.isValNumeric(owner[1], 'amount');
+      this.isPositive(owner[1], 'amount');
+      account_ids.push(owner[0]);
+    }
+    return account_ids;
+  }
+  
+  async accountIdValidation(account_id: string, field_name: string, account_type: string) {
+    this.isValNumeric(account_id, field_name);
+    await this.isAccountExists(Number(account_id)); 
+    await this.checkAccountTypeEquals(Number(account_id), [account_type]);
+  }
+
 }
 const V = new Validator();
 export default V;

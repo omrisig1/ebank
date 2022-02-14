@@ -8,7 +8,7 @@ import Validator from '../validations/validator.js';
 
 export function black_list_Middleware(type : string) {
     return async function (req: Request, res: Response, next: NextFunction): Promise<void>{
-        await Validator.isAccountExists(Number(req.body.source_account));
+        await Validator.accountIdValidation(req.body.source_account, 'source_account', type);
         switch(type) {
             case (T.account_type.INDIVIDUAL):
                 let ind_account = await individual_dal.getIndividualAccountByAccountId(req.body.source_account);
