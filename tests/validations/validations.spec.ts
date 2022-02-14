@@ -1,13 +1,22 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { expect } from "chai";
+import config from "../../config.json";
+
 // import  chai_promise  from "chai-as-promised";
 import V from "../../src/validations/validator";
 import sinon from "sinon";
 import util from '../../src/modules/utils.dal.js';
 import individual_dal from "../../src/modules/individual/individual.dal.js";
-import { account_for_mandatory, account_for_unique, account_obj } from "./validation.mocks";
+import buisness_dal from "../../src/modules/business/business.dal.js";
+import family_dal from "../../src/modules/family/family.dal.js";
+import { account_for_fail_mandatory, account_for_mandatory, account_for_unique, account_obj, business_account, family_account } from "./validation.mocks";
+import { account_type } from "../../src/types/types";
+import { IIndividualAccount } from "../../src/modules/individual/individual.model";
+import { IBusinessAccount } from "../../src/modules/business/business.model";
+import { IFamilyAccount } from "../../src/modules/family/family.model";
 
 describe('The validations module',  ()=> {
 
@@ -168,10 +177,10 @@ describe('The validations module',  ()=> {
     context(`#NumberGreaterThan - On failure`,()=> {
 
         it(`company_id (number) is smaller than company_id_min_val (number) - should throw error`,()=> {
-            expect(()=>V.NumberGreaterThan("25",30,"company_id")).to.throw("Field company_id - 25 should be greater than 30.");
+            expect(()=>V.NumberGreaterThan("25",30,"company_id")).to.throw("Field company_id = 25, should be greater than 30.");
         })
         it(`company_id (string) is equal to company_id_min_val - should throw error`,()=> {
-            expect(()=>V.NumberGreaterThan("20",20,"company_id")).to.throw("Field company_id - 20 should be greater than 20.");
+            expect(()=>V.NumberGreaterThan("20",20,"company_id")).to.throw("Field company_id = 20, should be greater than 20.");
         })
     })
 
@@ -284,443 +293,243 @@ describe('The validations module',  ()=> {
             expect(actual).to.equal(true);
         })
     })
-    // context(`#mandatoryFieldExists - On failure`,()=> {
+    context(`#mandatoryFieldExists - On failure`,()=> {
 
-    //     it(`input "" should throw error`,()=> {
-    //         expect(()=>V.mandatoryFieldExists("")).to.throw("value is not a string");
-    //     })
-    // })
+        it(`input without mandatory field should throw error`,()=> {
+            expect(()=>V.mandatoryFieldExists(account_for_fail_mandatory,['individual_id', 'first_name', 'last_name', 'currency'])).to.throw("mandatory field individual_id is missing.");
+        })
+    })
+
+    // isValNumeric function
+    context(`#isValNumeric - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.isValNumeric).to.be.a('function')
+            expect(V.isValNumeric).to.be.instanceOf(Function)
+        })
+        it(`balance (number) is numeric`,()=> {
+            let actual = V.isValNumeric(5300,"balance");
+            expect(actual).to.equal(true);
+        })
+        it(`balance (string) is numeric`,()=> {
+            let actual = V.isValNumeric("5300","balance");
+            expect(actual).to.equal(true);
+        })
+    })
+    context(`#isValNumeric - On failure`,()=> {
+
+        it(`balance not numeric should throw error`,()=> {
+            expect(()=>V.isValNumeric("abcs","balance")).to.throw("Field balance value is not numeric");
+        })
+    })
+
+    // checkAccountTypeEquals function
+    context(`#checkAccountTypeEquals - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.checkAccountTypeEquals).to.be.a('function')
+            expect(V.checkAccountTypeEquals).to.be.instanceOf(Function)
+        })
+        it(`account id 6 is business account`,async ()=> {
+            sinon.stub(individual_dal, 'getIndividualByAccountId').resolves(undefined as unknown as IIndividualAccount);
+            sinon.stub(buisness_dal, 'getBusinessByAccountId').resolves(business_account);
+            sinon.stub(family_dal, 'getFamilyByAccountId').resolves(undefined as unknown as IFamilyAccount);
+            let result = await V.checkAccountTypeEquals(6,[account_type.BUSINESS]);
+            console.log({result})
+            expect(result).to.equal(true);
+        })
+    })
+    context(`#checkAccountTypeEquals - On failure`,()=> {
+
+        it(`account id 8 is not business account - should throw error`,async ()=> {
+            sinon.stub(individual_dal, 'getIndividualByAccountId').resolves([] as unknown as IIndividualAccount);
+            sinon.stub(buisness_dal, 'getBusinessByAccountId').resolves([] as unknown as IBusinessAccount);
+            sinon.stub(family_dal, 'getFamilyByAccountId').resolves(family_account);            
+            try{
+                let result = await V.checkAccountTypeEquals(8,[account_type.BUSINESS]);
+                expect(result).to.equal(true);
+            } catch(err) {
+                expect((err as any).message).to.equal("Expected account type of business, but got family.")
+            }
+        })
+
+    });
+
+    // checkAccountCurrencyEquals function
+    context(`#checkAccountCurrencyEquals - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.checkAccountCurrencyEquals).to.be.a('function')
+            expect(V.checkAccountCurrencyEquals).to.be.instanceOf(Function)
+        })
+        it(`USD source currency equal to USD destination currency`,()=> {
+            let actual = V.checkAccountCurrencyEquals(["USD", "source account currency"], ["USD", "desination account currency"]);
+            expect(actual).to.equal(true);
+        })
+        it(`EUR source currency equal to EUR destination currency`,()=> {
+            let actual = V.checkAccountCurrencyEquals(["EUR", "source account currency"], ["EUR", "desination account currency"]);
+            expect(actual).to.equal(true);
+        })
+    })
+    context(`#checkAccountCurrencyEquals - On failure`,()=> {
+
+        it(`USD source currency not equal to EUR destination currency - should throw error`,()=> {
+            expect(()=>V.checkAccountCurrencyEquals(["USD", "source account currency"],["EUR", "desination account currency"])).to.throw("desination account currency(EUR) should be equal to source account currency(USD)");
+        })
+    })
+
+    // balanceGreaterThan function
+    context(`#balanceGreaterThan - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.balanceGreaterThan).to.be.a('function')
+            expect(V.balanceGreaterThan).to.be.instanceOf(Function)
+        })
+        it(`business balance after transfer (number) is okay`, ()=> {
+            sinon.stub(V, 'isValNumeric').returns(true);
+            let result = V.balanceGreaterThan(50000,"business balance after transfer",10000,"business minimum balance");
+            expect(result).to.equal(true);
+        })
+        it(`business balance after transfer (string) is okay`, ()=> {
+            sinon.stub(V, 'isValNumeric').returns(true);
+            let result = V.balanceGreaterThan("50000","business balance after transfer","10000","business minimum balance");
+            expect(result).to.equal(true);
+        })
+    })
+
+    context(`#balanceGreaterThan - On failure`,()=> {
+
+        it(`business balance after transfer below minimum - should throw error`, ()=> {
+            sinon.stub(V, 'isValNumeric').returns(true);
+            try{
+                let result = V.balanceGreaterThan(500,"business balance after transfer",10000,"business minimum balance");
+                expect(result).to.equal(true);
+            } catch(err) {
+                expect((err as any).message).to.equal("business balance after transfer should be greater than business minimum balance.")
+            }
+        })
+    })
+
+    // currencyIsValid function
+    context(`#currencyIsValid - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.currencyIsValid).to.be.a('function')
+            expect(V.currencyIsValid).to.be.instanceOf(Function)
+        })
+        it(`USD currency is okay`, ()=> {
+            let result = V.currencyIsValid("USD");
+            expect(result).to.equal(true);
+        })
+        it(`EUR currency is okay`, ()=> {
+            let result = V.currencyIsValid("EUR");
+            expect(result).to.equal(true);
+        })
+    })
+
+    context(`#currencyIsValid - On failure`,()=> {
+
+        it(`YYY currency is not okay`, ()=> {
+            expect(()=>V.currencyIsValid("YYY")).to.throw(`Invalid currency, got YYY and support only: ${config.currencies}.`);
+        })
+    })
+
+
+    // accountStatusNotEquals function
+    context(`#accountStatusNotEquals - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.accountStatusNotEquals).to.be.a('function')
+            expect(V.accountStatusNotEquals).to.be.instanceOf(Function)
+        })
+        it(`ACTIVE !== INACTIVE`, ()=> {
+            let result = V.accountStatusNotEquals("ACTIVE","INACTIVE");
+            expect(result).to.equal(true);
+        })
+        it(`ACTIVE !== inactive`, ()=> {
+            let result = V.accountStatusNotEquals("ACTIVE","INACTIVE");
+            expect(result).to.equal(true);
+        })
+    })
+
+    context(`#accountStatusNotEquals - On failure`,()=> {
+
+        it(`ACTIVE !== ACTIVE should throw error`, ()=> {
+            expect(()=>V.accountStatusNotEquals("ACTIVE","ACTIVE")).to.throw(`At least one of the provided accounts has equal status as the provided action.`);
+        })
+        it(`ACTIVE !== active should throw error`, ()=> {
+            expect(()=>V.accountStatusNotEquals("ACTIVE","active")).to.throw(`At least one of the provided accounts has equal status as the provided action.`);
+        })
+    })
+
+    // accountStatusEquals function
+    context(`#accountStatusEquals - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.accountStatusEquals).to.be.a('function')
+            expect(V.accountStatusEquals).to.be.instanceOf(Function)
+        })
+        it(`ACTIVE === ACTIVE`, ()=> {
+            let result = V.accountStatusEquals([1,"source account status"],[1,"Active"]);
+            expect(result).to.equal(true);
+        })
+        it(`ACTIVE === active`, ()=> {
+            let result = V.accountStatusEquals([1,"source account status"],[1,"Active"]);
+            expect(result).to.equal(true);
+        })
+
+    })
+
+    context(`#accountStatusEquals - On failure`,()=> {
+
+        it(`ACTIVE === INACTIVE should throw error`, ()=> {
+            expect(()=>V.accountStatusEquals([1,"source account status"],[2,"INACTIVE"])).to.throw(`source account status should be INACTIVE but it is ACTIVE.`);
+        })
+        it(`ACTIVE === inactive should throw error`, ()=> {
+            expect(()=>V.accountStatusEquals([1,"source account status"],[2,"inactive"])).to.throw(`source account status should be inactive but it is ACTIVE.`);
+        })
+    })
+
+    // emailValidation function
+    context(`#emailValidation - On Success`,()=> {
+
+        it(`should exist as function`,()=> {
+            expect(V.emailValidation).to.be.a('function')
+            expect(V.emailValidation).to.be.instanceOf(Function)
+        })
+        it(`john.doe@gmail.com is valid`, ()=> {
+            let result = V.emailValidation("john.doe@gmail.com");
+            expect(result).to.equal(true);
+        })
+        it(`john.doe@gmail.net is valid`, ()=> {
+            let result = V.emailValidation("john.doe@gmail.net");
+            expect(result).to.equal(true);
+        })
+    })
+    context(`#emailValidation - On failure`,()=> {
+
+        it(`john.doegmail.net is not valid- should throw error`, ()=> {
+            expect(()=>V.emailValidation("john.doegmail.net")).to.throw(`john.doegmail.net is not valid email addtress`);
+        })
+    })
+
+    // isTypeArray function
+    context(`#isTypeArray - On Success`,()=> {
+
+        it(`gets array as input`,()=> {
+            expect(V.isTypeArray).to.be.a('function')
+            expect(V.isTypeArray).to.be.instanceOf(Function)
+        })
+        it(`input is array`, ()=> {
+            let result = V.isTypeArray([["22","1000"],["29","1000"]],"individuals to add");
+            expect(result).to.equal(true);
+        })
+    })
+    context(`#isTypeArray - On failure`,()=> {
+
+        it(`input is not array- should throw error`, ()=> {
+            expect(()=>V.isTypeArray("22","individuals to add")).to.throw(`Field individuals to add input should be array.`);
+        })
+    })
 
 });
-
-//     context(`#mandatoryFieldExists`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.mandatoryFieldExists).to.be.a('function')
-//             expect(V.mandatoryFieldExists).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.mandatoryFieldExists([],[]);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.mandatoryFieldExists({hi:'hi'},[]);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.mandatoryFieldExists({hi:'hi there'},['hi']);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.mandatoryFieldExists({hi:'hi there'},['no']);
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-    
-//     context(`#isValNumeric`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.isValNumeric).to.be.a('function')
-//             expect(V.isValNumeric).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.isValNumeric('1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.isValNumeric(1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.isValNumeric('0');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.isValNumeric(0);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.isValNumeric('');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.isValNumeric(undefined);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.isValNumeric('ffgfggg');
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-      
-//     context(`#stringLengthAtLeast`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.stringLengthAtLeast).to.be.a('function')
-//             expect(V.stringLengthAtLeast).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.stringLengthAtLeast('2',1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.stringLengthAtLeast('2',2);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthAtLeast('gfgfgfg',1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthAtLeast('1',2);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthAtLeast('fdsfsdfsdfs',99999);
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-
-//     context(`#stringLengthEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.stringLengthEquals).to.be.a('function')
-//             expect(V.stringLengthEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.stringLengthEquals('0',0);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.stringLengthEquals('2',2);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthEquals('gfgfgfg',1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthEquals('1',2);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthEquals('fdsfsdfsdfs',99999);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.stringLengthEquals('2',1);
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-
-//     context(`#transferSizeSmallerThan`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.transferSizeSmallerThan).to.be.a('function')
-//             expect(V.transferSizeSmallerThan).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.transferSizeSmallerThan('INDIVIDUAL','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.transferSizeSmallerThan('INDIVIDUAL','99');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.transferSizeSmallerThan('INDIVIDUAL','99999');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.transferSizeSmallerThan('BUISNESS','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.transferSizeSmallerThan('BUISNESS','99');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.transferSizeSmallerThan('BUISNESS','99999');
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-
-//     context(`#checkAccountTypeEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.checkAccountTypeEquals).to.be.a('function')
-//             expect(V.checkAccountTypeEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountTypeEquals('STR','STR');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountTypeEquals('1','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountTypeEquals('1','2');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountTypeEquals('fsdfs','fsdfs');
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-   
-//     context(`#checkAccountTypeNotEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.checkAccountTypeNotEquals).to.be.a('function')
-//             expect(V.checkAccountTypeNotEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountTypeNotEquals('1','2');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountTypeNotEquals('fsdfs','fsdfs');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountTypeNotEquals('STR','STR');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountTypeNotEquals('1','1');
-//             expect(actual).to.equal(true)
-//         })
-       
-//     })
-     
-//     context(`#checkAccountCurrencyEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.checkAccountCurrencyEquals).to.be.a('function')
-//             expect(V.checkAccountCurrencyEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountCurrencyEquals('STR','STR');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.checkAccountCurrencyEquals('1','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountCurrencyEquals('1','2');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.checkAccountCurrencyEquals('fsdfs','fsdfs');
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-
-//     context(`#balanceGreaterThan`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.balanceGreaterThan).to.be.a('function')
-//             expect(V.balanceGreaterThan).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan(2,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan('2','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan('2',1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan(1,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan('1','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.balanceGreaterThan('1',1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.balanceGreaterThan(1,2);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.balanceGreaterThan('1','2');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be throw`,()=> {
-//             let actual = V.balanceGreaterThan('1',2);
-//             expect(actual).to.equal(true)
-//         })
-//     })
-    
-//     context(`#currencyIsValid`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.currencyIsValid).to.be.a('function')
-//             expect(V.currencyIsValid).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.currencyIsValid('USD');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.currencyIsValid('EUR');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.currencyIsValid('');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.currencyIsValid('ffsdfsdfs');
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-//     context(`#accountStatusEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.accountStatusEquals).to.be.a('function')
-//             expect(V.accountStatusEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.accountStatusEquals(1,'1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.accountStatusEquals(1,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(undefined,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(undefined,'1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(2,'1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(2,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be ok`,()=> {
-//             let actual = V.accountStatusEquals(true,'1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(false,1);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be ok`,()=> {
-//             let actual = V.accountStatusEquals(true,true);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(false,true);
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should be ok`,()=> {
-//             let actual = V.accountStatusEquals(true,'1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusEquals(false,1);
-//             expect(actual).to.equal(true)
-//         })
-    
-//     })
-
-//     context(`#accountStatusNotEquals`,()=> {
-//         it(`should exist`,()=> {
-//             expect(V.accountStatusNotEquals).to.be.a('function')
-//             expect(V.accountStatusNotEquals).to.be.instanceOf(Function)
-//         })
-//         it(`should be true`,()=> {
-//             let actual = V.accountStatusNotEquals('2','1');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusNotEquals('dsds','dsds');
-//             expect(actual).to.equal(true)
-//         })
-//         it(`should throw`,()=> {
-//             let actual = V.accountStatusNotEquals('1','1');
-//             expect(actual).to.equal(true)
-//         })
-        
-    
-//     })
-
-
-      
-//     // export function IndividualIDUnique(str:string) :string{
-//     //     Send id in db
-//     //     Send id not in db
-        
-      
-        
-// })
-
-//     /* context(`#multiply`,()=> {
-
-//         it(`should exist`) // <-- pending...
-
-//         it(`should multiply two numbers`,()=>{
-//             throw new Error('kabooom!!!') // <-- test fails...
-//             let actual = multiply(2,3);
-//             expect(actual).to.deep.equal([6])
-//         })
-//         it(`should muliply several numbers`,()=> {
-//             // passing as long as assertion didn't fail
-//             // or an error was thrown...
-//         })
-
-//     }) */
-// //     context(`#multiply`,()=> {
-
-// //         it(`should exist`,()=> {
-// //             expect(sum).to.be.a('function')
-// //             expect(sum).to.be.instanceOf(Function)
-// //         })
-
-// //         it(`should multiply two numbers`,()=> {
-// //             let actual = multiply(2,3);
-// //             expect(actual).to.deep.equal([6])
-// //         })
-
-// //         it(`should muliply several numbers`,()=> {
-// //             let actual = multiply(2,3,4,5,6);
-// //             expect(actual).to.eql([6,8,10,12])
-// //         })
-
-// //     })
-
-// //     context(`#async tests`, ()=> {
-// //         // const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// //         it(`should muliply several numbers with delay`, async ()=> {
-// //             await delay(300);
-// //             let actual = multiply(2,3,4,5,6);
-// //             expect(actual).to.deep.equal([6,8,10,12])
-// //         })
-// //     })
-// //     context(`#multiplyR tests`, ()=> {
-// //         // const delay = (ms:number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// //         it(`should randomly muliply several numbers with delay`, async ()=> {
-// //             await delay(300);
-// //             let actual = multiplyR(2,3,4,5,6);
-// //             expect(actual.length).to.equal(5)
-// //         })
-// //     })
-
-// // });

@@ -38,3 +38,38 @@ export const account_for_mandatory = {
       street_number: '154'
     }
   }
+export const account_for_fail_mandatory = {
+    first_name: 'Tal',
+    last_name: 'Levi',
+    currency: 'USD',
+    balance: '10300',
+    address: {
+      country_name: 'Israel',
+      country_code: '1234',
+      postal_code: '233',
+      city: 'Tel-Aviv',
+      region: 'Center',
+      street_name: 'Hashalom',
+      street_number: '154'
+    }
+}
+
+export const business_account = {
+  account_id: 6,
+  currency: 'USD',
+  balance: 3000000,
+  status_id: 1,
+  company_id: 23432123,
+  company_name: 'Palo Alto',
+  context: 'Cyber',
+  address_id: 6,
+  black_list: false
+}
+
+export const family_account = {
+  account_id: 8,
+  currency: 'USD',
+  balance: 14700,
+  status_id: 1,
+  context: 'Travel'
+}
