@@ -24,7 +24,7 @@ router.get("/test/:id",raw(testAuth), raw(idempotencyCheck), raw(IMiddleware.get
 // Get individual account by ID
 router.get("/:id", raw(IMiddleware.getIndividualMiddle), raw(C.getIndividualAccountByAccountId));
 
-// Transfer F2B
+// Transfer I2F
 router.post("/transfer",raw(black_list_Middleware(T.account_type.INDIVIDUAL)),raw(IMiddleware.transferIndividualMiddle), raw(C.transferFromOwnerToFamily));
   
 export default router;
