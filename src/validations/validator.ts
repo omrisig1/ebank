@@ -173,19 +173,19 @@ class Validator {
   //   throw new validationException(400,`Field ${field_checked} is not numeric`);
   // }
 
-  stringLengthAtLeast(
-    val: string,
-    field_checked: string,
-    expected_length: number
-  ): boolean | Error {
-    if (this.stringNotEmpty(val) && val.length >= expected_length) {
-      return true;
-    }
-    throw new validationException(
-      400,
-      `Field ${field_checked} should be of length ${expected_length}.`
-    );
-  }
+  // stringLengthAtLeast(
+  //   val: string,
+  //   field_checked: string,
+  //   expected_length: number
+  // ): boolean | Error {
+  //   if (this.stringNotEmpty(val) && val.length >= expected_length) {
+  //     return true;
+  //   }
+  //   throw new validationException(
+  //     400,
+  //     `Field ${field_checked} should be of length ${expected_length}.`
+  //   );
+  // }
 
   //   stringLengthEquals(val: string, length: number) :boolean|Error{
   //   if (stringNotEmpty(val) && val.length === length) {
@@ -211,8 +211,9 @@ class Validator {
       account_type_param = account_type.INDIVIDUAL;
     if (await buisness_dal.getBusinessByAccountId(account_id))
       account_type_param = account_type.BUSINESS;
-    if (await family_dal.getFamilyByAccountId(account_id)) account_type_param = account_type.FAMILY;
-
+    if (await family_dal.getFamilyByAccountId(account_id)) 
+      account_type_param = account_type.FAMILY;
+    
     if (accounts_to_be_equal.includes(account_type_param)) {
       return true;
     }
@@ -247,23 +248,23 @@ class Validator {
     );
   }
 
-  checkAccountCurrencyNotEquals(
-    value_field_tuples_got: [value: string, field: string],
-    value_field_tuples_expected: [value: string, field: string]
-  ): boolean | Error {
-    const value_got = value_field_tuples_got[0];
-    const field_got = value_field_tuples_got[1];
-    const value_expected = value_field_tuples_expected[0];
-    const field_expected = value_field_tuples_expected[1];
+  // checkAccountCurrencyNotEquals(
+  //   value_field_tuples_got: [value: string, field: string],
+  //   value_field_tuples_expected: [value: string, field: string]
+  // ): boolean | Error {
+  //   const value_got = value_field_tuples_got[0];
+  //   const field_got = value_field_tuples_got[1];
+  //   const value_expected = value_field_tuples_expected[0];
+  //   const field_expected = value_field_tuples_expected[1];
 
-    if (value_got !== value_expected) {
-      return true;
-    }
-    throw new validationException(
-      400,
-      `${field_expected}(${value_expected}) should be different from ${field_got}(${value_got}).`
-    );
-  }
+  //   if (value_got !== value_expected) {
+  //     return true;
+  //   }
+  //   throw new validationException(
+  //     400,
+  //     `${field_expected}(${value_expected}) should be different from ${field_got}(${value_got}).`
+  //   );
+  // }
 
   balanceGreaterThan(
     balance: string | number,
