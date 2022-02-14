@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -259,7 +260,16 @@ class Validator {
     if (Array.isArray(val)) {
       return true;
     }
-      throw new validationException(400, `Field ${field} input should be array`);
+      throw new validationException(400, `Field ${field} input should be array.`);
+  }
+    isTypeTuplesArray(list_of_accounts_tuples: [account_id: string,type: string][], field: string): boolean | never {
+      this.isTypeArray(list_of_accounts_tuples, field);
+      for (const account_tuple of list_of_accounts_tuples) {
+        if(!this.isTypeArray(account_tuple, 'account tuple') || account_tuple.length !== 2){
+          throw new validationException(400, `Field ${field} input should be array of tuples.`);
+        }
+      }
+      return true;
   }
   
     isStatusExists(status: string): boolean | never {
