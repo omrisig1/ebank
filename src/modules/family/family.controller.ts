@@ -20,7 +20,7 @@ class FamilyController {
                 message: "Family account created",
                 data: new_family_account_details,
             };
-            await Util.saveIdempotency(req.headers, outputResponse);
+            await Util.saveIdempotency(req, outputResponse);
             res.status(outputResponse.status).json(outputResponse);
         }
     }

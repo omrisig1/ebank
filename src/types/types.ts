@@ -1,3 +1,5 @@
+import IAccount from "../modules/account.model.js";
+
 export interface IResponseMessage {
     status: number;
     message: string;
@@ -64,4 +66,12 @@ export enum account_type {
 
 export interface secret {
   secret_key : string 
+}
+
+export interface IDiffRate {
+    accounts: IAccount[];
+    rate: number;
+}
+export interface Json {
+  [x: string]: string|number|boolean|Date|Json;
 }

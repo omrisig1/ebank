@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import { Request, Response } from "express";
 import HttpException from "../../exceptions/http-exception.js";
 import { IResponseMessage, ITransfer } from "../../types/types.js";

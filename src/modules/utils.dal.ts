@@ -5,7 +5,8 @@ import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { ITransfer, simple_transfer, Idempotency, secret, IResponseMessage} from '../types/types.js';
 import config from "../../config.json";
-import { IncomingHttpHeaders } from 'http';
+import { Request } from "express";
+import crypto from 'crypto';
 
 class UtilDal {
      async  createAccount(payload: IAccount): Promise<number> {
@@ -150,6 +151,13 @@ class UtilDal {
       const [response] = (await db.query(sql, [user,key]))as RowDataPacket[][];
       return response[0];
     }
+    async  getInfoByIdempotencyKey(user: string, key : string | undefined = '') : Promise<RowDataPacket> {
+      const sql = `SELECT response,req_hash as 'db_hash'
+            FROM Idempotency I 
+            WHERE user = ? AND idempotency_key = ?;`;
+      const [response]= (await db.query(sql, [user,key]))as RowDataPacket[];
+      return response[0];
+    }
     
      async  sameRequest(user: string, req_hash:string ,key : string | undefined = '') : Promise<RowDataPacket> {
       const sql = `SELECT response
@@ -165,20 +173,28 @@ class UtilDal {
       const id = result.insertId;
       return id;
     }
-    
-     async  saveIdempotency(headers : IncomingHttpHeaders, outputResponse: IResponseMessage) :Promise<void> {
-        if ('idempotency_key' in headers) {
+  generateRequestString(req : Request) {
+      return req.method + JSON.stringify(req.url) + JSON.stringify(req.params) + JSON.stringify(req.body)
+    }
+
+  async  saveIdempotency(req : Request, outputResponse: IResponseMessage) :Promise<void> {
+        if ('idempotency_key' in req.headers) {
             //create hash according to request
             const idem: Idempotency = {
-                idempotency_key: headers.idempotency_key as string,
-                user: "111",
+                idempotency_key: req.headers.idempotency_key as string,
+                user: "USER1",
                 response: JSON.stringify(outputResponse),
-                req_hash: headers.req_hash as string
+                req_hash: this.generateRequestString(req)
             };
             await this.logIdempotency(idem);
         }
     }
-  
+
+  makeHash256 (string: string, salt:string){
+    const sha256Hasher = crypto.createHmac("sha256",salt);
+    const hash = sha256Hasher.update(string).digest("hex");
+    return hash;
+  }
 }
 
 const Util = new UtilDal();

@@ -7,7 +7,7 @@ import business_dal from './business.dal.js';
 import individual_dal from '../individual/individual.dal.js';
 import Util from '../utils.dal.js';
 import Validator from '../../validations/validator.js';
-import { account_status, ITransfer, simple_transfer } from '../../types/types.js';
+import { account_status, IDiffRate, ITransfer, Json, simple_transfer } from '../../types/types.js';
 import fetch from 'node-fetch';
 import config from '../../../config.json';
 import IAccount from '../account.model.js';
@@ -49,9 +49,9 @@ class BuisnessService {
     // destination is Individual --> transfer B2I
     return await Util.transfer(payload, source_acc, individual_destination_acc);
   }
-
+  
   // Transfer B2B (different currency)
-  async  transferDifferentCurrency(payload: ITransfer): Promise<any> {
+  async  transferDifferentCurrency(payload: ITransfer): Promise< any> {
     //buisness logic:
     const accounts = await business_dal.getBusinessesByAccountsIds([(payload.source_account),(payload.destination_account)]);
     const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
@@ -81,7 +81,7 @@ class BuisnessService {
     }
     let results = await Util.multiTransfer([simple_transfer1, simple_transfer2]);
     if(results[0]) {
-      const results_obj = {
+      const results_obj: IDiffRate = {
         accounts: results,
         rate: rate as number
       }

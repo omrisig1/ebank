@@ -9,7 +9,7 @@ import Util from "../utils.dal.js";
 
 class IndividualController {
         // Create an individual account
-     async  createIndividualAccount(req: Request, res: Response): Promise<void> {
+    createIndividualAccount = async (req: Request, res: Response):Promise<void> => {
         const new_individual_account = await S.createNewIndividualAccount(req.body as IIndividualAccount);
         if(!new_individual_account){
             throw new HttpException(400,"Failed to create a new individual account.");
@@ -34,7 +34,7 @@ class IndividualController {
                 message: "Individual account found",
                 data: individual_account,
             };
-            await Util.saveIdempotency(req.headers, outputResponse);
+            await Util.saveIdempotency(req, outputResponse);
             res.status(outputResponse.status).json(outputResponse);
         }
     }

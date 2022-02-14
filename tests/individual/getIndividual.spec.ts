@@ -22,6 +22,43 @@ describe('The Individual Service',  ()=> {
         it(`should exist`,()=> {
             expect(individual_service.getIndividualAccountByAccountId).to.be.a('function')
         })
+        it(`should get the right account_id`,async  ()=> {
+            // let x = sinon.stub(individual_dal, 'getIndividualAccountByAccountId').resolves(get_individual_dal_obj_return);
+            let stubCB = sinon.stub(individual_dal, 'getIndividualAccountByAccountId');
+            // let spyCB = sinon.spy(individual_dal, "getIndividualAccountByAccountId");
+            // expect(x.getCall(0).callArgWith(4)).to.be.true;
+            // const spy1 = sinon.spy(x);
+            // spy1.calledWith(sinon.match('4'))   
+            let spy = sinon.spy();
+            
+            spy();
+            await individual_service.getIndividualAccountByAccountId(4)
+             console.log('callCount:',stubCB.callCount);
+             console.log('args:',stubCB.getCall(0).args);
+            //  console.log('spyCB callCount:',spyCB.callCount);
+            //  console.log('spyCB args:',spyCB.getCall(0).args);
+            // expect(spy.getCall(0).args(sinon.match({account_id:'4'}))).to.be.true;
+            // // expect(spy.calledOnceWithExactly(sinon.match({account_id:'5'}))).to.be.true;
+            // // expect(spy.calledOnceWithExactly(4)).to.be.true;
+            // // expect(spy.calledOnceWithExactly('4')).to.be.true;
+            // // let options = spy.getCall(0).args[0];
+            // expect(spy.calledWith(sinon.match({
+                    
+            //       }))).to.equal(4);
+            // const spy1 = sinon.spy(x);
+            // expect(spy1.calledWith(4)).to.equal(true);
+            // sinon.assert.withArgs(spy, sinon.match({ account_id: '45' }));
+            // const spy1 = sinon.spy(x);
+            // expect(spy1.calledWith(sinon.match({
+            //     account_id: 4
+            //   }))).to.equal(true);
+
+            // expect(x).to.have.been.calledWith(sinon.match({
+            //     foo: 'foo',
+            //     bar: 'bar'
+            //   }));
+        })
+       
         it(`should get the right account_id`,async ()=> {
             sinon.stub(individual_dal, 'getIndividualAccountByAccountId').resolves(get_individual_dal_obj_return);
             let result = await individual_service.getIndividualAccountByAccountId(4)
