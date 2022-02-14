@@ -31,7 +31,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individual_id\": \"1000160\",\n    \"first_name\": \"omri7\",\n    \"last_name\": \"Cohen\",\n    \"status_id\": \"1\",\n    \"currency\": \"USD\",\n    \"email\": \"omri@gmail.com\",\n    \"balance\": \"900000\",\n    \"address\": {\n        \"country_name\":\"oklslsa\"\n    }\n}",
+							"raw": "{\n    \"individual_id\": \"1000174\",\n    \"first_name\": \"omri7\",\n    \"last_name\": \"Cohen\",\n    \"currency\": \"USD\",\n    \"email\": \"omri@gmail.com\",\n    \"balance\": \"90000\",\n    \"address\": {\n        \"country_name\":\"oklslsa\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -66,26 +66,32 @@
 							{
 								"key": "salt",
 								"value": "ok",
-								"type": "text"
+								"type": "text",
+								"disabled": true
 							},
 							{
 								"key": "req_hash",
-								"value": "517135485f71e3c9b2ebf938e827aa2245f78ba13e88e60f9582d1cfec803f8a",
+								"value": "92737a6894d7800298bbd149f4eb8ebe4d438dd7fcbf2ca3938242304c623fa1",
 								"type": "text"
 							},
 							{
 								"key": "idempotency_key",
-								"value": "yallarrrrqweefdfd",
+								"value": "aaaaabc",
 								"type": "text"
 							},
 							{
 								"key": "user",
 								"value": "111",
 								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "aha",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:3030/api/individual/test/65",
+							"raw": "localhost:3030/api/individual/82",
 							"host": [
 								"localhost"
 							],
@@ -93,8 +99,7 @@
 							"path": [
 								"api",
 								"individual",
-								"test",
-								"65"
+								"82"
 							]
 						}
 					},
@@ -129,6 +134,53 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get individual test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "access_key",
+								"value": "1234",
+								"type": "text"
+							},
+							{
+								"key": "req_hash",
+								"value": "92737a6894d7800298bbd149f4eb8ebe4d438dd7fcbf2ca3938242304c623fa1",
+								"type": "text"
+							},
+							{
+								"key": "idempotency_key",
+								"value": "bbb",
+								"type": "text"
+							},
+							{
+								"key": "user",
+								"value": "USER1",
+								"type": "text"
+							},
+							{
+								"key": "salt",
+								"value": "aaa",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3030/api/individual/test/82",
+							"host": [
+								"localhost"
+							],
+							"port": "3030",
+							"path": [
+								"api",
+								"individual",
+								"test",
+								"82"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -158,7 +210,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_id\": \"12345692\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"USD\",\n    \"context\":\"forfun\",\n    \"balance\":\"900000\"\n\n}",
+							"raw": "{\n    \"company_id\": \"00000002\",\n    \"company_name\": \"Elbit\",\n    \"currency\": \"EUR\",\n    \"context\":\"forfun\",\n    \"balance\":\"900000\"\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -210,7 +262,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:3030/api/business/63",
+							"raw": "localhost:3030/api/business/64",
 							"host": [
 								"localhost"
 							],
@@ -218,7 +270,7 @@
 							"path": [
 								"api",
 								"business",
-								"63"
+								"64"
 							]
 						}
 					},
@@ -261,7 +313,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"33\",\n    \"destination_account\":\"65\",\n    \"amount\":\"100\"\n}",
+							"raw": "{\n    \"source_account\":\"73\",\n    \"destination_account\":\"68\",\n    \"amount\":\"100\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -339,7 +391,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"individuals_to_add\": [\n        [\"65\",\"1000\"]\n    ]\n}",
+							"raw": "{\n    \"individuals_to_add\": [\n        [\"85\",\"1000\"]\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -347,7 +399,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3030/api/family/add/64/full",
+							"raw": "localhost:3030/api/family/add/83/full",
 							"host": [
 								"localhost"
 							],
@@ -356,7 +408,7 @@
 								"api",
 								"family",
 								"add",
-								"64",
+								"83",
 								"full"
 							]
 						}
@@ -505,7 +557,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"48\",\n    \"destination_account\":\"44\",\n    \"amount\":\"2000\"\n}\n",
+							"raw": "{\n    \"source_account\":\"72\",\n    \"destination_account\":\"68\",\n    \"amount\":\"2000\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -565,7 +617,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"source_account\":\"140\",\n    \"destination_account\":\"125\",\n    \"amount\":\"2000\"\n}\n",
+							"raw": "{\n    \"source_account\":\"30\",\n    \"destination_account\":\"32\",\n    \"amount\":\"2000\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -601,7 +653,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"list_of_accounts\": [\n        [\"1\",\"individual\"],\n        [\"5\",\"business\"]\n    ],\n    \"action\": \"ACTIVE\"\n}",
+							"raw": "{\n    \"list_of_accounts\": [\n        [\"73\",\"business\"]\n    ],\n    \"action\": \"ACTIVE\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
