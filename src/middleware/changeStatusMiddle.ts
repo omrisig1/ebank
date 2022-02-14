@@ -10,16 +10,15 @@ import Validator from '../validations/validator.js';
 
 export async function changeStatusMiddle(req: Request, res: Response, next: NextFunction) : Promise<void> {
   Validator.mandatoryFieldExists(req.body, ['list_of_accounts', 'action']);
-  // Validator.isTypeArray(req.body.list_of_accounts, 'list_of_accounts');
-  // for (const accunt_tuple of req.body.list_of_accounts as [string,string][]) {
   Validator.isTypeTuplesArray(req.body.list_of_accounts, 'list_of_accounts');
-  // }
   Validator.isStatusExists(req.body.action);
   Validator.NumberGreaterThan(req.body.list_of_accounts.length, 0, "list_of_accounts array length");
   const account_ids = req.body.list_of_accounts.map((acc_tuple:any)=> acc_tuple[0]);
   for (const id of account_ids) {
     await Validator.isAccountExists(id);
   }
+  const accounts_types: string[] = req.body.list_of_accounts.map((acc_tuple:any)=> acc_tuple[1]);
+  Validator.checkAccountTypeByTypesList(accounts_types,[account_type.INDIVIDUAL,account_type.BUSINESS]);
   const accounts = await Util.getAccountsByIds(account_ids);
   for (const acc of accounts) {
     await Validator.checkAccountTypeEquals(acc.account_id as number, [account_type.INDIVIDUAL,account_type.BUSINESS]);

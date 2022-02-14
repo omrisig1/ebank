@@ -285,6 +285,15 @@ class Validator {
     }
     throw new validationException(400, `Family account ${family_id} already closed`);
   }
+
+  checkAccountTypeByTypesList(types_list: string[],types_to_check: string[]){
+    for (const type of types_list) {
+      if(!types_to_check.includes(type)){
+        throw new validationException(400, `Expected account type of ${types_to_check}, but got ${type}.`);
+      }
+    }
+    return true;
+  }
   
 }
 const V = new Validator();

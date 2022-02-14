@@ -8,11 +8,9 @@ import Validator from "../../validations/validator.js";
 import { account_status, IChangeStatus } from "../../types/types.js";
 import IAccount from "../account.model.js";
 
-// Activate/Deactivate accounts
 class StatusService {
+    // Activate/Deactivate accounts
     async  changeAccountStatus(payload: IChangeStatus): Promise<IAccount[]> {
-      // TODO: call dal to create new individual account
-      //       add validations and business logic
       const account_ids = payload.list_of_accounts.map((acc_tuple:any)=> acc_tuple[0]);
       const accounts = await util.getAccountsByIds(account_ids);
       Validator.NumberEquals([accounts.length,"number of accounts"], [payload.list_of_accounts.length,"provided list of accounts"]);
