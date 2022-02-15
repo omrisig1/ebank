@@ -35,6 +35,7 @@ class BuisnessService {
     const source_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.source_account));
     // check destination - Business or Individual
     const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
+
     const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
     console.log(business_destination_acc);
     // if destination is Business --> transfer B2B

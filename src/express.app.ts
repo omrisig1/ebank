@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express';
 import morgan from 'morgan';
 import log from '@ajar/marker';
 import cors from 'cors';
-import config from './config.js';
+import config, { reLoadConfig } from './config.js';
+import { watcher as config_watcher } from './config.js';
 
 import { connect as connect_sqlDb } from './db/mysql.connection.js';
 import individual_account_router from "./modules/individual/individual.router.js";
@@ -57,8 +59,16 @@ class ExpressApp {
     // connect to mySql
     await connect_sqlDb();
 
+    // connect to server
     this.app.listen(Number(PORT), HOST);
     log.magenta('eBank API is live on', ` ✨ ⚡  http://${HOST}:${PORT} ✨ ⚡`);
+
+    // sign config watcher to change events in config.json
+    config_watcher.on('change',()=>{
+      log.blue("Reloading config.json...");
+      reLoadConfig();
+      log.magenta("config.json loaded");
+    });
   }
 }
 
