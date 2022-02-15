@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { RowDataPacket } from 'mysql2';
 import { connection as db } from '../../db/mysql.connection.js';
 import individual_dal from '../individual/individual.dal.js';
@@ -127,8 +130,6 @@ class FamilyDal {
 
   // Close family account by ID
    async  closeFamilyAccountById(account_id: number): Promise<IFamilyAccount> {
-    // const family = await getFamilyAccountByAccountId(account_id);
-    // await deleteIndividualsFromFamily(account_id, family.owners as string[]);
     await Util.changeAccountStatus([account_id.toString()], account_status.INACTIVE.toString());
     return await this.getFamilyAccountByAccountId(account_id);
   }

@@ -138,8 +138,6 @@ class FamilyService {
     async  transferFromFamilyToBusiness(payload: ITransfer): Promise<IAccount[]> {
         const source_acc: IFamilyAccount = await dal.getFamilyAccountByAccountId(Number(payload.source_account));
         const destination_acc: IBusinessAccount = await buisness_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
-        // const source_acc = accounts1.find((acc)=> acc.account_id == Number(payload.source_account));
-        // const destination_acc = accounts2.find((acc)=> acc.account_id == Number(payload.destination_account));
         Validator.NumberLessThan([payload.amount,"amount"], [config.family.TRANS_F2B,`the maximum transfer from family to business (${config.family.TRANS_F2B})`]);
         const simple_transfer1 : simple_transfer = {
             account_id: Number(payload.source_account),

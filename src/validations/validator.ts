@@ -29,12 +29,6 @@ class Validator {
     throw new validationException(400, `Account ${id_to_check} is not active`);
   }
 
-  //   isExists(val: any ) : boolean|Error{
-  //   if (val) {
-  //     return true;
-  //   }
-  //   throw new Error('account does not exists');
-  // }
   async isAccountExists(account_id: number): Promise<boolean | Error>;
   async isAccountExists(account_ids: number[]): Promise<boolean | Error>;
   async isAccountExists(arg1: number | number[]): Promise<boolean | Error> {
@@ -58,12 +52,6 @@ class Validator {
     }
   }
 
-  //   NumberEquals(num : string | number, than: string | number) : boolean{
-  //   if(Number(num) === Number(than)) {
-  //     return true;
-  //   }
-  //   throw new validationException(400, `${num} should be equal to ${than}.`)
-  // }
   NumberEquals(
     value_field_tuples_got: [value: string | number, field: string | number],
     value_field_tuples_expected: [value: string | number, field: string | number]
@@ -166,41 +154,7 @@ class Validator {
     } else if ((val && Number(val)) || val === 0 || val === '0') return true;
     throw new Error(`Field ${field as string} value is not numeric`);
   }
-  //   isValNumeric(val: string | number |undefined, field_checked: string) : boolean|never{
-  //   if ((val && Number(val)) || val === 0 || val === '0') {
-  //     return true;
-  //   }
-  //   throw new validationException(400,`Field ${field_checked} is not numeric`);
-  // }
-
-  // stringLengthAtLeast(
-  //   val: string,
-  //   field_checked: string,
-  //   expected_length: number
-  // ): boolean | Error {
-  //   if (this.stringNotEmpty(val) && val.length >= expected_length) {
-  //     return true;
-  //   }
-  //   throw new validationException(
-  //     400,
-  //     `Field ${field_checked} should be of length ${expected_length}.`
-  //   );
-  // }
-
-  //   stringLengthEquals(val: string, length: number) :boolean|Error{
-  //   if (stringNotEmpty(val) && val.length === length) {
-  //     return true;
-  //   }
-  //   throw new Error('string length error');
-  // }
-
-  //   transferSizeSmallerThan(accountType: string, amount: string): boolean | Error{
-  //   const types = JSON.parse(JSON.stringify(config.account_minimum_transfer));
-  //   if (isValNumeric(amount) && Number(types[accountType]) <= Number(amount)) {
-  //     return true;
-  //   }
-  //   throw new Error('trasnfer amount exceeds account type permition error');
-  // }
+  
 
   async checkAccountTypeEquals(
     account_id: number,
@@ -223,13 +177,6 @@ class Validator {
     );
   }
 
-  //   checkAccountTypeNotEquals(stringA: string, stringB: string) : boolean|Error{
-  //   if (stringA !== stringB) {
-  //     return true;
-  //   }
-  //   throw new Error('account of not proper type');
-  // }
-
   checkAccountCurrencyEquals(
     value_field_tuples_got: [value: string, field: string],
     value_field_tuples_expected: [value: string, field: string]
@@ -247,24 +194,6 @@ class Validator {
       `${field_expected}(${value_expected}) should be equal to ${field_got}(${value_got})`
     );
   }
-
-  // checkAccountCurrencyNotEquals(
-  //   value_field_tuples_got: [value: string, field: string],
-  //   value_field_tuples_expected: [value: string, field: string]
-  // ): boolean | Error {
-  //   const value_got = value_field_tuples_got[0];
-  //   const field_got = value_field_tuples_got[1];
-  //   const value_expected = value_field_tuples_expected[0];
-  //   const field_expected = value_field_tuples_expected[1];
-
-  //   if (value_got !== value_expected) {
-  //     return true;
-  //   }
-  //   throw new validationException(
-  //     400,
-  //     `${field_expected}(${value_expected}) should be different from ${field_got}(${value_got}).`
-  //   );
-  // }
 
   balanceGreaterThan(
     balance: string | number,

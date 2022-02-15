@@ -6,7 +6,6 @@ import { Response, Request, NextFunction } from 'express';
 import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
 import Validator from '../validations/validator.js'; 
-// import * as family_dal from '../modules/family/family.dal.js';
 
 export async function changeStatusMiddle(req: Request, res: Response, next: NextFunction) : Promise<void> {
   Validator.mandatoryFieldExists(req.body, ['list_of_accounts', 'action']);

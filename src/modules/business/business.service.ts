@@ -30,14 +30,12 @@ class BuisnessService {
 
   // Transfer B2B/B2I (same currency)
   async transferSameCurrency(payload: ITransfer): Promise<IAccount[]> {
-    // buisness logic:
     // check source - Business
     const source_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.source_account));
     // check destination - Business or Individual
     const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
 
     const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
-    console.log(business_destination_acc);
     // if destination is Business --> transfer B2B
     if (business_destination_acc) {
       if(config.TRASNFER_LIMIT_ON){
@@ -55,7 +53,6 @@ class BuisnessService {
   
   // Transfer B2B (different currency)
   async  transferDifferentCurrency(payload: ITransfer): Promise< any> {
-    //buisness logic:
     const accounts = await business_dal.getBusinessesByAccountsIds([(payload.source_account),(payload.destination_account)]);
     const source_acc = accounts.find((acc)=> acc.account_id == Number(payload.source_account));
     const destination_acc = accounts.find((acc)=> acc.account_id == Number(payload.destination_account));

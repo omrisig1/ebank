@@ -46,9 +46,6 @@ export async function getIndividualMiddle(req: Request, res: Response, next: Nex
 
 export async function transferIndividualMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
     Validator.mandatoryFieldExists(req.body,['source_account','destination_account','amount']);
-  console.log(req.body.source_account);
-  console.log(req.body.destination_account);
-  
     
   await Validator.sourceAndDestinationValidation(req.body.source_account, req.body.destination_account);
     Validator.amountValidation(req.body.amount);
