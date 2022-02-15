@@ -17,7 +17,7 @@ import { IFamilyAccount } from "./family.model.js";
 import { IIndividualAccount } from "../individual/individual.model.js";
 import Validator from '../../validations/validator.js';
 import { IBusinessAccount } from "../business/business.model.js";
-import config from '../../../config.json';
+import config from '../.././config.js';
 import IAccount from '../account.model.js';
 
 class FamilyService {

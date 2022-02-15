@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import raw from "../../middleware/route.async.wrapper.js";
 import C from "./individual.controller.js";

@@ -8,7 +8,7 @@ import individual_dal from '../modules/individual/individual.dal.js';
 import family_dal from '../modules/family/family.dal.js';
 import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
-import config from '../../config.json';
+import config from '.././config.js';
 
 export async function createFamilyMiddle(req: Request, res: Response, next: NextFunction) : Promise<void>{
   Validator.mandatoryFieldExists(req.body,['owners','currency']);

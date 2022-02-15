@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Response, Request, NextFunction } from 'express';
 import Validator from '../validations/validator.js'; 
-import config from "../../config.json";
+import config from ".././config.js";
 import { account_status, account_type } from '../types/types.js';
 import Util from "../modules/utils.dal.js";
 import family_dal from "../modules/family/family.dal.js";

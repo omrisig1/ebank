@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 import log from '@ajar/marker';
-import config from '../../config.json';
+import config from '../config.js';
 
 const {
   DB_HOST, DB_PORT, DB_NAME, DB_USER_NAME, DB_USER_PASSWORD,
-} = config['mysql-connection'];
+} = config.mysql_connection;
 
 export let connection: mysql.Connection;
 
