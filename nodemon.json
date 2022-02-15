@@ -1,5 +1,5 @@
 {
-  "watch": ["src", "./config.json"],
+  "watch": ["src"],
   "ignore": ["src/**/*.test.ts", "src/**/*.spec.ts"],
   "ext": "ts",
   "exec": "npm run build-dev"

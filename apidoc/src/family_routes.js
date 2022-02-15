@@ -75,7 +75,7 @@
  * @apiGroup Family Account
  * @apiError Family Error creating account for Family.
 
- * @apiParam {string} currency .
+ * @apiParam {string=["USD","EUR","AUD","CAD","JPY","CHF","CNY","GBP"]} currency .
  * @apiParam {number} [balance=0] .
  * @apiParam {number} [address=null] .
  * @apiParam {string} [context=null] .

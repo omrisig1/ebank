@@ -60,7 +60,7 @@
  * @apiError Buisness Error creating account for Buisness.
 
  * @apiParam {number} primary_id .78 digit bigger than 1000000 number
- * @apiParam {string = ['USD','EUR']} currency . Currency of the Account
+ * @apiParam {string = ["USD","EUR","AUD","CAD","JPY","CHF","CNY","GBP"]} currency . Currency of the Account
  * @apiParam {number} [balance = 0]  . Initial Balance Of The Account
  * @apiParam {Object} [address = null] . 
  * @apiParam {number} company_id . 8 digit bigger than 10000000 number
@@ -105,41 +105,6 @@
  *     }
  */
 
-/**
- * @api {post} /buisness/change-status/ 5.Change Account Status
-  * @apiHeader {String} access-key Users unique access-key.
- * @apiHeader {String} req_hash hash of the request according to predetermined rules
- * @apiHeader {String} idempotency_key 
- * @apiHeader {String} salt  random generated string
- * @apiName ChangeAccountStatus
- * @apiVersion 1.0.0
- * @apiGroup Buisness Account
- * @apiParam {string} new_status new_status.
- * @apiParam {string[]} ids ids to change status for.
- * @apiSuccess {String} status status of the response.
- * @apiSuccess {object[]} changed objects.
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     "status":"Account's statuses changed.",
- *     "message":
- *     [
- *      {
- *       "primary_id": "123",
- *       "type": "individual",
- *       "account_id": "1234",
- *       "currency": "USD"",
- *       "balance": 10024.3,
- *       "status": "ACTIVE",
- *       "address": "",
- *       "company_id": "312",
- *       "company_name": "lego",
- *       "context": "suppliers",
- *       "black_list" : "0",
- *       "e_date" : "2022-02-12T11:08:05.000Z",
- *       "a_date" : "2022-02-12T11:08:05.000Z"
- *     }
- * ]
- */
 
 /**
  * @api {post} /buisness/transfer/same-currency 3.Trasnfer to Buisness/Individual with same currency

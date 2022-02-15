@@ -79,7 +79,7 @@
 
  * @apiParam {string} first_name 
  * @apiParam {string} last_name 
- * @apiParam {string = ['USD', 'EUR']} currency 
+ * @apiParam {string = ["USD","EUR","AUD","CAD","JPY","CHF","CNY","GBP"]} currency 
  * @apiParam {number} [balance=0] 
  * @apiParam {number} [address = null] 
  * @apiParam {number} individual_id 
@@ -121,34 +121,3 @@
  *     }
  */
 
-/**
- * @api {post} /individual/change-status/ 3. Change Account Status
-  * @apiHeader {String} access-key Users unique access-key.
- * @apiHeader {String} req_hash hash of the request according to predetermined rules
- * @apiHeader {String} idempotency_key 
- * @apiHeader {String} salt  random generated string
- * @apiName ChangeAccountStatus
- * @apiVersion 1.0.0
- * @apiGroup Individual Account
- * @apiParam {string} new_status new status.
- * @apiParam {string[] = ["ACTIVE","INACTIVE]"} ids ids to change status for.
- * @apiSuccess {String} status status of the response.
- * @apiSuccess {object[]} changed objects.
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     "status":"success",
- *     "message":
- *     [{
- *       "primary_id": "123",
- *       "type": "individual",
- *       "firstname": "John",
- *       "lastname": "Doe",
- *       "account_id": "1234",
- *       "currency": "USD"",
- *       "balance": 10024.3,
- *       "status": "INACTIVE",
- *       "address_id": "31",
- *       "individuel_id": "1234567",
- *       "email": "jeses.c@gmail.com"
- *     }]
- */
