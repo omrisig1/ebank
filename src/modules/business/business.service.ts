@@ -35,14 +35,17 @@ class BuisnessService {
     const source_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.source_account));
     // check destination - Business or Individual
     const business_destination_acc = await business_dal.getBusinessAccountByAccountId(Number(payload.destination_account));
+
     const individual_destination_acc = await individual_dal.getIndividualAccountByAccountId(Number(payload.destination_account));
 
     // if destination is Business --> transfer B2B
-    if (business_destination_acc && config.TRASNFER_LIMIT_ON) {
-      if (source_acc.company_id == business_destination_acc.company_id) {
-        Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_SAME_COMPANY,`maximum transfer in the same compamy (${config.business.MAX_TRANS_B2B_SAME_COMPANY})`]);
-      } else {
-        Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_DIF_COMPANY,`maximum transfer to different compamy (${config.business.MAX_TRANS_B2B_DIF_COMPANY})`]);
+    if (business_destination_acc) {
+      if(config.TRASNFER_LIMIT_ON) {
+        if (source_acc.company_id == business_destination_acc.company_id) {
+          Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_SAME_COMPANY,`maximum transfer in the same compamy (${config.business.MAX_TRANS_B2B_SAME_COMPANY})`]);
+        } else {
+          Validator.NumberLessThan([payload.amount,"amount"], [config.business.MAX_TRANS_B2B_DIF_COMPANY,`maximum transfer to different compamy (${config.business.MAX_TRANS_B2B_DIF_COMPANY})`]);
+        }
       }
       return await Util.transfer(payload, source_acc, business_destination_acc);
     }

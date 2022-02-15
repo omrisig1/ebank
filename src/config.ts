@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from "path";
+import chokidar from 'chokidar';
 
 interface IConfig {
     HTTP_LOG_FILE_PATH: string;
@@ -48,5 +49,15 @@ interface IConfig {
     FX_ACCESS_KEY: string
 }
 
-const config: IConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(),"config.json"),"utf-8"));
+const config : IConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(),"config.json"),"utf-8"));
+
+export const reLoadConfig = (): IConfig=> {
+    let updated_config: IConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(),"config.json"),"utf-8"));
+    config.TRASNFER_LIMIT_ON = updated_config.TRASNFER_LIMIT_ON;
+    return config;
+}
+
+export const watcher = chokidar.watch("config.json",{
+    persistent: true
+})
 export default config;

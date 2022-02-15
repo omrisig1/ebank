@@ -68,6 +68,7 @@
     "@types/sinon": "^10.0.11",
     "bluebird": "^3.7.2",
     "chai-as-promised": "^7.1.1",
+    "chokidar": "^3.5.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.2",
