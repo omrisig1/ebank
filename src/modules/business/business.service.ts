@@ -7,9 +7,9 @@ import business_dal from './business.dal.js';
 import individual_dal from '../individual/individual.dal.js';
 import Util from '../utils.dal.js';
 import Validator from '../../validations/validator.js';
-import { account_status, IDiffRate, ITransfer, Json, simple_transfer } from '../../types/types.js';
+import { account_status, IDiffRate, ITransfer, simple_transfer } from '../../types/types.js';
 import fetch from 'node-fetch';
-import config from '../../../config.json';
+import config from '../.././config.js';
 import IAccount from '../account.model.js';
 
 class BuisnessService {

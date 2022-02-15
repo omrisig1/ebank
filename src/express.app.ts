@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import log from '@ajar/marker';
 import cors from 'cors';
-import config from '../config.json';
+import config from './config.js';
 
 import { connect as connect_sqlDb } from './db/mysql.connection.js';
 import individual_account_router from "./modules/individual/individual.router.js";
@@ -15,7 +15,7 @@ import { errorLogger, not_found, responseWithError, urlNotFoundHandler } from '.
 import { appendToErrorLogger } from './middleware/loggers/error.log.js';
 import { appendToRequestsLogger } from './middleware/loggers/http.log.js';
 
-const { PORT, HOST } = config['express-server'];
+const { PORT, HOST } = config.express_server;
 const { HTTP_LOG_FILE_PATH,ERRORS_LOG_FILE_PATH } = config;
 
 class ExpressApp {

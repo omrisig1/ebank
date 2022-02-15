@@ -4,7 +4,7 @@ import { connection as db } from '../db/mysql.connection.js';
 import IAccount from './account.model.js';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { ITransfer, simple_transfer, Idempotency, secret, IResponseMessage} from '../types/types.js';
-import config from "../../config.json";
+import config from ".././config.js";
 import { Request } from "express";
 import crypto from 'crypto';
 

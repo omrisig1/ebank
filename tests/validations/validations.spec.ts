@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { expect } from "chai";
-import config from "../../config.json";
+import config from "../../src/config.js";
 
 // import  chai_promise  from "chai-as-promised";
 import V from "../../src/validations/validator";

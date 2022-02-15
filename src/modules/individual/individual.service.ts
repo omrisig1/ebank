@@ -9,7 +9,7 @@ import Validator from "../../validations/validator.js";
 import { account_status, ITransfer, simple_transfer } from "../../types/types.js";
 import { IFamilyAccount } from "../family/family.model.js";
 import family_dal from "../family/family.dal.js";
-import config from "../../../config.json";
+import config from "../.././config.js";
 
 class IndividualService {
     // Create an individual account

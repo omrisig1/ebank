@@ -5,7 +5,7 @@ import { Response, Request, NextFunction } from 'express';
 import Validator from '../validations/validator.js'; 
 import Util from '../modules/utils.dal.js';
 import { account_status, account_type } from '../types/types.js';
-import config from '../../config.json';
+import config from '.././config.js';
 
 export function createBuisnessMiddle(req: Request, res: Response, next: NextFunction) : void{
      Validator.mandatoryFieldExists(req.body,['company_id','company_name','currency']);
